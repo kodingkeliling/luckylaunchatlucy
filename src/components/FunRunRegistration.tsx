@@ -175,73 +175,92 @@ export default function FunRunRegistration() {
   }
 
   return (
-    <section id="fun-run-registration" className="py-12 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          <div className="flex justify-center items-center space-x-8 mb-6">
-            <div className="relative w-20 h-20">
-              <Image 
-                src="/images/LLL - Logo B&W-01.png"
-                alt="Lucky Launch at Lucy Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div className="relative w-20 h-20">
-              <Image 
-                src="/images/LCC BANDUNG_Main Logo-Green (11).png"
-                alt="Lucy Curated Compound Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-          </div>
-          
-          <h2 className="mb-4 text-3xl md:text-4xl font-bold text-foreground">DAFTAR SEKARANG</h2>
-          <div className="w-24 h-1 bg-destructive mx-auto mb-6"></div>
-          
-          <Card className="max-w-md mx-auto mb-8">
-            <CardHeader>
-              <CardTitle className="text-xl">Slot Tersedia</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoadingSlots ? (
-                <div className="text-center py-4">
-                  <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                  <p className="text-muted-foreground">Memuat data slot...</p>
-                </div>
-              ) : (
-                <>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-3xl font-bold text-primary number-font">
-                      {slotData.availableSlots}
-                    </span>
-                    <span className="text-muted-foreground">
-                      dari {slotData.maxSlots} slot
-                    </span>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-2 mb-2">
-                    <div 
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        slotData.isFull ? 'bg-destructive' : 'bg-primary'
-                      }`}
-                      style={{ width: `${(slotData.currentSlots / slotData.maxSlots) * 100}%` }}
-                    ></div>
-                  </div>
-                  {slotData.isFull && (
-                    <p className="text-center text-destructive font-medium mt-2">
-                      Slot sudah penuh!
-                    </p>
-                  )}
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-        
-        <Card className="max-w-4xl mx-auto">
+    <section id="fun-run-registration" className="min-h-screen bg-[#f5f5f5] relative overflow-hidden">
+      {/* Grid Texture Background */}
+      <div className="absolute inset-0" style={{
+        backgroundImage: `
+          linear-gradient(to right, transparent 58px, rgba(0, 0, 0, 0.05) 58px, rgba(0, 0, 0, 0.05) 62px, transparent 62px),
+          linear-gradient(to bottom, transparent 58px, rgba(0, 0, 0, 0.05) 58px, rgba(0, 0, 0, 0.05) 62px, transparent 62px)
+        `,
+        backgroundSize: '60px 60px'
+      }}></div>
+      
+      {/* Form Section */}
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <Card className="max-w-4xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
           <CardContent className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Header inside form */}
+            <div className="flex items-center justify-between flex-col md:flex-row">
+                    {/* Center Title */}
+                <div>
+                  <div className="relative">
+                    <h1 className="flex items-center text-7xl md:text-8xl font-black tracking-tighter">
+                      <div className="relative">
+                        <div className="bg-[#be2625] text-black px-5 py-2 -skew-x-12 transform">
+                          <span className="block skew-x-12 transform">FUN</span>
+                        </div>
+                        <div className="absolute top-0 left-0 bg-black bg-opacity-25 text-transparent px-5 py-2 -skew-x-12 transform translate-x-[3px] translate-y-[3px]">
+                          <span className="block skew-x-12 transform">FUN</span>
+                        </div>
+                      </div>
+                      <span className="transform -rotate-12 -ml-3 text-[#be2625]">RUN</span>
+                    </h1>
+                    <div className="text-lg font-semibold text-foreground mt-2">Lucky Launch at Lucy</div>
+                  </div>
+                </div>
+              {/* Logo Section */}
+              <div className="flex justify-center items-center gap-2">
+                {/* LLL Logo */}
+                <div className="relative w-40 h-40 ">
+                  <Image 
+                    src="/images/LLL - Logo B&W-01.png"
+                    alt="Lucky Launch at Lucy Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                
+                {/* LCC Logo */}
+                <div className="relative w-40 h-40">
+                  <Image 
+                    src="/images/LCC BANDUNG_Main Logo-Black (2).png"
+                    alt="Lucy Curated Compound Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+            </div>
+               {/* Slot Counter */}
+               <div className="w-full rounded-lg">
+                {isLoadingSlots ? (
+                  <div className="text-center py-4">
+                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    <p className="text-muted-foreground text-sm">Memuat data slot...</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="mb-2">
+                     Tersisa {slotData.availableSlots} dari {slotData.maxSlots} slot tersedia
+                    </div>
+                    
+                    <div className="w-full bg-muted rounded-full h-2 mb-3">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-500 ${
+                          slotData.isFull ? 'bg-destructive' : 'bg-primary'
+                        }`}
+                        style={{ width: `${(slotData.currentSlots / slotData.maxSlots) * 100}%` }}
+                      ></div>
+                    </div>
+                  </>
+                )}
+              </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+                      
+              {/* Title */}
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+                DAFTAR SEKARANG
+              </h2>
             {/* Data Diri */}
             <div className="mb-8">
               <div className="flex items-center mb-6">
@@ -460,7 +479,7 @@ export default function FunRunRegistration() {
               <Button
                 type="submit"
                 disabled={isSubmitting || slotData.isFull || isLoadingSlots}
-                className="w-full md:w-auto"
+                className="w-full"
               >
                 {isSubmitting ? 'Mengirim...' : slotData.isFull ? 'Slot Penuh' : 'Daftar Sekarang'}
               </Button>
