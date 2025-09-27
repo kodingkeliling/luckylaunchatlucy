@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,13 +26,13 @@ const spots: SpotInfo[] = [
   { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   
   // TRUNK AREA & SEATING AREA
-  { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '3x3m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
   
   // HALLWAY & TOILET AREA
   { id: 'spot-3', number: 3, x: 59.3, y: 62.5, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '3x3m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '3x3m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
   
   // EXTRA BAR AREA (atas)
   { id: 'spot-8', number: 8, x: 58, y: 43.5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
@@ -41,11 +41,11 @@ const spots: SpotInfo[] = [
   { id: 'spot-11', number: 11, x: 67.9, y: 42.4, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   
   // BAR AREA
-  { id: 'spot-12', number: 12, x: 70.4, y: 52, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-13', number: 13, x: 79.8, y: 47.6, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-14', number: 14, x: 82.6, y: 47.6, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-15', number: 15, x: 85.4, y: 47.6, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-16', number: 16, x: 90.8, y: 52.9, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
+  { id: 'spot-12', number: 12, x: 70.4, y: 52, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  { id: 'spot-13', number: 13, x: 79.8, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-14', number: 14, x: 82.6, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-15', number: 15, x: 85.4, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-16', number: 16, x: 90.8, y: 52.9, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
   
   // AREA BELAKANG (bawah)
   { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
@@ -59,9 +59,22 @@ export default function LayoutMap() {
   const [panY, setPanY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [debugMode, setDebugMode] = useState(false);
-  const [clickedCoords, setClickedCoords] = useState<{ x: number; y: number } | null>(null);
+  const [containerHeight, setContainerHeight] = useState(600);
   const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (window.innerWidth < 768) {
+        setContainerHeight(400);
+      } else {
+        setContainerHeight(600);
+      }
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
 
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
@@ -70,17 +83,6 @@ export default function LayoutMap() {
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (debugMode) {
-      // Calculate coordinates relative to the image
-      const rect = mapRef.current?.getBoundingClientRect();
-      if (rect) {
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        setClickedCoords({ x: Math.round(x * 100) / 100, y: Math.round(y * 100) / 100 });
-      }
-      return;
-    }
-    
     setIsDragging(true);
     setDragStart({ x: e.clientX - panX, y: e.clientY - panY });
   };
@@ -102,17 +104,13 @@ export default function LayoutMap() {
     setPanY(0);
   };
 
-  const clearDebug = () => {
-    setClickedCoords(null);
-  };
-
   return (
     <div className="w-full">
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-center">LAYOUT TRUNK & POP UP</CardTitle>
-            <div className="flex gap-2">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <CardTitle className="text-center md:text-left">LAYOUT TRUNK & POP UP</CardTitle>
+            <div className="flex flex-wrap gap-2 justify-center md:justify-end">
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -134,23 +132,18 @@ export default function LayoutMap() {
               >
                 Reset
               </Button>
-              <Button 
-                variant={debugMode ? "default" : "outline"} 
-                size="sm" 
-                onClick={() => setDebugMode(!debugMode)}
-              >
-                {debugMode ? "Exit Debug" : "Debug Mode"}
-              </Button>
             </div>
           </div>
         </CardHeader>
         <CardContent>
+          <div className='overflow-scroll w-full'>
           <div 
             ref={mapRef}
             className="relative overflow-hidden rounded-lg border-2 border-gray-300"
             style={{ 
-              height: '600px',
-              cursor: debugMode ? 'crosshair' : (isDragging ? 'grabbing' : 'grab')
+              height: `596px`,
+              width: '782px',
+              cursor: isDragging ? 'grabbing' : 'grab'
             }}
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
@@ -163,7 +156,11 @@ export default function LayoutMap() {
               style={{
                 transform: `scale(${zoom}) translate(${panX / zoom}px, ${panY / zoom}px)`,
                 transformOrigin: 'center center',
-                transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+                transition: isDragging ? 'none' : 'transform 0.1s ease-out',
+                minWidth: '100%',
+                minHeight: '100%',
+                width: 'max-content',
+                height: 'max-content'
               }}
             >
               {/* Background Image */}
@@ -176,37 +173,48 @@ export default function LayoutMap() {
               />
               
               {/* Interactive Spots */}
-              {spots.map((spot) => (
-                <button
-                  key={spot.id}
-                  onClick={() => setSelectedSpot(spot)}
-                  className={`absolute w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
-                    selectedSpot?.id === spot.id
-                      ? 'border-white ring-2 ring-primary ring-offset-2 scale-125' // Selected state
-                      : 'border-transparent'
-                  } ${
-                    spot.available 
-                      ? 'bg-primary hover:bg-primary/80' 
-                      : 'bg-gray-400 cursor-not-allowed'
-                  }`}
-                  style={{ 
-                    left: `${spot.x}%`, 
-                    top: `${spot.y}%`,
-                    transform: 'translate(-50%, -50%)'
-                  }}
-                  disabled={!spot.available}
-                >
-                  {spot.number}
-                </button>
-              ))}
+              {spots.map((spot) => {
+                // Tentukan warna berdasarkan ukuran booth
+                const getBoothColor = (size: string) => {
+                  if (size === '3x3m') return 'bg-red-600 hover:bg-red-700'; // BOOTH 3X3 - Merah
+                  if (size === '2x2m') return 'bg-blue-900 hover:bg-blue-800'; // BOOTH 2X2 - Biru gelap
+                  if (size === '1x1m') return 'bg-lime-500 hover:bg-lime-600'; // BOOTH 1X1 - Hijau lime
+                  return 'bg-primary hover:bg-primary/80'; // Default
+                };
+
+                return (
+                  <button
+                    key={spot.id}
+                    onClick={() => setSelectedSpot(spot)}
+                    className={`absolute w-5 h-5 rounded-full  flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
+                      selectedSpot?.id === spot.id
+                        ? 'border-white ring-2 ring-primary ring-offset-2 scale-125' // Selected state
+                        : 'border-transparent'
+                    } ${
+                      spot.available 
+                        ? getBoothColor(spot.size)
+                        : 'bg-gray-400 cursor-not-allowed'
+                    }`}
+                    style={{ 
+                      left: `${spot.x}%`, 
+                      top: `${spot.y}%`,
+                      transform: 'translate(-50%, -50%)'
+                    }}
+                    disabled={!spot.available}
+                  >
+                    {spot.number}
+                  </button>
+                );
+              })}
+            </div>
             </div>
           </div>
           
           {/* Spot Information */}
           {selectedSpot && (
-            <div className="mt-4 p-4 bg-muted rounded-lg">
-              <h3 className="font-semibold mb-2">Spot {selectedSpot.number}</h3>
-              <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="mt-4 p-3 md:p-4 bg-muted rounded-lg sticky left-0">
+              <h3 className="font-semibold mb-2 text-sm md:text-base">Spot {selectedSpot.number}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs md:text-sm">
                 <div>
                   <span className="font-medium">Area:</span> {selectedSpot.area}
                 </div>
@@ -233,10 +241,18 @@ export default function LayoutMap() {
           )}
           
           {/* Legend */}
-          <div className="mt-4 flex flex-wrap gap-4 text-sm">
+          <div className="mt-4 flex flex-wrap gap-4 text-xs md:text-sm justify-center md:justify-start sticky left-0">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-primary rounded-full"></div>
-              <span>Tersedia</span>
+              <div className="w-4 h-4 bg-red-600 rounded-full"></div>
+              <span>BOOTH 3X3</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-blue-900 rounded-full"></div>
+              <span>BOOTH 2X2</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-lime-500 rounded-full"></div>
+              <span>BOOTH 1X1</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-gray-400 rounded-full"></div>
@@ -244,42 +260,14 @@ export default function LayoutMap() {
             </div>
           </div>
           
-          {/* Debug Mode Info */}
-          {debugMode && (
-            <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-sm text-yellow-800">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p><strong>Debug Mode Aktif:</strong></p>
-                  <p>Klik di mana saja pada peta untuk melihat koordinat</p>
-                </div>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={clearDebug}
-                  className="ml-2"
-                >
-                  Clear
-                </Button>
-              </div>
-              {clickedCoords && (
-                <div className="mt-2 p-2 bg-yellow-100 rounded border">
-                  <p><strong>Koordinat terakhir diklik:</strong></p>
-                  <p>X: {clickedCoords.x}%, Y: {clickedCoords.y}%</p>
-                  <p className="text-xs mt-1">Copy koordinat ini untuk mengupdate posisi spot</p>
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Instructions */}
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-800">
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs md:text-sm text-blue-800 sticky left-0">
             <p><strong>Cara menggunakan:</strong></p>
             <ul className="list-disc list-inside mt-1 space-y-1">
               <li>Scroll mouse untuk zoom in/out</li>
               <li>Drag untuk menggeser peta</li>
               <li>Klik spot untuk melihat detail</li>
               <li>Gunakan tombol +, -, Reset untuk kontrol zoom</li>
-              <li>Gunakan Debug Mode untuk menghitung koordinat spot baru</li>
             </ul>
           </div>
         </CardContent>

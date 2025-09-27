@@ -188,7 +188,7 @@ export default function FunRunRegistration() {
       {/* Form Section */}
       <div className="container mx-auto px-4 py-16 relative z-10">
         <Card className="max-w-4xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
-          <CardContent className="p-8">
+          <CardContent>
             {/* Header inside form */}
             <div className="flex items-center justify-between flex-col md:flex-row">
                     {/* Center Title */}

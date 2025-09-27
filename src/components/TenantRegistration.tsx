@@ -177,9 +177,9 @@ export default function TenantRegistration() {
           backgroundSize: '60px 60px'
         }}></div>
         
-        <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="container mx-auto md:px-4 py-16 relative z-10">
           <Card className="max-w-2xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
-            <CardContent className="p-8 text-center">
+            <CardContent className="text-center">
               <div className="mb-6">
                 <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-10 h-10 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,9 +226,9 @@ export default function TenantRegistration() {
       }}></div>
       
       {/* Form Section */}
-      <div className="container mx-auto px-4 py-16 relative z-10">
+      <div className="md:container px-1 mx-auto md:px-4 py-16 relative z-10">
         <Card className="max-w-4xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
-          <CardContent className="p-8">
+          <CardContent>
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
