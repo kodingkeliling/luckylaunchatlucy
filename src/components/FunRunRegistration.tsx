@@ -4,15 +4,14 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { funRunData, FunRunFormData, sampleFunRunFormData } from '@/data/mockData';
 import { validateFunRunForm, ValidationErrors } from '@/lib/validation';
-import Container from './ui/Container';
-import Heading from './ui/Heading';
-import Input from './ui/Input';
-import PhoneInput from './ui/PhoneInput';
-import Select from './ui/Select';
-import Textarea from './ui/Textarea';
-import Checkbox from './ui/Checkbox';
-import Button from './ui/Button';
-import Alert from './ui/Alert';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 interface SlotData {
   maxSlots: number;
@@ -57,21 +56,22 @@ export default function FunRunRegistration() {
     fetchSlotData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name: string; value?: string; checked?: boolean } }) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-
+    // Filter out non-numeric characters for phone number fields
+    if (name === 'whatsappNumber' || name === 'emergencyNumber') {
+      const numericValue = (value || '').replace(/[^0-9]/g, '');
+      setFormData(prev => ({ ...prev, [name]: numericValue }));
+    } else if (type === 'checkbox' || checked !== undefined) {
+      setFormData(prev => ({ ...prev, [name]: checked || false }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value || '' }));
+    }
+    
     // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+    if (errors[name as keyof ValidationErrors]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -129,18 +129,18 @@ export default function FunRunRegistration() {
 
   if (submitSuccess) {
     return (
-      <section id="fun-run-registration" className="py-20 bg-light">
-        <Container>
+      <section id="fun-run-registration" className="py-20 bg-background">
+        <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-white rounded-lg shadow-lg p-12">
+            <Card className="p-12">
               <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-8">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               
-              <Heading level={2} className="mb-6">Terima Kasih!</Heading>
-              <p className="text-xl mb-8 text-gray-700">
+              <h2 className="mb-6 text-3xl font-bold">Terima Kasih!</h2>
+              <p className="text-xl mb-8 text-muted-foreground">
                 Terima kasih telah bergabung pada FUN RUN dengan LUCKY LAUNCH at LUCY. 
                 Semoga keberuntungan hadir di setiap langkahmu!
               </p>
@@ -154,7 +154,7 @@ export default function FunRunRegistration() {
                     className="object-contain"
                   />
                 </div>
-                <p className="text-lg text-gray-600">
+                <p className="text-lg text-muted-foreground">
                   Unduh kartu ini dan posting di instagram mu! dan mention 
                   <span className="font-bold text-primary"> @777.ltd</span> dan 
                   <span className="font-bold text-primary"> @lucycuratedcompund.bdg</span>
@@ -167,16 +167,16 @@ export default function FunRunRegistration() {
               >
                 Daftar Lagi
               </Button>
-            </div>
+            </Card>
           </div>
-        </Container>
+        </div>
       </section>
     );
   }
 
   return (
-    <section id="fun-run-registration" className="py-12 bg-light">
-      <Container>
+    <section id="fun-run-registration" className="py-12 bg-background">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <div className="flex justify-center items-center space-x-8 mb-6">
             <div className="relative w-20 h-20">
@@ -197,185 +197,262 @@ export default function FunRunRegistration() {
             </div>
           </div>
           
-          <Heading level={2} className="mb-4 text-3xl md:text-4xl">DAFTAR SEKARANG</Heading>
-          <div className="w-24 h-1 bg-accent mx-auto mb-6"></div>
+          <h2 className="mb-4 text-3xl md:text-4xl font-bold text-foreground">DAFTAR SEKARANG</h2>
+          <div className="w-24 h-1 bg-destructive mx-auto mb-6"></div>
           
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto mb-8">
-            <Heading level={3} className="mb-4 text-xl">Slot Tersedia</Heading>
-            {isLoadingSlots ? (
-              <div className="text-center py-4">
-                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                <p className="text-gray-600">Memuat data slot...</p>
-              </div>
-            ) : (
-              <>
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-3xl font-bold text-primary number-font">
-                    {slotData.availableSlots}
-                  </span>
-                  <span className="text-gray-600">
-                    dari {slotData.maxSlots} slot
-                  </span>
+          <Card className="max-w-md mx-auto mb-8">
+            <CardHeader>
+              <CardTitle className="text-xl">Slot Tersedia</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoadingSlots ? (
+                <div className="text-center py-4">
+                  <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                  <p className="text-muted-foreground">Memuat data slot...</p>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                  <div 
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      slotData.isFull ? 'bg-accent' : 'bg-primary'
-                    }`}
-                    style={{ width: `${(slotData.currentSlots / slotData.maxSlots) * 100}%` }}
-                  ></div>
-                </div>
-                {slotData.isFull && (
-                  <p className="text-center text-accent font-medium mt-2">
-                    Slot sudah penuh!
-                  </p>
-                )}
-              </>
-            )}
-          </div>
+              ) : (
+                <>
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-3xl font-bold text-primary number-font">
+                      {slotData.availableSlots}
+                    </span>
+                    <span className="text-muted-foreground">
+                      dari {slotData.maxSlots} slot
+                    </span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2 mb-2">
+                    <div 
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        slotData.isFull ? 'bg-destructive' : 'bg-primary'
+                      }`}
+                      style={{ width: `${(slotData.currentSlots / slotData.maxSlots) * 100}%` }}
+                    ></div>
+                  </div>
+                  {slotData.isFull && (
+                    <p className="text-center text-destructive font-medium mt-2">
+                      Slot sudah penuh!
+                    </p>
+                  )}
+                </>
+              )}
+            </CardContent>
+          </Card>
         </div>
         
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <Card className="max-w-4xl mx-auto">
+          <CardContent className="p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Data Diri */}
             <div className="mb-8">
               <div className="flex items-center mb-6">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
-                  <span className="text-secondary font-bold text-sm">1</span>
+                  <span className="text-primary-foreground font-bold text-sm">1</span>
                 </div>
-                <Heading level={3} className="text-xl">DATA DIRI</Heading>
+                <h3 className="text-xl font-semibold">DATA DIRI</h3>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <Input
-                  label="Nama Perorangan/Komunitas"
-                  name="participantName"
-                  value={formData.participantName}
-                  onChange={handleChange}
-                  error={errors.participantName}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="participantName">Nama Perorangan/Komunitas *</Label>
+                  <Input
+                    id="participantName"
+                    name="participantName"
+                    value={formData.participantName}
+                    onChange={handleChange}
+                    className={errors.participantName ? "border-destructive" : ""}
+                  />
+                  {errors.participantName && (
+                    <p className="text-sm text-destructive">{errors.participantName}</p>
+                  )}
+                </div>
                 
-                <Select
-                  label="Jenis Kelamin"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  options={genderOptions}
-                  placeholder="Pilih Jenis Kelamin"
-                  error={errors.gender}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="gender">Jenis Kelamin *</Label>
+                  <Select value={formData.gender} onValueChange={(value: string) => handleChange({ target: { name: 'gender', value } })}>
+                    <SelectTrigger className={errors.gender ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Pilih Jenis Kelamin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {genderOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.gender && (
+                    <p className="text-sm text-destructive">{errors.gender}</p>
+                  )}
+                </div>
               </div>
 
               <div className="mb-6">
-                <Checkbox
-                  label="Saya mendaftar sebagai komunitas"
-                  name="isCommunity"
-                  checked={formData.isCommunity}
-                  onChange={handleChange}
-                />
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="isCommunity"
+                    checked={formData.isCommunity}
+                    onCheckedChange={(checked: boolean) => handleChange({ target: { name: 'isCommunity', checked } })}
+                  />
+                  <Label htmlFor="isCommunity">Saya mendaftar sebagai komunitas</Label>
+                </div>
               </div>
 
               {formData.isCommunity && (
                 <div className="mb-6">
-                  <Input
-                    label="Nama Penanggung Jawab"
-                    name="responsiblePerson"
-                    value={formData.responsiblePerson}
-                    onChange={handleChange}
-                    error={errors.responsiblePerson}
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="responsiblePerson">Nama Penanggung Jawab *</Label>
+                    <Input
+                      id="responsiblePerson"
+                      name="responsiblePerson"
+                      value={formData.responsiblePerson}
+                      onChange={handleChange}
+                      className={errors.responsiblePerson ? "border-destructive" : ""}
+                    />
+                    {errors.responsiblePerson && (
+                      <p className="text-sm text-destructive">{errors.responsiblePerson}</p>
+                    )}
+                  </div>
                 </div>
               )}
 
               <div className="mb-6">
-                <Textarea
-                  label="Riwayat Kesehatan"
-                  name="healthHistory"
-                  value={formData.healthHistory}
-                  onChange={handleChange}
-                  rows={3}
-                  placeholder="Jelaskan kondisi kesehatan Anda, alergi, atau kondisi medis yang perlu diketahui panitia"
-                  error={errors.healthHistory}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="healthHistory">Riwayat Kesehatan *</Label>
+                  <Textarea
+                    id="healthHistory"
+                    name="healthHistory"
+                    value={formData.healthHistory}
+                    onChange={handleChange}
+                    rows={3}
+                    placeholder="Jelaskan kondisi kesehatan Anda, alergi, atau kondisi medis yang perlu diketahui panitia"
+                    className={errors.healthHistory ? "border-destructive" : ""}
+                  />
+                  {errors.healthHistory && (
+                    <p className="text-sm text-destructive">{errors.healthHistory}</p>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <PhoneInput
-                  label="Nomor WhatsApp"
-                  name="whatsappNumber"
-                  value={formData.whatsappNumber}
-                  onChange={handleChange}
-                  error={errors.whatsappNumber}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="whatsappNumber">Nomor WhatsApp *</Label>
+                  <Input
+                    id="whatsappNumber"
+                    name="whatsappNumber"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={formData.whatsappNumber}
+                    onChange={handleChange}
+                    className={errors.whatsappNumber ? "border-destructive" : ""}
+                  />
+                  {errors.whatsappNumber && (
+                    <p className="text-sm text-destructive">{errors.whatsappNumber}</p>
+                  )}
+                </div>
                 
-                <PhoneInput
-                  label="Nomor Emergency"
-                  name="emergencyNumber"
-                  value={formData.emergencyNumber}
-                  onChange={handleChange}
-                  error={errors.emergencyNumber}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="emergencyNumber">Nomor Emergency *</Label>
+                  <Input
+                    id="emergencyNumber"
+                    name="emergencyNumber"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={formData.emergencyNumber}
+                    onChange={handleChange}
+                    className={errors.emergencyNumber ? "border-destructive" : ""}
+                  />
+                  {errors.emergencyNumber && (
+                    <p className="text-sm text-destructive">{errors.emergencyNumber}</p>
+                  )}
+                </div>
                 
-                <Input
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  error={errors.email}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={errors.email ? "border-destructive" : ""}
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-destructive">{errors.email}</p>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Pernyataan & Persetujuan */}
             <div className="mb-8">
               <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center mr-3">
+                <div className="w-8 h-8 bg-destructive rounded-full flex items-center justify-center mr-3">
                   <span className="text-white font-bold text-sm">2</span>
                 </div>
-                <Heading level={3} className="text-xl">PERNYATAAN & PERSETUJUAN</Heading>
+                <h3 className="text-xl font-semibold">PERNYATAAN & PERSETUJUAN</h3>
               </div>
               
               <div className="space-y-4">
-                <Checkbox
-                  label="Saya menyatakan bahwa saya dalam kondisi sehat dan siap mengikuti Fun Run"
-                  name="healthDeclaration"
-                  checked={formData.healthDeclaration}
-                  onChange={handleChange}
-                  error={errors.healthDeclaration}
-                  required
-                />
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="healthDeclaration"
+                    checked={formData.healthDeclaration}
+                    onCheckedChange={(checked: boolean) => handleChange({ target: { name: 'healthDeclaration', checked } })}
+                    className={errors.healthDeclaration ? "border-destructive" : ""}
+                  />
+                  <div className="space-y-1">
+                    <Label htmlFor="healthDeclaration" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Saya menyatakan bahwa saya dalam kondisi sehat dan siap mengikuti Fun Run *
+                    </Label>
+                    {errors.healthDeclaration && (
+                      <p className="text-sm text-destructive">{errors.healthDeclaration}</p>
+                    )}
+                  </div>
+                </div>
 
-                <Checkbox
-                  label="Saya memberikan persetujuan penggunaan foto/video kegiatan untuk dokumentasi & publikasi"
-                  name="photoVideoConsent"
-                  checked={formData.photoVideoConsent}
-                  onChange={handleChange}
-                  error={errors.photoVideoConsent}
-                  required
-                />
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="photoVideoConsent"
+                    checked={formData.photoVideoConsent}
+                    onCheckedChange={(checked: boolean) => handleChange({ target: { name: 'photoVideoConsent', checked } })}
+                    className={errors.photoVideoConsent ? "border-destructive" : ""}
+                  />
+                  <div className="space-y-1">
+                    <Label htmlFor="photoVideoConsent" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Saya memberikan persetujuan penggunaan foto/video kegiatan untuk dokumentasi & publikasi *
+                    </Label>
+                    {errors.photoVideoConsent && (
+                      <p className="text-sm text-destructive">{errors.photoVideoConsent}</p>
+                    )}
+                  </div>
+                </div>
 
-                <Checkbox
-                  label="Saya menyatakan bahwa saya dalam kondisi sehat dan sanggup mengikuti kegiatan Fun Run dengan penuh tanggung jawab. Panitia tidak bertanggung jawab atas resiko kesehatan yang timbul selama kegiatan berlangsung."
-                  name="liabilityWaiver"
-                  checked={formData.liabilityWaiver}
-                  onChange={handleChange}
-                  error={errors.liabilityWaiver}
-                  required
-                />
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="liabilityWaiver"
+                    checked={formData.liabilityWaiver}
+                    onCheckedChange={(checked: boolean) => handleChange({ target: { name: 'liabilityWaiver', checked } })}
+                    className={errors.liabilityWaiver ? "border-destructive" : ""}
+                  />
+                  <div className="space-y-1">
+                    <Label htmlFor="liabilityWaiver" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Saya menyatakan bahwa saya dalam kondisi sehat dan sanggup mengikuti kegiatan Fun Run dengan penuh tanggung jawab. Panitia tidak bertanggung jawab atas resiko kesehatan yang timbul selama kegiatan berlangsung. *
+                    </Label>
+                    {errors.liabilityWaiver && (
+                      <p className="text-sm text-destructive">{errors.liabilityWaiver}</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
             {submitError && (
               <div className="mb-6">
-                <Alert type="error">{submitError}</Alert>
+                <Alert>
+                  <AlertDescription>{submitError}</AlertDescription>
+                </Alert>
               </div>
             )}
 
@@ -388,14 +465,15 @@ export default function FunRunRegistration() {
                 {isSubmitting ? 'Mengirim...' : slotData.isFull ? 'Slot Penuh' : 'Daftar Sekarang'}
               </Button>
               {slotData.isFull && (
-                <p className="text-accent font-medium mt-4">
+                <p className="text-destructive font-medium mt-4">
                   Maaf, slot pendaftaran sudah penuh. Silakan coba lagi nanti.
                 </p>
               )}
             </div>
           </form>
-        </div>
-      </Container>
+          </CardContent>
+        </Card>
+      </div>
     </section>
   );
 }

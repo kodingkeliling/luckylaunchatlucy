@@ -3,14 +3,13 @@
 import { useState } from 'react';
 import { tenantSpots, trunkPackages, FormData, sampleFormData } from '@/data/mockData';
 import { validateTenantForm, ValidationErrors } from '@/lib/validation';
-import Container from './ui/Container';
-import Heading from './ui/Heading';
-import Input from './ui/Input';
-import PhoneInput from './ui/PhoneInput';
-import Select from './ui/Select';
-import Textarea from './ui/Textarea';
-import Button from './ui/Button';
-import Alert from './ui/Alert';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 export default function TenantForm() {
   const [formData, setFormData] = useState<FormData>(sampleFormData);
@@ -19,20 +18,22 @@ export default function TenantForm() {
   const [submitError, setSubmitError] = useState('');
   const [errors, setErrors] = useState<ValidationErrors>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name: string; value?: string; checked?: boolean } }) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-
+    // Filter out non-numeric characters for phone number fields
+    if (name === 'phone') {
+      const numericValue = (value || '').replace(/[^0-9]/g, '');
+      setFormData(prev => ({ ...prev, [name]: numericValue }));
+    } else if (type === 'checkbox' || checked !== undefined) {
+      setFormData(prev => ({ ...prev, [name]: checked || false }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value || '' }));
+    }
+    
     // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+    if (errors[name as keyof ValidationErrors]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -131,18 +132,19 @@ export default function TenantForm() {
   };
 
   return (
-    <section id="tenant-registration" className="py-20 bg-light">
-      <Container>
+    <section id="tenant-registration" className="py-20 bg-background">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <Heading level={2} className="mb-6">PENDAFTARAN TENAN</Heading>
-          <div className="w-24 h-1 bg-accent mx-auto mb-6"></div>
-          <p className="text-xl max-w-3xl mx-auto">
+          <h2 className="mb-6 text-3xl font-bold">PENDAFTARAN TENAN</h2>
+          <div className="w-24 h-1 bg-destructive mx-auto mb-6"></div>
+          <p className="text-xl max-w-3xl mx-auto text-muted-foreground">
             Daftarkan brand Anda untuk berpartisipasi dalam Pop Up Market di Lucky Launch at Lucy.
             Pilih paket dan lokasi tenan yang sesuai dengan kebutuhan Anda.
           </p>
         </div>
         
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <Card className="max-w-4xl mx-auto">
+          <CardContent className="p-8">
           {submitSuccess ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
@@ -150,7 +152,7 @@ export default function TenantForm() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <Heading level={3} className="mb-4">Pendaftaran Berhasil!</Heading>
+              <h3 className="mb-4 text-2xl font-semibold">Pendaftaran Berhasil!</h3>
               <p className="mb-6">
                 Terima kasih telah mendaftar sebagai tenan di Lucky Launch at Lucy.
                 Tim kami akan menghubungi Anda dalam 1-2 hari kerja untuk konfirmasi dan informasi pembayaran.
@@ -165,98 +167,150 @@ export default function TenantForm() {
           ) : (
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <Input
-                  label="Nama Lengkap"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  error={errors.fullName}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Nama Lengkap *</Label>
+                  <Input
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    className={errors.fullName ? "border-destructive" : ""}
+                  />
+                  {errors.fullName && (
+                    <p className="text-sm text-destructive">{errors.fullName}</p>
+                  )}
+                </div>
                 
-                <Input
-                  label="Nama Brand/Usaha"
-                  name="businessName"
-                  value={formData.businessName}
-                  onChange={handleChange}
-                  error={errors.businessName}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="businessName">Nama Brand/Usaha *</Label>
+                  <Input
+                    id="businessName"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleChange}
+                    className={errors.businessName ? "border-destructive" : ""}
+                  />
+                  {errors.businessName && (
+                    <p className="text-sm text-destructive">{errors.businessName}</p>
+                  )}
+                </div>
                 
-                <Input
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  error={errors.email}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={errors.email ? "border-destructive" : ""}
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-destructive">{errors.email}</p>
+                  )}
+                </div>
                 
-                <PhoneInput
-                  label="Nomor Telepon"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  error={errors.phone}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Nomor Telepon *</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={errors.phone ? "border-destructive" : ""}
+                  />
+                  {errors.phone && (
+                    <p className="text-sm text-destructive">{errors.phone}</p>
+                  )}
+                </div>
               </div>
               
               <div className="mb-6">
-                <Input
-                  label="Jenis Produk"
-                  name="productType"
-                  value={formData.productType}
-                  onChange={handleChange}
-                  placeholder="Contoh: Makanan, Minuman, Fashion, Aksesoris, dll."
-                  error={errors.productType}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="productType">Jenis Produk *</Label>
+                  <Input
+                    id="productType"
+                    name="productType"
+                    value={formData.productType}
+                    onChange={handleChange}
+                    placeholder="Contoh: Makanan, Minuman, Fashion, Aksesoris, dll."
+                    className={errors.productType ? "border-destructive" : ""}
+                  />
+                  {errors.productType && (
+                    <p className="text-sm text-destructive">{errors.productType}</p>
+                  )}
+                </div>
               </div>
 
               <div className="mb-6">
-                <Select
-                  label="Tipe Paket"
-                  name="packageType"
-                  value={formData.packageType}
-                  onChange={handleChange}
-                  options={packageTypeOptions}
-                  placeholder="Pilih Tipe Paket"
-                  error={errors.packageType}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="packageType">Tipe Paket *</Label>
+                  <Select value={formData.packageType} onValueChange={(value: string) => handleChange({ target: { name: 'packageType', value } })}>
+                    <SelectTrigger className={errors.packageType ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Pilih Tipe Paket" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {packageTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.packageType && (
+                    <p className="text-sm text-destructive">{errors.packageType}</p>
+                  )}
+                </div>
               </div>
 
               <div className="mb-6">
-                <Select
-                  label="Durasi"
-                  name="duration"
-                  value={formData.duration}
-                  onChange={handleChange}
-                  options={getDurationOptions()}
-                  placeholder="Pilih Durasi"
-                  error={errors.duration}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="duration">Durasi *</Label>
+                  <Select value={formData.duration} onValueChange={(value: string) => handleChange({ target: { name: 'duration', value } })}>
+                    <SelectTrigger className={errors.duration ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Pilih Durasi" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getDurationOptions().map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.duration && (
+                    <p className="text-sm text-destructive">{errors.duration}</p>
+                  )}
+                </div>
               </div>
               
               <div className="mb-6">
-                <Select
-                  label="Preferensi Lokasi Tenan"
-                  name="spotPreference"
-                  value={formData.spotPreference}
-                  onChange={handleChange}
-                  options={getSpotOptions()}
-                  placeholder="Pilih Lokasi Tenan"
-                  error={errors.spotPreference}
-                  required
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="spotPreference">Preferensi Lokasi Tenan *</Label>
+                  <Select value={formData.spotPreference} onValueChange={(value: string) => handleChange({ target: { name: 'spotPreference', value } })}>
+                    <SelectTrigger className={errors.spotPreference ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Pilih Lokasi Tenan" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getSpotOptions().map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.spotPreference && (
+                    <p className="text-sm text-destructive">{errors.spotPreference}</p>
+                  )}
+                </div>
               </div>
 
               {formData.spotPreference && formData.duration && (
                 <div className="mb-6 p-4 bg-primary/10 rounded-lg">
-                  <Heading level={4} className="mb-2">Ringkasan Pesanan:</Heading>
+                  <h4 className="mb-2 text-lg font-semibold">Ringkasan Pesanan:</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p><strong>Paket:</strong> {formData.packageType === 'trunk' ? 'TRUNK PACKAGE' : 'POP UP PACKAGE'}</p>
@@ -278,19 +332,24 @@ export default function TenantForm() {
               )}
               
               <div className="mb-6">
-                <Textarea
-                  label="Kebutuhan Tambahan"
-                  name="additionalRequirements"
-                  value={formData.additionalRequirements}
-                  onChange={handleChange}
-                  rows={4}
-                  placeholder="Kebutuhan khusus atau informasi tambahan yang perlu kami ketahui"
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="additionalRequirements">Kebutuhan Tambahan</Label>
+                  <Textarea
+                    id="additionalRequirements"
+                    name="additionalRequirements"
+                    value={formData.additionalRequirements}
+                    onChange={handleChange}
+                    rows={4}
+                    placeholder="Kebutuhan khusus atau informasi tambahan yang perlu kami ketahui"
+                  />
+                </div>
               </div>
               
               {submitError && (
                 <div className="mb-6">
-                  <Alert type="error">{submitError}</Alert>
+                  <Alert>
+                    <AlertDescription>{submitError}</AlertDescription>
+                  </Alert>
                 </div>
               )}
               
@@ -305,8 +364,9 @@ export default function TenantForm() {
               </div>
             </form>
           )}
-        </div>
-      </Container>
+          </CardContent>
+        </Card>
+      </div>
     </section>
   );
 }

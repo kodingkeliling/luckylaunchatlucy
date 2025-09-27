@@ -1,34 +1,30 @@
-import { forwardRef } from 'react';
+"use client"
 
-interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  error?: string;
-  required?: boolean;
-}
+import * as React from "react"
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
+import { Check } from "lucide-react"
 
-const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, error, required = false, className = '', ...props }, ref) => {
-    return (
-      <div className="w-full">
-        <div className="flex items-start">
-          <input
-            ref={ref}
-            type="checkbox"
-            className={`mt-1 mr-3 ${className}`}
-            {...props}
-          />
-          <label className="text-sm text-gray-700">
-            {label} {required && <span className="text-accent">*</span>}
-          </label>
-        </div>
-        {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
-        )}
-      </div>
-    );
-  }
-);
+import { cn } from "@/lib/utils"
 
-Checkbox.displayName = 'Checkbox';
+const Checkbox = React.forwardRef<
+  React.ElementRef<typeof CheckboxPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <CheckboxPrimitive.Root
+    ref={ref}
+    className={cn(
+      "peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
+      className
+    )}
+    {...props}
+  >
+    <CheckboxPrimitive.Indicator
+      className={cn("flex items-center justify-center text-current")}
+    >
+      <Check className="h-4 w-4" />
+    </CheckboxPrimitive.Indicator>
+  </CheckboxPrimitive.Root>
+))
+Checkbox.displayName = CheckboxPrimitive.Root.displayName
 
-export default Checkbox;
+export { Checkbox }
