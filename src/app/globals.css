@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Chocolates';
+  src: url('/fonts/TT Chocolates Trial Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Chocolates';
+  src: url('/fonts/TT Chocolates Trial Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Chocolates';
+  src: url('/fonts/TT Chocolates Trial Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --primary-color: #d5df40;
+  --secondary-color: #2c4059;
+  --accent-color: #be2625;
+  --light-color: #e5e5e5;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+  color: #2c4059;
+  background-color: #ffffff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'TT Chocolates', sans-serif;
+}
+
+.number-font {
+  font-family: 'TT Chocolates', sans-serif;
+}
+
+.btn-primary {
+  @apply bg-primary text-secondary font-bold py-3 px-6 rounded-full transition-all hover:bg-opacity-90;
+}
+
+.btn-secondary {
+  @apply bg-secondary text-white font-bold py-3 px-6 rounded-full transition-all hover:bg-opacity-90;
+}
+
+.btn-accent {
+  @apply bg-accent text-white font-bold py-3 px-6 rounded-full transition-all hover:bg-opacity-90;
+}
+
+.section-title {
+  @apply text-3xl md:text-4xl font-bold mb-6 text-secondary;
+}
+
+.section-subtitle {
+  @apply text-xl md:text-2xl font-medium mb-4 text-accent;
+}
+
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
