@@ -209,6 +209,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                       setSelectedSpot(spot);
                       onSpotSelect?.(spot.id);
                     }}
+                    type="button"
                     className={`absolute w-5 h-5 rounded-full  flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
                       selectedSpot?.id === spot.id
                         ? 'border-white ring-2 ring-primary ring-offset-2 scale-125' // Selected state

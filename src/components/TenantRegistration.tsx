@@ -72,23 +72,96 @@ export default function TenantRegistration() {
   const calculateTotalPayment = () => {
     if (!formData.selectedSpot || !formData.duration) return 0;
     
-    const selectedSpot = tenantSpots.find(spot => spot.id === formData.selectedSpot);
+    // Import spots data from LayoutMap
+    const spots = [
+      // PARKING AREA - berdasarkan gambar
+      { id: 'spot-1', number: 1, x: 30, y: 62, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      
+      // TRUNK AREA & SEATING AREA
+      { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      
+      // HALLWAY & TOILET AREA
+      { id: 'spot-3', number: 3, x: 59.3, y: 62.5, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      
+      // EXTRA BAR AREA (atas)
+      { id: 'spot-8', number: 8, x: 58, y: 43.5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-9', number: 9, x: 61.2, y: 42, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-10', number: 10, x: 64.7, y: 42, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-11', number: 11, x: 67.9, y: 42.4, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      
+      // BAR AREA
+      { id: 'spot-12', number: 12, x: 70.4, y: 52, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-13', number: 13, x: 79.8, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+      { id: 'spot-14', number: 14, x: 82.6, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+      { id: 'spot-15', number: 15, x: 85.4, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+      { id: 'spot-16', number: 16, x: 90.8, y: 52.9, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
+      
+      // AREA BELAKANG (bawah)
+      { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+    ];
+    
+    const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
     if (!selectedSpot) return 0;
 
     switch (formData.duration) {
       case 'threeDayFull':
-        return selectedSpot.pricing.threeDayFull;
+        return selectedSpot.price.threeDay;
       case 'threeDayPartial':
-        return selectedSpot.pricing.threeDayPartial;
+        return selectedSpot.price.twoDay;
       case 'oneDay':
-        return selectedSpot.pricing.oneDay;
+        return selectedSpot.price.oneDay;
       default:
         return 0;
     }
   };
 
   const getSelectedSpotInfo = () => {
-    return tenantSpots.find(spot => spot.id === formData.selectedSpot);
+    const spots = [
+      // PARKING AREA - berdasarkan gambar
+      { id: 'spot-1', number: 1, x: 30, y: 62, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      
+      // TRUNK AREA & SEATING AREA
+      { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      
+      // HALLWAY & TOILET AREA
+      { id: 'spot-3', number: 3, x: 59.3, y: 62.5, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      
+      // EXTRA BAR AREA (atas)
+      { id: 'spot-8', number: 8, x: 58, y: 43.5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-9', number: 9, x: 61.2, y: 42, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-10', number: 10, x: 64.7, y: 42, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-11', number: 11, x: 67.9, y: 42.4, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      
+      // BAR AREA
+      { id: 'spot-12', number: 12, x: 70.4, y: 52, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+      { id: 'spot-13', number: 13, x: 79.8, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+      { id: 'spot-14', number: 14, x: 82.6, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+      { id: 'spot-15', number: 15, x: 85.4, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+      { id: 'spot-16', number: 16, x: 90.8, y: 52.9, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
+      
+      // AREA BELAKANG (bawah)
+      { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+      { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+    ];
+    
+    const spot = spots.find(spot => spot.id === formData.selectedSpot);
+    if (!spot) return null;
+    
+    // Convert to format expected by summary
+    return {
+      name: `${spot.area} - Spot ${spot.number}`,
+      size: spot.size,
+      area: spot.area
+    };
   };
 
   const getDurationLabel = () => {
