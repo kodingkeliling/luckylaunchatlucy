@@ -102,6 +102,10 @@ export default function LayoutMap() {
     setPanY(0);
   };
 
+  const clearDebug = () => {
+    setClickedCoords(null);
+  };
+
   return (
     <div className="w-full">
       <Card>
@@ -176,7 +180,7 @@ export default function LayoutMap() {
                 <button
                   key={spot.id}
                   onClick={() => setSelectedSpot(spot)}
-                  className={`absolute w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
+                  className={`absolute w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
                     selectedSpot?.id === spot.id
                       ? 'border-white ring-2 ring-primary ring-offset-2 scale-125' // Selected state
                       : 'border-transparent'
@@ -243,8 +247,20 @@ export default function LayoutMap() {
           {/* Debug Mode Info */}
           {debugMode && (
             <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-sm text-yellow-800">
-              <p><strong>Debug Mode Aktif:</strong></p>
-              <p>Klik di mana saja pada peta untuk melihat koordinat</p>
+              <div className="flex justify-between items-start">
+                <div>
+                  <p><strong>Debug Mode Aktif:</strong></p>
+                  <p>Klik di mana saja pada peta untuk melihat koordinat</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={clearDebug}
+                  className="ml-2"
+                >
+                  Clear
+                </Button>
+              </div>
               {clickedCoords && (
                 <div className="mt-2 p-2 bg-yellow-100 rounded border">
                   <p><strong>Koordinat terakhir diklik:</strong></p>
