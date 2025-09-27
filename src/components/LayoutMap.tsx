@@ -52,7 +52,12 @@ const spots: SpotInfo[] = [
   { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
 ];
 
-export default function LayoutMap() {
+interface LayoutMapProps {
+  selectedSpot?: string;
+  onSpotSelect?: (spotId: string) => void;
+}
+
+export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }: LayoutMapProps) {
   const [selectedSpot, setSelectedSpot] = useState<SpotInfo | null>(null);
   const [zoom, setZoom] = useState(1);
   const [panX, setPanX] = useState(0);
@@ -61,6 +66,18 @@ export default function LayoutMap() {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [containerHeight, setContainerHeight] = useState(600);
   const mapRef = useRef<HTMLDivElement>(null);
+
+  // Sync selectedSpot with props
+  useEffect(() => {
+    if (selectedSpotId) {
+      const spot = spots.find(s => s.id === selectedSpotId);
+      if (spot) {
+        setSelectedSpot(spot);
+      }
+    } else {
+      setSelectedSpot(null);
+    }
+  }, [selectedSpotId]);
 
   useEffect(() => {
     const updateHeight = () => {
@@ -114,6 +131,7 @@ export default function LayoutMap() {
               <Button 
                 variant="outline" 
                 size="sm" 
+                type="button"
                 onClick={() => setZoom(prev => Math.max(0.5, prev - 0.2))}
               >
                 -
@@ -121,6 +139,7 @@ export default function LayoutMap() {
               <Button 
                 variant="outline" 
                 size="sm" 
+                type="button"
                 onClick={() => setZoom(prev => Math.min(3, prev + 0.2))}
               >
                 +
@@ -128,6 +147,7 @@ export default function LayoutMap() {
               <Button 
                 variant="outline" 
                 size="sm" 
+                type="button"
                 onClick={resetView}
               >
                 Reset
@@ -139,7 +159,7 @@ export default function LayoutMap() {
           <div className='overflow-scroll w-full'>
           <div 
             ref={mapRef}
-            className="relative overflow-hidden rounded-lg border-2 border-gray-300"
+            className="relative overflow-hidden rounded-lg border-2 border-gray-300 mx-auto"
             style={{ 
               height: `596px`,
               width: '782px',
@@ -185,7 +205,10 @@ export default function LayoutMap() {
                 return (
                   <button
                     key={spot.id}
-                    onClick={() => setSelectedSpot(spot)}
+                    onClick={() => {
+                      setSelectedSpot(spot);
+                      onSpotSelect?.(spot.id);
+                    }}
                     className={`absolute w-5 h-5 rounded-full  flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
                       selectedSpot?.id === spot.id
                         ? 'border-white ring-2 ring-primary ring-offset-2 scale-125' // Selected state

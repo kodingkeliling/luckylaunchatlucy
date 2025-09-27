@@ -35,6 +35,7 @@ export default function TenantRegistration() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
+  const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { name: string; value: string | string[] | boolean } }) => {
     const { name, value } = e.target;
@@ -84,6 +85,15 @@ export default function TenantRegistration() {
       default:
         return 0;
     }
+  };
+
+  const getSelectedSpotInfo = () => {
+    return tenantSpots.find(spot => spot.id === formData.selectedSpot);
+  };
+
+  const getDurationLabel = () => {
+    const duration = durationOptions.find(opt => opt.value === formData.duration);
+    return duration ? duration.label : '';
   };
 
   const validateForm = (): boolean => {
@@ -177,7 +187,7 @@ export default function TenantRegistration() {
           backgroundSize: '60px 60px'
         }}></div>
         
-        <div className="container mx-auto md:px-4 py-16 relative z-10">
+        <div className="container mx-au to md:px-4 py-16 relative z-10">
           <Card className="max-w-2xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
             <CardContent className="text-center">
               <div className="mb-6">
@@ -215,20 +225,22 @@ export default function TenantRegistration() {
   }
 
   return (
-    <section className="min-h-screen bg-[#f5f5f5] relative overflow-hidden">
-      {/* Grid Texture Background */}
-      <div className="absolute inset-0" style={{
-        backgroundImage: `
-          linear-gradient(to right, transparent 58px, rgba(0, 0, 0, 0.05) 58px, rgba(0, 0, 0, 0.05) 62px, transparent 62px),
-          linear-gradient(to bottom, transparent 58px, rgba(0, 0, 0, 0.05) 58px, rgba(0, 0, 0, 0.05) 62px, transparent 62px)
-        `,
-        backgroundSize: '60px 60px'
-      }}></div>
+      <section className="min-h-screen relative bg-[#f5f5f5]">
+        {/* Grid Texture Background */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(to right, transparent 58px, rgba(0, 0, 0, 0.05) 58px, rgba(0, 0, 0, 0.05) 62px, transparent 62px),
+            linear-gradient(to bottom, transparent 58px, rgba(0, 0, 0, 0.05) 58px, rgba(0, 0, 0, 0.05) 62px, transparent 62px)
+          `,
+          backgroundSize: '60px 60px'
+        }}></div>
       
-      {/* Form Section */}
-      <div className="md:container px-1 mx-auto md:px-4 py-16 relative z-10">
-        <Card className="max-w-4xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
-          <CardContent>
+        {/* Form Section */}
+        <div className="md:container px-1 mx-auto md:px-4 py-16 pb-32 lg:pb-16 z-10 flex flex-col lg:flex-row gap-4">
+            {/* Main Form */}
+            <div className="flex-1">
+              <Card className="max-w-7xl shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
+                <CardContent>
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
@@ -369,35 +381,10 @@ export default function TenantRegistration() {
                   
                   {/* Layout Map */}
                   <div className="mt-4 mb-6">
-                    <LayoutMap />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                    {tenantSpots.map((spot) => (
-                      <div key={spot.id} className="border rounded-lg p-4 hover:border-primary transition-colors">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <input
-                            type="radio"
-                            id={spot.id}
-                            name="selectedSpot"
-                            value={spot.id}
-                            checked={formData.selectedSpot === spot.id}
-                            onChange={handleChange}
-                            className="text-primary"
-                          />
-                          <Label htmlFor={spot.id} className="font-medium cursor-pointer">
-                            {spot.name}
-                          </Label>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">{spot.description}</p>
-                        <p className="text-sm font-medium">Ukuran: {spot.size}</p>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          <p>3 Hari: Rp {spot.pricing.threeDayFull.toLocaleString()}</p>
-                          <p>2 Hari: Rp {spot.pricing.threeDayPartial.toLocaleString()}</p>
-                          <p>1 Hari: Rp {spot.pricing.oneDay.toLocaleString()}</p>
-                        </div>
-                      </div>
-                    ))}
+                    <LayoutMap 
+                      selectedSpot={formData.selectedSpot}
+                      onSpotSelect={(spotId) => handleChange({ target: { name: 'selectedSpot', value: spotId } })}
+                    />
                   </div>
                   {errors.selectedSpot && (
                     <p className="text-sm text-destructive mt-2">{errors.selectedSpot}</p>
@@ -463,17 +450,6 @@ export default function TenantRegistration() {
                   </div>
                 </div>
 
-                {/* Total Pembayaran */}
-                {formData.selectedSpot && formData.duration && (
-                  <div className="mb-6">
-                    <div className="bg-muted p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2">Total Pembayaran:</h4>
-                      <p className="text-2xl font-bold text-primary">
-                        Rp {calculateTotalPayment().toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Informasi Paket */}
@@ -511,9 +487,131 @@ export default function TenantRegistration() {
                 </Button>
               </div>
             </form>
-          </CardContent>
-        </Card>
+                </CardContent>
+              </Card>
+            </div>
+
+             {/* Desktop Summary Card */}
+             <div className="hidden lg:block w-80">
+               <div 
+                 className="sticky top-4"
+               >
+                <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-sm">
+                  <CardHeader className="bg-secondary text-white rounded-lg">
+                    <CardTitle className="text-lg">Ringkasan Pesanan</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {formData.selectedSpot && formData.duration ? (
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-sm text-muted-foreground">Spot Terpilih</h4>
+                          <p className="font-medium">{getSelectedSpotInfo()?.name}</p>
+                          <p className="text-sm text-muted-foreground">{getSelectedSpotInfo()?.size}</p>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-semibold text-sm text-muted-foreground">Durasi</h4>
+                          <p className="font-medium">{getDurationLabel()}</p>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-semibold text-sm text-muted-foreground">Tanggal</h4>
+                          <div className="space-y-1">
+                            {formData.selectedDates.map((date) => {
+                              const dateOption = dateOptions.find(opt => opt.value === date);
+                              return (
+                                <p key={date} className="text-sm">{dateOption?.label}</p>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        
+                        <div className="border-t pt-4">
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-semibold">Total Pembayaran</h4>
+                            <p className="text-xl font-bold text-destructive">
+                              Rp {calculateTotalPayment().toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center text-muted-foreground">
+                        <p className="text-sm">Pilih spot dan durasi untuk melihat ringkasan</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+        </div>
       </div>
-    </section>
+
+      {/* Mobile Summary - Sticky Bottom */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50">
+        <div className="bg-white border-t shadow-lg">
+          <div 
+            className="p-4 cursor-pointer"
+            onClick={() => setIsMobileSummaryExpanded(!isMobileSummaryExpanded)}
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <h4 className="font-semibold">Total Pembayaran</h4>
+                <p className="text-lg font-bold text-destructive">
+                  {formData.selectedSpot && formData.duration 
+                    ? `Rp ${calculateTotalPayment().toLocaleString()}`
+                    : 'Pilih spot dan durasi'
+                  }
+                </p>
+              </div>
+              <div className="flex items-center">
+                <svg 
+                  className={`w-5 h-5 transition-transform ${isMobileSummaryExpanded ? 'rotate-180' : ''}`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          {isMobileSummaryExpanded && (
+            <div className="px-4 pb-4 border-t bg-gray-50">
+              {formData.selectedSpot && formData.duration ? (
+                <div className="space-y-3 pt-4">
+                  <div>
+                    <h4 className="font-semibold text-sm text-muted-foreground">Spot Terpilih</h4>
+                    <p className="font-medium">{getSelectedSpotInfo()?.name}</p>
+                    <p className="text-sm text-muted-foreground">{getSelectedSpotInfo()?.size}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-sm text-muted-foreground">Durasi</h4>
+                    <p className="font-medium">{getDurationLabel()}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-sm text-muted-foreground">Tanggal</h4>
+                    <div className="space-y-1">
+                      {formData.selectedDates.map((date) => {
+                        const dateOption = dateOptions.find(opt => opt.value === date);
+                        return (
+                          <p key={date} className="text-sm">{dateOption?.label}</p>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center text-muted-foreground pt-4">
+                  <p className="text-sm">Pilih spot dan durasi untuk melihat detail</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        </div>
+      </section>
   );
 }

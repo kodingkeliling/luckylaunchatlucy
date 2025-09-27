@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { submitToGoogleSheets } from '@/lib/googleScript';
+import { submitTenantForm } from '@/lib/googleScript';
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Submit to Google Sheets
-    const result = await submitToGoogleSheets(sheetData, 'tenants');
+    const result = await submitTenantForm(sheetData);
 
     if (result.success) {
       return NextResponse.json(
