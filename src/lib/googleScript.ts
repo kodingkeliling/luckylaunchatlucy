@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || '';
+const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbzgybWGY4713i3P7np8PUL-XEb8MAxoo7TYbxP3qxBHUHCfdsApAD18bFWf64QkFCk/exec';
 
 export interface ApiResponse<T> {
   success?: boolean;
@@ -75,3 +75,9 @@ export async function submitTenantForm(data: any) {
   });
 }
 
+export async function submitFunRunRegistration(data: any) {
+  return fetchFromGoogleScript('FunRun', 'POST', {
+    action: 'create',
+    data
+  });
+}

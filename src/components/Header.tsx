@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -43,15 +44,14 @@ export default function Header() {
         </p>
         
         <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <a href="#tenant-registration" className="btn-primary">
-            POP UP MARKET
-          </a>
-          <a href="#event-details" className="btn-secondary">
+          <Link href="/funrun" className="btn-primary">
             FUN RUN
+          </Link>
+          <a href="#tenant-registration" className="btn-secondary">
+            POP UP MARKET
           </a>
         </div>
       </div>
     </header>
   );
 }
-

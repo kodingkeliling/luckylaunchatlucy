@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { eventData } from '@/data/mockData';
 
 export default function Footer() {
@@ -41,11 +42,11 @@ export default function Footer() {
           <div className="text-center md:text-right">
             <h3 className="text-xl font-bold mb-4">MARI BERGABUNG!</h3>
             <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-end">
-              <a href="#tenant-registration" className="btn-primary text-center">
-                POP UP MARKET
-              </a>
-              <a href="#event-details" className="btn-secondary text-center">
+              <Link href="/funrun" className="btn-primary text-center">
                 FUN RUN
+              </Link>
+              <a href="#tenant-registration" className="btn-secondary text-center">
+                POP UP MARKET
               </a>
             </div>
           </div>
@@ -69,4 +70,3 @@ export default function Footer() {
     </footer>
   );
 }
-

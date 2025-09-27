@@ -2,25 +2,53 @@
 
 import { useState } from 'react';
 import { tenantSpots, trunkPackages, FormData, sampleFormData } from '@/data/mockData';
+import { validateTenantForm, ValidationErrors } from '@/lib/validation';
+import Container from './ui/Container';
+import Heading from './ui/Heading';
+import Input from './ui/Input';
+import PhoneInput from './ui/PhoneInput';
+import Select from './ui/Select';
+import Textarea from './ui/Textarea';
+import Button from './ui/Button';
+import Alert from './ui/Alert';
 
 export default function TenantForm() {
   const [formData, setFormData] = useState<FormData>(sampleFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [errors, setErrors] = useState<ValidationErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError('');
+    
+    // Validate form
+    const validationErrors = validateTenantForm(formData);
+    setErrors(validationErrors);
+    
+    if (Object.keys(validationErrors).length > 0) {
+      setIsSubmitting(false);
+      return;
+    }
     
     try {
       const response = await fetch('/api/tenants', {
@@ -68,11 +96,45 @@ export default function TenantForm() {
     }
   };
 
+  const packageTypeOptions = [
+    { value: 'trunk', label: 'TRUNK PACKAGE' },
+    { value: 'popup', label: 'POP UP PACKAGE' }
+  ];
+
+  const getDurationOptions = () => {
+    if (formData.packageType === 'trunk') {
+      return [
+        { value: 'twoDay', label: '2 Hari (24,25,26 SEPT)' },
+        { value: 'oneDay', label: '1 Hari (26 SEPT)' }
+      ];
+    } else {
+      return [
+        { value: 'threeDayFull', label: '3 Hari (24,25,26 SEPT)' },
+        { value: 'threeDayPartial', label: '3 Hari (25,26 SEPT)' },
+        { value: 'oneDay', label: '1 Hari (26 SEPT)' }
+      ];
+    }
+  };
+
+  const getSpotOptions = () => {
+    if (formData.packageType === 'trunk') {
+      return trunkPackages.filter(pkg => pkg.availability).map((pkg) => ({
+        value: pkg.id,
+        label: `${pkg.description} - Available: ${pkg.date}`
+      }));
+    } else {
+      return tenantSpots.filter(spot => spot.availability).map((spot) => ({
+        value: spot.id,
+        label: `${spot.name} (${spot.size}) - ${spot.location}`
+      }));
+    }
+  };
+
   return (
     <section id="tenant-registration" className="py-20 bg-light">
-      <div className="container">
+      <Container>
         <div className="text-center mb-12">
-          <h2 className="section-title">PENDAFTARAN TENAN</h2>
+          <Heading level={2} className="mb-6">PENDAFTARAN TENAN</Heading>
           <div className="w-24 h-1 bg-accent mx-auto mb-6"></div>
           <p className="text-xl max-w-3xl mx-auto">
             Daftarkan brand Anda untuk berpartisipasi dalam Pop Up Market di Lucky Launch at Lucy.
@@ -88,176 +150,113 @@ export default function TenantForm() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4">Pendaftaran Berhasil!</h3>
+              <Heading level={3} className="mb-4">Pendaftaran Berhasil!</Heading>
               <p className="mb-6">
                 Terima kasih telah mendaftar sebagai tenan di Lucky Launch at Lucy.
                 Tim kami akan menghubungi Anda dalam 1-2 hari kerja untuk konfirmasi dan informasi pembayaran.
               </p>
-              <button 
+              <Button 
+                variant="secondary"
                 onClick={() => setSubmitSuccess(false)}
-                className="btn-secondary"
               >
                 Daftar Lagi
-              </button>
+              </Button>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-                    Nama Lengkap <span className="text-accent">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
+                <Input
+                  label="Nama Lengkap"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  error={errors.fullName}
+                  required
+                />
                 
-                <div>
-                  <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-1">
-                    Nama Brand/Usaha <span className="text-accent">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="businessName"
-                    name="businessName"
-                    value={formData.businessName}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
+                <Input
+                  label="Nama Brand/Usaha"
+                  name="businessName"
+                  value={formData.businessName}
+                  onChange={handleChange}
+                  error={errors.businessName}
+                  required
+                />
                 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email <span className="text-accent">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
+                <Input
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={errors.email}
+                  required
+                />
                 
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Nomor Telepon <span className="text-accent">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
+                <PhoneInput
+                  label="Nomor Telepon"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  error={errors.phone}
+                  required
+                />
               </div>
               
               <div className="mb-6">
-                <label htmlFor="productType" className="block text-sm font-medium text-gray-700 mb-1">
-                  Jenis Produk <span className="text-accent">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="productType"
+                <Input
+                  label="Jenis Produk"
                   name="productType"
                   value={formData.productType}
                   onChange={handleChange}
-                  required
                   placeholder="Contoh: Makanan, Minuman, Fashion, Aksesoris, dll."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  error={errors.productType}
+                  required
                 />
               </div>
 
               <div className="mb-6">
-                <label htmlFor="packageType" className="block text-sm font-medium text-gray-700 mb-1">
-                  Tipe Paket <span className="text-accent">*</span>
-                </label>
-                <select
-                  id="packageType"
+                <Select
+                  label="Tipe Paket"
                   name="packageType"
                   value={formData.packageType}
                   onChange={handleChange}
+                  options={packageTypeOptions}
+                  placeholder="Pilih Tipe Paket"
+                  error={errors.packageType}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="">Pilih Tipe Paket</option>
-                  <option value="trunk">TRUNK PACKAGE</option>
-                  <option value="popup">POP UP PACKAGE</option>
-                </select>
+                />
               </div>
 
               <div className="mb-6">
-                <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
-                  Durasi <span className="text-accent">*</span>
-                </label>
-                <select
-                  id="duration"
+                <Select
+                  label="Durasi"
                   name="duration"
                   value={formData.duration}
                   onChange={handleChange}
+                  options={getDurationOptions()}
+                  placeholder="Pilih Durasi"
+                  error={errors.duration}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="">Pilih Durasi</option>
-                  {formData.packageType === 'trunk' ? (
-                    <>
-                      <option value="twoDay">2 Hari (24,25,26 SEPT)</option>
-                      <option value="oneDay">1 Hari (26 SEPT)</option>
-                    </>
-                  ) : (
-                    <>
-                      <option value="threeDayFull">3 Hari (24,25,26 SEPT)</option>
-                      <option value="threeDayPartial">3 Hari (25,26 SEPT)</option>
-                      <option value="oneDay">1 Hari (26 SEPT)</option>
-                    </>
-                  )}
-                </select>
+                />
               </div>
               
               <div className="mb-6">
-                <label htmlFor="spotPreference" className="block text-sm font-medium text-gray-700 mb-1">
-                  Preferensi Lokasi Tenan <span className="text-accent">*</span>
-                </label>
-                <select
-                  id="spotPreference"
+                <Select
+                  label="Preferensi Lokasi Tenan"
                   name="spotPreference"
                   value={formData.spotPreference}
                   onChange={handleChange}
+                  options={getSpotOptions()}
+                  placeholder="Pilih Lokasi Tenan"
+                  error={errors.spotPreference}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="">Pilih Lokasi Tenan</option>
-                  {formData.packageType === 'trunk' ? (
-                    trunkPackages.filter(pkg => pkg.availability).map((pkg) => (
-                      <option key={pkg.id} value={pkg.id}>
-                        {pkg.description} - Available: {pkg.date}
-                      </option>
-                    ))
-                  ) : (
-                    tenantSpots.filter(spot => spot.availability).map((spot) => (
-                      <option key={spot.id} value={spot.id}>
-                        {spot.name} ({spot.size}) - {spot.location}
-                      </option>
-                    ))
-                  )}
-                </select>
+                />
               </div>
 
               {formData.spotPreference && formData.duration && (
                 <div className="mb-6 p-4 bg-primary/10 rounded-lg">
-                  <h4 className="font-bold text-lg mb-2">Ringkasan Pesanan:</h4>
+                  <Heading level={4} className="mb-2">Ringkasan Pesanan:</Heading>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p><strong>Paket:</strong> {formData.packageType === 'trunk' ? 'TRUNK PACKAGE' : 'POP UP PACKAGE'}</p>
@@ -279,39 +278,35 @@ export default function TenantForm() {
               )}
               
               <div className="mb-6">
-                <label htmlFor="additionalRequirements" className="block text-sm font-medium text-gray-700 mb-1">
-                  Kebutuhan Tambahan
-                </label>
-                <textarea
-                  id="additionalRequirements"
+                <Textarea
+                  label="Kebutuhan Tambahan"
                   name="additionalRequirements"
                   value={formData.additionalRequirements}
                   onChange={handleChange}
                   rows={4}
                   placeholder="Kebutuhan khusus atau informasi tambahan yang perlu kami ketahui"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               
               {submitError && (
-                <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-md">
-                  {submitError}
+                <div className="mb-6">
+                  <Alert type="error">{submitError}</Alert>
                 </div>
               )}
               
               <div className="text-center">
-                <button
+                <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-primary w-full md:w-auto"
+                  className="w-full md:w-auto"
                 >
                   {isSubmitting ? 'Mengirim...' : 'Daftar Sekarang'}
-                </button>
+                </Button>
               </div>
             </form>
           )}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

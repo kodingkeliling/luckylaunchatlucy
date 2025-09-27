@@ -50,6 +50,26 @@ export interface TrunkPackage {
   date: string;
 }
 
+export interface FunRunData {
+  maxSlots: number;
+  currentSlots: number;
+  availableSlots: number;
+}
+
+export interface FunRunFormData {
+  participantName: string;
+  gender: string;
+  responsiblePerson: string; // If community
+  healthHistory: string;
+  whatsappNumber: string;
+  emergencyNumber: string;
+  email: string;
+  isCommunity: boolean;
+  healthDeclaration: boolean;
+  photoVideoConsent: boolean;
+  liabilityWaiver: boolean;
+}
+
 export const eventData: EventData = {
   eventName: "Lucky Launch at Lucy",
   eventDate: "26 Oktober 2025",
@@ -102,6 +122,12 @@ export const eventData: EventData = {
       description: "Dari brand partisipan"
     }
   ]
+};
+
+export const funRunData: FunRunData = {
+  maxSlots: 200,
+  currentSlots: 45,
+  availableSlots: 155
 };
 
 export const trunkPackages: TrunkPackage[] = [
@@ -252,6 +278,20 @@ export const sampleFormData: FormData = {
   packageType: "",
   duration: "",
   additionalRequirements: ""
+};
+
+export const sampleFunRunFormData: FunRunFormData = {
+  participantName: "",
+  gender: "",
+  responsiblePerson: "",
+  healthHistory: "",
+  whatsappNumber: "",
+  emergencyNumber: "",
+  email: "",
+  isCommunity: false,
+  healthDeclaration: false,
+  photoVideoConsent: false,
+  liabilityWaiver: false
 };
 
 export const packageInclusions = {

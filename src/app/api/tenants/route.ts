@@ -23,14 +23,19 @@ export async function POST(request: NextRequest) {
       phone: body.phone,
       productType: body.productType,
       spotPreference: body.spotPreference,
+      packageType: body.packageType || '',
+      duration: body.duration || '',
       additionalRequirements: body.additionalRequirements || '',
       created_at: new Date().toISOString(),
     };
+
+    console.log('Submitting tenant data to Google Sheets:', tenantData);
 
     // Save directly to Google Sheets
     const response = await submitTenantForm(tenantData);
     
     if (!response.success) {
+      console.error('Google Sheets submission failed:', response.error);
       return NextResponse.json(
         { 
           error: 'Failed to save tenant data to Google Sheets', 
