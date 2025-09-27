@@ -1,60 +1,75 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { submitTenantForm } from '@/lib/googleScript';
+import { submitToGoogleSheets } from '@/lib/googleScript';
 
-// POST /api/tenants - Create new tenant registration
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const formData = await request.json();
     
     // Validate required fields
-    if (!body.fullName || !body.businessName || !body.email || !body.phone || !body.productType || !body.spotPreference) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    const requiredFields = [
+      'companyName',
+      'picName', 
+      'whatsappNumber',
+      'purpose',
+      'productType',
+      'productDetail',
+      'selectedSpot',
+      'selectedDates',
+      'duration',
+      'totalPayment'
+    ];
+
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        return NextResponse.json(
+          { message: `Field ${field} is required` },
+          { status: 400 }
+        );
+      }
     }
 
     // Prepare data for Google Sheets
-    const tenantData = {
-      id: Date.now().toString(),
-      fullName: body.fullName,
-      businessName: body.businessName,
-      email: body.email,
-      phone: body.phone,
-      productType: body.productType,
-      spotPreference: body.spotPreference,
-      packageType: body.packageType || '',
-      duration: body.duration || '',
-      additionalRequirements: body.additionalRequirements || '',
-      created_at: new Date().toISOString(),
+    const sheetData = {
+      // Data Klien
+      'Nama Perusahaan/Brand': formData.companyName,
+      'Nama PIC/Penanggung Jawab': formData.picName,
+      'Nomor WhatsApp': formData.whatsappNumber,
+      
+      // Detail Pop Up Market
+      'Tujuan Pemesan': formData.purpose,
+      'Jenis Product': formData.productType,
+      'Detail Produk': formData.productDetail,
+      'Posisi Tenan': formData.selectedSpot,
+      'Tanggal': formData.selectedDates.join(', '),
+      'Durasi': formData.duration,
+      'Tambahan Kebutuhan': formData.additionalNeeds || '',
+      'Total Pembayaran': formData.totalPayment,
+      'Metode Pembayaran': formData.paymentMethod || 'Transfer Bank',
+      
+      // Timestamp
+      'Tanggal Pendaftaran': new Date().toLocaleString('id-ID'),
+      'Status': 'Pending'
     };
 
-    console.log('Submitting tenant data to Google Sheets:', tenantData);
+    // Submit to Google Sheets
+    const result = await submitToGoogleSheets(sheetData, 'tenants');
 
-    // Save directly to Google Sheets
-    const response = await submitTenantForm(tenantData);
-    
-    if (!response.success) {
-      console.error('Google Sheets submission failed:', response.error);
+    if (result.success) {
       return NextResponse.json(
-        { 
-          error: 'Failed to save tenant data to Google Sheets', 
-          details: response.error 
-        },
+        { message: 'Data berhasil dikirim' },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'Gagal mengirim data ke Google Sheets' },
         { status: 500 }
       );
     }
 
-    console.log('✅ Tenant data saved to Google Sheets successfully');
-    return NextResponse.json({
-      success: true,
-      data: tenantData,
-      message: 'Tenant data saved successfully to Google Sheets'
-    });
   } catch (error) {
-    console.error('Error creating tenant registration:', error);
+    console.error('Error processing tenant registration:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { message: 'Terjadi kesalahan server' },
       { status: 500 }
     );
   }

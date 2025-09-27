@@ -256,6 +256,44 @@ export const tenantSpots: TenantSpot[] = [
   }
 ];
 
+export interface TenantFormData {
+  // Bagian 1: DATA KLIEN
+  companyName: string;
+  picName: string;
+  whatsappNumber: string;
+  
+  // Bagian 2: DETAIL POP UP MARKET
+  purpose: string; // 'Penjualan Product' or 'Pameran'
+  productType: string; // 'Makanan', 'Minuman', 'Merch', 'Lainnya'
+  productDetail: string;
+  spotNumber: string;
+  selectedDates: string[]; // ['24 Oktober', '25 Oktober', '26 Oktober']
+  packageType: string; // 'trunk' or 'popup'
+  selectedSpot: string;
+  duration: string; // 'threeDayFull', 'threeDayPartial', 'oneDay'
+  additionalNeeds: string;
+  totalPayment: number;
+  paymentMethod: string;
+}
+
+export const sampleTenantFormData: TenantFormData = {
+  companyName: "",
+  picName: "",
+  whatsappNumber: "",
+  purpose: "",
+  productType: "",
+  productDetail: "",
+  spotNumber: "",
+  selectedDates: [],
+  packageType: "",
+  selectedSpot: "",
+  duration: "",
+  additionalNeeds: "",
+  totalPayment: 0,
+  paymentMethod: ""
+};
+
+// Legacy interface for backward compatibility
 export interface FormData {
   fullName: string;
   businessName: string;
@@ -263,8 +301,8 @@ export interface FormData {
   phone: string;
   productType: string;
   spotPreference: string;
-  packageType: string; // 'trunk' or 'popup'
-  duration: string; // 'threeDayFull', 'threeDayPartial', 'oneDay'
+  packageType: string;
+  duration: string;
   additionalRequirements: string;
 }
 
@@ -308,4 +346,41 @@ export const packageInclusions = {
       "KURSI: 25K"
     ]
   }
+};
+
+// Opsi untuk form registrasi tenan
+export const purposeOptions = [
+  { value: "Penjualan Product", label: "Penjualan Product" },
+  { value: "Pameran", label: "Pameran" }
+];
+
+export const productTypeOptions = [
+  { value: "Makanan", label: "Makanan" },
+  { value: "Minuman", label: "Minuman" },
+  { value: "Merch", label: "Merch" },
+  { value: "Lainnya", label: "Lainnya" }
+];
+
+export const dateOptions = [
+  { value: "24 Oktober", label: "Jumat, 24 Oktober" },
+  { value: "25 Oktober", label: "Sabtu, 25 Oktober" },
+  { value: "26 Oktober", label: "Minggu, 26 Oktober" }
+];
+
+export const packageTypeOptions = [
+  { value: "trunk", label: "TRUNK PACKAGE" },
+  { value: "popup", label: "POP UP PACKAGE" }
+];
+
+export const durationOptions = [
+  { value: "threeDayFull", label: "3 Hari (24,25,26 Oktober)" },
+  { value: "threeDayPartial", label: "2 Hari (25,26 Oktober)" },
+  { value: "oneDay", label: "1 Hari (26 Oktober)" }
+];
+
+// Informasi pembayaran
+export const paymentInfo = {
+  accountNumber: "0093 8422 5386",
+  accountName: "An Boby Ilham Wiguna Sunarya Putra",
+  bank: "BCA/BCA Digital"
 };
