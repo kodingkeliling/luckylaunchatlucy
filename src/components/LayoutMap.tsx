@@ -21,37 +21,40 @@ interface SpotInfo {
 }
 
 const spots: SpotInfo[] = [
-  // PARKING AREA
-  { id: 'spot-1', number: 1, x: 12, y: 75, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-2', number: 2, x: 12, y: 55, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-21', number: 21, x: 8, y: 90, size: '3x3m', area: 'Outdoor', available: true, price: { threeDay: 0, twoDay: 0, oneDay: 300000 } },
-  { id: 'spot-22', number: 22, x: 18, y: 90, size: '3x3m', area: 'Outdoor', available: true, price: { threeDay: 0, twoDay: 0, oneDay: 300000 } },
+  // PARKING AREA - berdasarkan gambar
+  { id: 'spot-1', number: 1, x: 8, y: 15, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  { id: 'spot-2', number: 2, x: 15, y: 25, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   
-  // HALLWAY
-  { id: 'spot-3', number: 3, x: 35, y: 65, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-4', number: 4, x: 35, y: 45, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-5', number: 5, x: 45, y: 70, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-6', number: 6, x: 45, y: 50, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-7', number: 7, x: 45, y: 30, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  // TRUNK AREA & SEATING AREA
+  { id: 'spot-4', number: 4, x: 25, y: 20, size: '3x3m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
   
-  // INDOOR - EXTRA BAR
-  { id: 'spot-8', number: 8, x: 65, y: 20, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-9', number: 9, x: 70, y: 20, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-10', number: 10, x: 75, y: 20, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-11', number: 11, x: 80, y: 20, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  // HALLWAY & TOILET AREA
+  { id: 'spot-3', number: 3, x: 35, y: 30, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-5', number: 5, x: 45, y: 35, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-6', number: 6, x: 40, y: 25, size: '3x3m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
   
-  // INDOOR - BAR
-  { id: 'spot-12', number: 12, x: 65, y: 50, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-13', number: 13, x: 70, y: 50, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-14', number: 14, x: 75, y: 50, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-15', number: 15, x: 80, y: 50, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-16', number: 16, x: 85, y: 50, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
+  // EXTRA BAR AREA (atas)
+  { id: 'spot-8', number: 8, x: 55, y: 5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  { id: 'spot-9', number: 9, x: 60, y: 5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  { id: 'spot-10', number: 10, x: 65, y: 5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  { id: 'spot-11', number: 11, x: 70, y: 5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   
-  // INDOOR - AREA BELAKANG
-  { id: 'spot-17', number: 17, x: 65, y: 80, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-18', number: 18, x: 70, y: 80, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-19', number: 19, x: 75, y: 80, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-20', number: 20, x: 80, y: 80, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  // BAR AREA
+  { id: 'spot-12', number: 12, x: 55, y: 25, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  { id: 'spot-13', number: 13, x: 60, y: 25, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-14', number: 14, x: 65, y: 25, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-15', number: 15, x: 70, y: 25, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-16', number: 16, x: 75, y: 25, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
+  
+  // AREA BELAKANG (bawah)
+  { id: 'spot-17', number: 17, x: 55, y: 45, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-18', number: 18, x: 60, y: 45, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-19', number: 19, x: 65, y: 45, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-20', number: 20, x: 70, y: 45, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  
+  // OUTDOOR (bawah kiri)
+  { id: 'spot-21', number: 21, x: 5, y: 50, size: '3x3m', area: 'Outdoor', available: true, price: { threeDay: 0, twoDay: 0, oneDay: 300000 } },
+  { id: 'spot-22', number: 22, x: 12, y: 50, size: '3x3m', area: 'Outdoor', available: true, price: { threeDay: 0, twoDay: 0, oneDay: 300000 } },
 ];
 
 export default function LayoutMap() {
