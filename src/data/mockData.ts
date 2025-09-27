@@ -26,17 +26,33 @@ export interface TenantSpot {
   id: string;
   name: string;
   location: string;
-  price: number;
   size: string;
   availability: boolean;
   description: string;
   highTraffic: boolean;
   imageUrl?: string;
+  pricing: {
+    threeDayFull: number; // 24,25,26 SEPT
+    threeDayPartial: number; // 25,26 SEPT
+    oneDay: number; // 26 SEPT
+  };
+}
+
+export interface TrunkPackage {
+  id: string;
+  name: string;
+  description: string;
+  pricing: {
+    twoDay: number;
+    oneDay: number;
+  };
+  availability: boolean;
+  date: string;
 }
 
 export const eventData: EventData = {
   eventName: "Lucky Launch at Lucy",
-  eventDate: "Sabtu, 14 Oktober 2025",
+  eventDate: "26 Oktober 2025",
   eventLocation: "Lucy Curated Compound",
   eventDescription: "Lucky Launch merupakan aktiviti event kolaborasi yang menggabungkan aktivitas olahraga, hiburan, serta dukungan terhadap brand lokal. Acara ini dirancang dengan tujuan untuk menggerakan perekonomian lokal dan mempromosikan gaya hidup sehat melalui lari 777 Ltd.",
   organizer: "Triple Seven Ltd.",
@@ -88,87 +104,129 @@ export const eventData: EventData = {
   ]
 };
 
+export const trunkPackages: TrunkPackage[] = [
+  {
+    id: "trunk-2day",
+    name: "TRUNK PACKAGE! (5 SLOT)",
+    description: "2 HARI (500K) : TRUNK",
+    pricing: {
+      twoDay: 500000,
+      oneDay: 0
+    },
+    availability: true,
+    date: "26 SEPT"
+  },
+  {
+    id: "trunk-1day",
+    name: "TRUNK PACKAGE! (5 SLOT)",
+    description: "1 HARI (350K) : TRUNK",
+    pricing: {
+      twoDay: 0,
+      oneDay: 350000
+    },
+    availability: true,
+    date: "26 SEPT"
+  }
+];
+
 export const tenantSpots: TenantSpot[] = [
   {
-    id: "spot-a1",
-    name: "Premium Spot A1",
-    location: "Entrance Area",
-    price: 2500000,
-    size: "3x3 meter",
+    id: "area-extra-bar-4slot",
+    name: "AREA EXTRA BAR (4 SLOT)",
+    location: "Area Extra Bar",
+    size: "3X3M",
     availability: true,
-    description: "Lokasi strategis di pintu masuk utama dengan lalu lintas pengunjung tertinggi",
+    description: "Lokasi strategis di area bar dengan lalu lintas pengunjung tinggi",
     highTraffic: true,
-    imageUrl: "/images/DENAH POP UP.png"
+    pricing: {
+      threeDayFull: 400000,    // 24,25,26 SEPT
+      threeDayPartial: 325000, // 25,26 SEPT
+      oneDay: 225000           // 26 SEPT
+    }
   },
   {
-    id: "spot-a2",
-    name: "Premium Spot A2",
-    location: "Entrance Area",
-    price: 2300000,
-    size: "3x3 meter",
+    id: "area-bar-1slot",
+    name: "AREA BAR (1 SLOT)",
+    location: "Area Bar",
+    size: "3X3M",
     availability: true,
-    description: "Lokasi di dekat pintu masuk dengan visibilitas tinggi",
-    highTraffic: true
+    description: "Lokasi di area bar dengan visibilitas tinggi",
+    highTraffic: true,
+    pricing: {
+      threeDayFull: 400000,
+      threeDayPartial: 325000,
+      oneDay: 225000
+    }
   },
   {
-    id: "spot-b1",
-    name: "Central Spot B1",
-    location: "Central Area",
-    price: 2000000,
-    size: "3x3 meter",
+    id: "area-bar-4slot",
+    name: "AREA BAR (4 SLOT)",
+    location: "Area Bar",
+    size: "2X2M",
     availability: true,
-    description: "Lokasi di pusat area event dengan lalu lintas pengunjung tinggi",
-    highTraffic: true
+    description: "Lokasi di area bar dengan ukuran 2x2 meter",
+    highTraffic: true,
+    pricing: {
+      threeDayFull: 300000,
+      threeDayPartial: 250000,
+      oneDay: 175000
+    }
   },
   {
-    id: "spot-b2",
-    name: "Central Spot B2",
-    location: "Central Area",
-    price: 1800000,
-    size: "3x3 meter",
+    id: "area-bar-1slot-small",
+    name: "AREA BAR (1 SLOT)",
+    location: "Area Bar",
+    size: "1X1M",
     availability: true,
-    description: "Lokasi di area tengah dengan akses mudah dari berbagai arah",
-    highTraffic: true
+    description: "Lokasi di area bar dengan ukuran 1x1 meter",
+    highTraffic: true,
+    pricing: {
+      threeDayFull: 250000,
+      threeDayPartial: 200000,
+      oneDay: 150000
+    }
   },
   {
-    id: "spot-c1",
-    name: "Standard Spot C1",
-    location: "Side Area",
-    price: 1500000,
-    size: "3x3 meter",
+    id: "area-extra-belakang-2slot",
+    name: "AREA EXTRA BELAKANG (2 SLOT)",
+    location: "Area Extra Belakang",
+    size: "3X3M",
     availability: true,
-    description: "Lokasi di area samping dengan lalu lintas pengunjung sedang",
-    highTraffic: false
+    description: "Lokasi di area belakang dengan akses mudah",
+    highTraffic: false,
+    pricing: {
+      threeDayFull: 300000,
+      threeDayPartial: 250000,
+      oneDay: 200000
+    }
   },
   {
-    id: "spot-c2",
-    name: "Standard Spot C2",
-    location: "Side Area",
-    price: 1300000,
-    size: "3x3 meter",
+    id: "area-belakang-4slot",
+    name: "AREA BELAKANG (4 SLOT)",
+    location: "Area Belakang",
+    size: "3X3M",
     availability: true,
-    description: "Lokasi di area samping dengan akses ke area istirahat",
-    highTraffic: false
+    description: "Lokasi di area belakang dengan lalu lintas pengunjung sedang",
+    highTraffic: false,
+    pricing: {
+      threeDayFull: 300000,
+      threeDayPartial: 250000,
+      oneDay: 200000
+    }
   },
   {
-    id: "spot-d1",
-    name: "Basic Spot D1",
-    location: "Back Area",
-    price: 1000000,
-    size: "3x3 meter",
+    id: "area-outdoor-2slot",
+    name: "AREA OUTDOOR (2 SLOT)",
+    location: "Area Outdoor",
+    size: "3X3M",
     availability: true,
-    description: "Lokasi di area belakang dengan lalu lintas pengunjung rendah",
-    highTraffic: false
-  },
-  {
-    id: "spot-d2",
-    name: "Basic Spot D2",
-    location: "Back Area",
-    price: 800000,
-    size: "3x3 meter",
-    availability: true,
-    description: "Lokasi di area belakang dengan akses ke area parkir",
-    highTraffic: false
+    description: "Lokasi outdoor dengan akses ke area parkir",
+    highTraffic: false,
+    pricing: {
+      threeDayFull: 0,      // Tidak tersedia
+      threeDayPartial: 0,   // Tidak tersedia
+      oneDay: 300000        // Hanya tersedia 1 hari
+    }
   }
 ];
 
@@ -179,6 +237,8 @@ export interface FormData {
   phone: string;
   productType: string;
   spotPreference: string;
+  packageType: string; // 'trunk' or 'popup'
+  duration: string; // 'threeDayFull', 'threeDayPartial', 'oneDay'
   additionalRequirements: string;
 }
 
@@ -189,6 +249,23 @@ export const sampleFormData: FormData = {
   phone: "",
   productType: "",
   spotPreference: "",
+  packageType: "",
+  duration: "",
   additionalRequirements: ""
 };
 
+export const packageInclusions = {
+  title: "SEMUA PAKET AKAN MENDAPATKAN:",
+  items: [
+    "ELECTRICAL TERMINAL 4 LUBANG",
+    "MEJA 1 (JIKA MEMBUTUHKAN)",
+    "KURSI 1 (JIKA MEMBUTUHKAN)"
+  ],
+  additionalCosts: {
+    title: "JIKA ADA PENAMBAHAN KURSI DAN MEJA AKAN DIKENAKAN BIAYA:",
+    items: [
+      "MEJA: 50K",
+      "KURSI: 25K"
+    ]
+  }
+};

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { tenantSpots, FormData, sampleFormData } from '@/data/mockData';
+import { tenantSpots, trunkPackages, FormData, sampleFormData } from '@/data/mockData';
 
 export default function TenantForm() {
   const [formData, setFormData] = useState<FormData>(sampleFormData);
@@ -48,6 +48,26 @@ export default function TenantForm() {
     }
   };
 
+  const getSelectedSpot = () => {
+    if (formData.packageType === 'trunk') {
+      return trunkPackages.find(pkg => pkg.id === formData.spotPreference);
+    }
+    return tenantSpots.find(spot => spot.id === formData.spotPreference);
+  };
+
+  const getPrice = () => {
+    const selected = getSelectedSpot();
+    if (!selected) return 0;
+
+    if (formData.packageType === 'trunk') {
+      const pkg = selected as any;
+      return formData.duration === 'twoDay' ? pkg.pricing.twoDay : pkg.pricing.oneDay;
+    } else {
+      const spot = selected as any;
+      return spot.pricing[formData.duration] || 0;
+    }
+  };
+
   return (
     <section id="tenant-registration" className="py-20 bg-light">
       <div className="container">
@@ -56,11 +76,11 @@ export default function TenantForm() {
           <div className="w-24 h-1 bg-accent mx-auto mb-6"></div>
           <p className="text-xl max-w-3xl mx-auto">
             Daftarkan brand Anda untuk berpartisipasi dalam Pop Up Market di Lucky Launch at Lucy.
-            Pilih lokasi tenan yang sesuai dengan kebutuhan Anda.
+            Pilih paket dan lokasi tenan yang sesuai dengan kebutuhan Anda.
           </p>
         </div>
         
-        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
           {submitSuccess ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
@@ -159,6 +179,52 @@ export default function TenantForm() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
+
+              <div className="mb-6">
+                <label htmlFor="packageType" className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipe Paket <span className="text-accent">*</span>
+                </label>
+                <select
+                  id="packageType"
+                  name="packageType"
+                  value={formData.packageType}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">Pilih Tipe Paket</option>
+                  <option value="trunk">TRUNK PACKAGE</option>
+                  <option value="popup">POP UP PACKAGE</option>
+                </select>
+              </div>
+
+              <div className="mb-6">
+                <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
+                  Durasi <span className="text-accent">*</span>
+                </label>
+                <select
+                  id="duration"
+                  name="duration"
+                  value={formData.duration}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">Pilih Durasi</option>
+                  {formData.packageType === 'trunk' ? (
+                    <>
+                      <option value="twoDay">2 Hari (24,25,26 SEPT)</option>
+                      <option value="oneDay">1 Hari (26 SEPT)</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="threeDayFull">3 Hari (24,25,26 SEPT)</option>
+                      <option value="threeDayPartial">3 Hari (25,26 SEPT)</option>
+                      <option value="oneDay">1 Hari (26 SEPT)</option>
+                    </>
+                  )}
+                </select>
+              </div>
               
               <div className="mb-6">
                 <label htmlFor="spotPreference" className="block text-sm font-medium text-gray-700 mb-1">
@@ -173,13 +239,44 @@ export default function TenantForm() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">Pilih Lokasi Tenan</option>
-                  {tenantSpots.filter(spot => spot.availability).map((spot) => (
-                    <option key={spot.id} value={spot.id}>
-                      {spot.name} - Rp {spot.price.toLocaleString('id-ID')} ({spot.location})
-                    </option>
-                  ))}
+                  {formData.packageType === 'trunk' ? (
+                    trunkPackages.filter(pkg => pkg.availability).map((pkg) => (
+                      <option key={pkg.id} value={pkg.id}>
+                        {pkg.description} - Available: {pkg.date}
+                      </option>
+                    ))
+                  ) : (
+                    tenantSpots.filter(spot => spot.availability).map((spot) => (
+                      <option key={spot.id} value={spot.id}>
+                        {spot.name} ({spot.size}) - {spot.location}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
+
+              {formData.spotPreference && formData.duration && (
+                <div className="mb-6 p-4 bg-primary/10 rounded-lg">
+                  <h4 className="font-bold text-lg mb-2">Ringkasan Pesanan:</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p><strong>Paket:</strong> {formData.packageType === 'trunk' ? 'TRUNK PACKAGE' : 'POP UP PACKAGE'}</p>
+                      <p><strong>Lokasi:</strong> {getSelectedSpot()?.name}</p>
+                      <p><strong>Durasi:</strong> {
+                        formData.duration === 'threeDayFull' ? '3 Hari (24,25,26 SEPT)' :
+                        formData.duration === 'threeDayPartial' ? '3 Hari (25,26 SEPT)' :
+                        formData.duration === 'twoDay' ? '2 Hari (24,25,26 SEPT)' :
+                        '1 Hari (26 SEPT)'
+                      }</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-accent number-font">
+                        Rp {getPrice().toLocaleString('id-ID')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="mb-6">
                 <label htmlFor="additionalRequirements" className="block text-sm font-medium text-gray-700 mb-1">
