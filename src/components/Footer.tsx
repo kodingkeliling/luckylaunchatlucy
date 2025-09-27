@@ -45,7 +45,7 @@ export default function Footer() {
               <Link href="/funrun" className="btn-primary text-center">
                 FUN RUN
               </Link>
-              <Link href="/tenants" className="btn-secondary text-center">
+              <Link href="/popup-market" className="btn-secondary text-center">
                 POP UP MARKET
               </Link>
             </div>

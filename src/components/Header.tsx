@@ -47,7 +47,7 @@ export default function Header() {
           <Link href="/funrun" className="btn-primary">
             FUN RUN
           </Link>
-          <Link href="/tenants" className="btn-secondary">
+          <Link href="/popup-market" className="btn-secondary">
             POP UP MARKET
           </Link>
         </div>
