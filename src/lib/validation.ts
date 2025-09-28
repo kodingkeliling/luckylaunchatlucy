@@ -19,10 +19,12 @@ export function validateFunRunForm(formData: any): ValidationErrors {
   }
 
   if (formData.isCommunity) {
-    if (!formData.communityQuantity || formData.communityQuantity < 1) {
-      errors.communityQuantity = 'Jumlah orang minimal 1';
+    if (!formData.communityQuantity) {
+      errors.communityQuantity = 'Jumlah orang harus diisi';
+    } else if (formData.communityQuantity < 1) {
+      errors.communityQuantity = 'Jumlah orang minimal 1 orang';
     } else if (formData.communityQuantity > 25) {
-      errors.communityQuantity = 'Jumlah orang maksimal 25';
+      errors.communityQuantity = 'Jumlah orang maksimal 25 orang';
     }
   }
 
