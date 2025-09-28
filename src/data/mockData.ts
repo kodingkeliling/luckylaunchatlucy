@@ -272,7 +272,8 @@ export interface TenantFormData {
   packageType: string; // 'trunk' or 'popup'
   selectedSpot: string;
   duration: string; // 'threeDayFull', 'threeDayPartial', 'oneDay'
-  additionalNeeds: string;
+  chairCount: number;
+  tableCount: number;
   totalPayment: number;
   paymentMethod: string;
 }
@@ -289,7 +290,8 @@ export const sampleTenantFormData: TenantFormData = {
   packageType: "",
   selectedSpot: "",
   duration: "",
-  additionalNeeds: "",
+  chairCount: 0,
+  tableCount: 0,
   totalPayment: 0,
   paymentMethod: ""
 };

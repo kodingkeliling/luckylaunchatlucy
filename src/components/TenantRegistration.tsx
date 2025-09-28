@@ -17,10 +17,10 @@ import {
 } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { FormField } from '@/components/ui/form-field';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -69,6 +69,12 @@ export default function TenantRegistration() {
     }));
   };
 
+  const calculateAdditionalCosts = () => {
+    const chairCost = (formData.chairCount || 0) * 10000;
+    const tableCost = (formData.tableCount || 0) * 25000;
+    return chairCost + tableCost;
+  };
+
   const calculateTotalPayment = () => {
     if (!formData.selectedSpot || !formData.duration) return 0;
     
@@ -108,16 +114,21 @@ export default function TenantRegistration() {
     const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
     if (!selectedSpot) return 0;
 
+    let basePrice = 0;
     switch (formData.duration) {
       case 'threeDayFull':
-        return selectedSpot.price.threeDay;
+        basePrice = selectedSpot.price.threeDay;
+        break;
       case 'threeDayPartial':
-        return selectedSpot.price.twoDay;
+        basePrice = selectedSpot.price.twoDay;
+        break;
       case 'oneDay':
-        return selectedSpot.price.oneDay;
-      default:
-        return 0;
+        basePrice = selectedSpot.price.oneDay;
+        break;
     }
+
+    // Add additional costs
+    return basePrice + calculateAdditionalCosts();
   };
 
   const getSelectedSpotInfo = () => {
@@ -435,7 +446,7 @@ export default function TenantRegistration() {
                   )}
                 </div>
 
-                {/* Tanggal */}
+                {/* Temporarily hide date selection until confirmed
                 <div className="mb-6">
                   <Label>Tanggal *</Label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
@@ -456,6 +467,7 @@ export default function TenantRegistration() {
                     <p className="text-sm text-destructive mt-2">{errors.selectedDates}</p>
                   )}
                 </div>
+                */}
 
                 {/* Durasi */}
                 <div className="mb-6">
@@ -474,15 +486,64 @@ export default function TenantRegistration() {
 
                 {/* Tambahan Kebutuhan */}
                 <div className="mb-6">
-                  <FormField
-                    label="Tambahan Kebutuhan"
-                    name="additionalNeeds"
-                    type="textarea"
-                    value={formData.additionalNeeds}
-                    onChange={(value) => handleFieldChange('additionalNeeds', value)}
-                    placeholder="Jelaskan kebutuhan tambahan seperti meja, kursi, atau fasilitas lainnya"
-                    rows={3}
-                  />
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center mr-3">
+                      <span className="text-muted-foreground font-bold text-sm">+</span>
+                    </div>
+                    <h3 className="text-xl font-semibold">TAMBAHAN KEBUTUHAN</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      label="Kursi (Rp 10.000/unit)"
+                      name="chairCount"
+                      type="number"
+                      value={formData.chairCount || 0}
+                      onChange={(value) => handleFieldChange('chairCount', Number(value))}
+                      min={0}
+                      inputProps={{
+                        min: 0,
+                        placeholder: "0"
+                      }}
+                    />
+                    
+                    <FormField
+                      label="Meja (Rp 25.000/unit)"
+                      name="tableCount"
+                      type="number"
+                      value={formData.tableCount || 0}
+                      onChange={(value) => handleFieldChange('tableCount', Number(value))}
+                      min={0}
+                      inputProps={{
+                        min: 0,
+                        placeholder: "0"
+                      }}
+                    />
+                  </div>
+
+                  {(formData.chairCount > 0 || formData.tableCount > 0) && (
+                    <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+                      <h4 className="font-medium mb-2">Biaya Tambahan:</h4>
+                      <div className="space-y-1 text-sm">
+                        {formData.chairCount > 0 && (
+                          <div className="flex justify-between">
+                            <span>Kursi ({formData.chairCount} x Rp 10.000)</span>
+                            <span>Rp {(formData.chairCount * 10000).toLocaleString()}</span>
+                          </div>
+                        )}
+                        {formData.tableCount > 0 && (
+                          <div className="flex justify-between">
+                            <span>Meja ({formData.tableCount} x Rp 25.000)</span>
+                            <span>Rp {(formData.tableCount * 25000).toLocaleString()}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between font-medium pt-2 border-t border-border mt-2">
+                          <span>Total Biaya Tambahan</span>
+                          <span>Rp {((formData.chairCount * 10000) + (formData.tableCount * 25000)).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -562,11 +623,27 @@ export default function TenantRegistration() {
                         </div>
                         
                         <div className="border-t pt-4">
-                          <div className="flex justify-between items-center">
-                            <h4 className="font-semibold">Total Pembayaran</h4>
-                            <p className="text-xl font-bold text-destructive">
-                              Rp {calculateTotalPayment().toLocaleString()}
-                            </p>
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <h4 className="font-semibold text-sm text-muted-foreground">Biaya Spot</h4>
+                              <p className="font-medium">
+                                Rp {(calculateTotalPayment() - calculateAdditionalCosts()).toLocaleString()}
+                              </p>
+                            </div>
+                            {(formData.chairCount > 0 || formData.tableCount > 0) && (
+                              <div className="flex justify-between items-center">
+                                <h4 className="font-semibold text-sm text-muted-foreground">Biaya Tambahan</h4>
+                                <p className="font-medium">
+                                  Rp {calculateAdditionalCosts().toLocaleString()}
+                                </p>
+                              </div>
+                            )}
+                            <div className="flex justify-between items-center pt-2 border-t">
+                              <h4 className="font-semibold">Total Pembayaran</h4>
+                              <p className="text-xl font-bold text-destructive">
+                                Rp {calculateTotalPayment().toLocaleString()}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -635,6 +712,25 @@ export default function TenantRegistration() {
                           <p key={date} className="text-sm">{dateOption?.label}</p>
                         );
                       })}
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-3 mt-3">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <h4 className="font-semibold text-sm text-muted-foreground">Biaya Spot</h4>
+                        <p className="font-medium">
+                          Rp {(calculateTotalPayment() - calculateAdditionalCosts()).toLocaleString()}
+                        </p>
+                      </div>
+                      {(formData.chairCount > 0 || formData.tableCount > 0) && (
+                        <div className="flex justify-between items-center">
+                          <h4 className="font-semibold text-sm text-muted-foreground">Biaya Tambahan</h4>
+                          <p className="font-medium">
+                            Rp {calculateAdditionalCosts().toLocaleString()}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

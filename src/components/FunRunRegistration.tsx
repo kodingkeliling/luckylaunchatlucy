@@ -6,7 +6,7 @@ import { funRunData, FunRunFormData, sampleFunRunFormData } from '@/data/mockDat
 import { validateFunRunForm, ValidationErrors } from '@/lib/validation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { FormField } from '@/components/ui/form-field';
 
 import { useFunRunSlots } from '@/hooks/useFunRunSlots';
