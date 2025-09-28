@@ -126,7 +126,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
       <Card>
         <CardHeader>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <CardTitle className="text-center md:text-left">LAYOUT TRUNK & POP UP</CardTitle>
+            <CardTitle className="text-center md:text-left">PILIH LAYOUT TRUNK & POP UP</CardTitle>
             <div className="flex flex-wrap gap-2 justify-center md:justify-end">
               <Button 
                 variant="outline" 

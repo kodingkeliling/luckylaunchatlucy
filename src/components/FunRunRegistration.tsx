@@ -318,18 +318,37 @@ export default function FunRunRegistration() {
 
               {formData.isCommunity && (
                 <div className="mb-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="responsiblePerson">Nama Penanggung Jawab *</Label>
-                    <Input
-                      id="responsiblePerson"
-                      name="responsiblePerson"
-                      value={formData.responsiblePerson}
-                      onChange={handleChange}
-                      className={errors.responsiblePerson ? "border-destructive" : ""}
-                    />
-                    {errors.responsiblePerson && (
-                      <p className="text-sm text-destructive">{errors.responsiblePerson}</p>
-                    )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="responsiblePerson">Nama Penanggung Jawab *</Label>
+                      <Input
+                        id="responsiblePerson"
+                        name="responsiblePerson"
+                        value={formData.responsiblePerson}
+                        onChange={handleChange}
+                        className={errors.responsiblePerson ? "border-destructive" : ""}
+                      />
+                      {errors.responsiblePerson && (
+                        <p className="text-sm text-destructive">{errors.responsiblePerson}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="communityQuantity">Jumlah Orang (1-25) *</Label>
+                      <Input
+                        id="communityQuantity"
+                        name="communityQuantity"
+                        type="number"
+                        min="1"
+                        max="25"
+                        value={formData.communityQuantity}
+                        onChange={handleChange}
+                        className={errors.communityQuantity ? "border-destructive" : ""}
+                      />
+                      {errors.communityQuantity && (
+                        <p className="text-sm text-destructive">{errors.communityQuantity}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

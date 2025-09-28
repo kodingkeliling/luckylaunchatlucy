@@ -18,9 +18,21 @@ export async function GET() {
       );
     }
 
-    // Calculate current slots used
+    // Calculate current slots used (including community quantity)
     const registrations = response.data || [];
-    const currentSlots = Array.isArray(registrations) ? registrations.length : 0;
+    let currentSlots = 0;
+    
+    if (Array.isArray(registrations)) {
+      currentSlots = registrations.reduce((total, registration) => {
+        // If it's a community registration, count the quantity
+        if (registration['Mendaftar sebagai komunitas'] === 'Ya' && registration['Jumlah Orang']) {
+          return total + parseInt(registration['Jumlah Orang']) || 1;
+        }
+        // Individual registration counts as 1
+        return total + 1;
+      }, 0);
+    }
+    
     const maxSlots = 200; // Maximum slots as specified
     const availableSlots = Math.max(0, maxSlots - currentSlots);
 

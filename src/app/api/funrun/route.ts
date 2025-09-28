@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       participantName: body.participantName,
       gender: body.gender,
       responsiblePerson: body.responsiblePerson || '',
+      communityQuantity: body.communityQuantity || 1,
       healthHistory: body.healthHistory,
       whatsappNumber: body.whatsappNumber,
       emergencyNumber: body.emergencyNumber,

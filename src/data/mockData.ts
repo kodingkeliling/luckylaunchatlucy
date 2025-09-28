@@ -60,6 +60,7 @@ export interface FunRunFormData {
   participantName: string;
   gender: string;
   responsiblePerson: string; // If community
+  communityQuantity: number; // Number of people in community (1-25)
   healthHistory: string;
   whatsappNumber: string;
   emergencyNumber: string;
@@ -322,6 +323,7 @@ export const sampleFunRunFormData: FunRunFormData = {
   participantName: "",
   gender: "",
   responsiblePerson: "",
+  communityQuantity: 1,
   healthHistory: "",
   whatsappNumber: "",
   emergencyNumber: "",
