@@ -16,13 +16,14 @@ import {
   packageInclusions
 } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/Alert';
+import { FormField } from '@/components/ui/form-field';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
 import LayoutMap from './LayoutMap';
 
 interface ValidationErrors {
@@ -37,8 +38,7 @@ export default function TenantRegistration() {
   const [submitError, setSubmitError] = useState<string>('');
   const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { name: string; value: string | string[] | boolean } }) => {
-    const { name, value } = e.target;
+  const handleFieldChange = (name: string, value: string | number | boolean) => {
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -67,6 +67,12 @@ export default function TenantRegistration() {
         ? [...prev.selectedDates, date]
         : prev.selectedDates.filter(d => d !== date)
     }));
+  };
+
+  const calculateAdditionalCosts = () => {
+    const chairCost = (formData.chairCount || 0) * 10000;
+    const tableCost = (formData.tableCount || 0) * 25000;
+    return chairCost + tableCost;
   };
 
   const calculateTotalPayment = () => {
@@ -108,16 +114,21 @@ export default function TenantRegistration() {
     const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
     if (!selectedSpot) return 0;
 
+    let basePrice = 0;
     switch (formData.duration) {
       case 'threeDayFull':
-        return selectedSpot.price.threeDay;
+        basePrice = selectedSpot.price.threeDay;
+        break;
       case 'threeDayPartial':
-        return selectedSpot.price.twoDay;
+        basePrice = selectedSpot.price.twoDay;
+        break;
       case 'oneDay':
-        return selectedSpot.price.oneDay;
-      default:
-        return 0;
+        basePrice = selectedSpot.price.oneDay;
+        break;
     }
+
+    // Add additional costs
+    return basePrice + calculateAdditionalCosts();
   };
 
   const getSelectedSpotInfo = () => {
@@ -333,52 +344,41 @@ export default function TenantRegistration() {
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="companyName">Nama Perusahaan/Brand *</Label>
-                    <Input
-                      id="companyName"
-                      name="companyName"
-                      value={formData.companyName}
-                      onChange={handleChange}
-                      className={errors.companyName ? "border-destructive" : ""}
-                    />
-                    {errors.companyName && (
-                      <p className="text-sm text-destructive">{errors.companyName}</p>
-                    )}
-                  </div>
+                  <FormField
+                    label="Nama Perusahaan/Brand"
+                    name="companyName"
+                    type="text"
+                    value={formData.companyName}
+                    onChange={(value) => handleFieldChange('companyName', value)}
+                    required
+                    error={errors.companyName}
+                  />
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="picName">Nama PIC / Penanggung Jawab *</Label>
-                    <Input
-                      id="picName"
-                      name="picName"
-                      value={formData.picName}
-                      onChange={handleChange}
-                      className={errors.picName ? "border-destructive" : ""}
-                    />
-                    {errors.picName && (
-                      <p className="text-sm text-destructive">{errors.picName}</p>
-                    )}
-                  </div>
+                  <FormField
+                    label="Nama PIC / Penanggung Jawab"
+                    name="picName"
+                    type="text"
+                    value={formData.picName}
+                    onChange={(value) => handleFieldChange('picName', value)}
+                    required
+                    error={errors.picName}
+                  />
                 </div>
 
                 <div className="mt-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="whatsappNumber">Nomor WhatsApp *</Label>
-                    <Input
-                      id="whatsappNumber"
-                      name="whatsappNumber"
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      value={formData.whatsappNumber}
-                      onChange={handleChange}
-                      className={errors.whatsappNumber ? "border-destructive" : ""}
-                    />
-                    {errors.whatsappNumber && (
-                      <p className="text-sm text-destructive">{errors.whatsappNumber}</p>
-                    )}
-                  </div>
+                  <FormField
+                    label="Nomor WhatsApp"
+                    name="whatsappNumber"
+                    type="tel"
+                    value={formData.whatsappNumber}
+                    onChange={(value) => handleFieldChange('whatsappNumber', value)}
+                    inputProps={{
+                      inputMode: "numeric",
+                      pattern: "[0-9]*"
+                    }}
+                    required
+                    error={errors.whatsappNumber}
+                  />
                 </div>
               </div>
 
@@ -392,60 +392,42 @@ export default function TenantRegistration() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="purpose">Tujuan Pemesan *</Label>
-                    <Select value={formData.purpose} onValueChange={(value: string) => handleChange({ target: { name: 'purpose', value } })}>
-                      <SelectTrigger className={errors.purpose ? "border-destructive" : ""}>
-                        <SelectValue placeholder="Pilih Tujuan" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {purposeOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.purpose && (
-                      <p className="text-sm text-destructive">{errors.purpose}</p>
-                    )}
-                  </div>
+                  <FormField
+                    label="Tujuan Pemesan"
+                    name="purpose"
+                    type="select"
+                    value={formData.purpose}
+                    onChange={(value) => handleFieldChange('purpose', value)}
+                    placeholder="Pilih Tujuan"
+                    required
+                    error={errors.purpose}
+                    selectOptions={purposeOptions}
+                  />
 
-                  <div className="space-y-2">
-                    <Label htmlFor="productType">Jenis Product *</Label>
-                    <Select value={formData.productType} onValueChange={(value: string) => handleChange({ target: { name: 'productType', value } })}>
-                      <SelectTrigger className={errors.productType ? "border-destructive" : ""}>
-                        <SelectValue placeholder="Pilih Jenis Product" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {productTypeOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.productType && (
-                      <p className="text-sm text-destructive">{errors.productType}</p>
-                    )}
-                  </div>
+                  <FormField
+                    label="Jenis Product"
+                    name="productType"
+                    type="select"
+                    value={formData.productType}
+                    onChange={(value) => handleFieldChange('productType', value)}
+                    placeholder="Pilih Jenis Product"
+                    required
+                    error={errors.productType}
+                    selectOptions={productTypeOptions}
+                  />
                 </div>
 
                 <div className="mb-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="productDetail">Detail Produk *</Label>
-                    <Input
-                      id="productDetail"
-                      name="productDetail"
-                      value={formData.productDetail}
-                      onChange={handleChange}
-                      placeholder="Contoh: Kopi, Makanan Tradisional, Merchandise, dll"
-                      className={errors.productDetail ? "border-destructive" : ""}
-                    />
-                    {errors.productDetail && (
-                      <p className="text-sm text-destructive">{errors.productDetail}</p>
-                    )}
-                  </div>
+                  <FormField
+                    label="Detail Produk"
+                    name="productDetail"
+                    type="text"
+                    value={formData.productDetail}
+                    onChange={(value) => handleFieldChange('productDetail', value)}
+                    placeholder="Contoh: Kopi, Makanan Tradisional, Merchandise, dll"
+                    required
+                    error={errors.productDetail}
+                  />
                 </div>
 
                 {/* Posisi Tenan */}
@@ -456,7 +438,7 @@ export default function TenantRegistration() {
                   <div className="mt-4 mb-6">
                     <LayoutMap 
                       selectedSpot={formData.selectedSpot}
-                      onSpotSelect={(spotId) => handleChange({ target: { name: 'selectedSpot', value: spotId } })}
+                      onSpotSelect={(spotId) => handleFieldChange('selectedSpot', spotId)}
                     />
                   </div>
                   {errors.selectedSpot && (
@@ -464,7 +446,7 @@ export default function TenantRegistration() {
                   )}
                 </div>
 
-                {/* Tanggal */}
+                {/* Temporarily hide date selection until confirmed
                 <div className="mb-6">
                   <Label>Tanggal *</Label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
@@ -485,42 +467,83 @@ export default function TenantRegistration() {
                     <p className="text-sm text-destructive mt-2">{errors.selectedDates}</p>
                   )}
                 </div>
+                */}
 
                 {/* Durasi */}
                 <div className="mb-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="duration">Durasi *</Label>
-                    <Select value={formData.duration} onValueChange={(value: string) => handleChange({ target: { name: 'duration', value } })}>
-                      <SelectTrigger className={errors.duration ? "border-destructive" : ""}>
-                        <SelectValue placeholder="Pilih Durasi" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {durationOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.duration && (
-                      <p className="text-sm text-destructive">{errors.duration}</p>
-                    )}
-                  </div>
+                  <FormField
+                    label="Durasi"
+                    name="duration"
+                    type="select"
+                    value={formData.duration}
+                    onChange={(value) => handleFieldChange('duration', value)}
+                    placeholder="Pilih Durasi"
+                    required
+                    error={errors.duration}
+                    selectOptions={durationOptions}
+                  />
                 </div>
 
                 {/* Tambahan Kebutuhan */}
                 <div className="mb-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="additionalNeeds">Tambahan Kebutuhan</Label>
-                    <Textarea
-                      id="additionalNeeds"
-                      name="additionalNeeds"
-                      value={formData.additionalNeeds}
-                      onChange={handleChange}
-                      rows={3}
-                      placeholder="Jelaskan kebutuhan tambahan seperti meja, kursi, atau fasilitas lainnya"
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center mr-3">
+                      <span className="text-muted-foreground font-bold text-sm">+</span>
+                    </div>
+                    <h3 className="text-xl font-semibold">TAMBAHAN KEBUTUHAN</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      label="Kursi (Rp 10.000/unit)"
+                      name="chairCount"
+                      type="number"
+                      value={formData.chairCount || 0}
+                      onChange={(value) => handleFieldChange('chairCount', Number(value))}
+                      min={0}
+                      inputProps={{
+                        min: 0,
+                        placeholder: "0"
+                      }}
+                    />
+                    
+                    <FormField
+                      label="Meja (Rp 25.000/unit)"
+                      name="tableCount"
+                      type="number"
+                      value={formData.tableCount || 0}
+                      onChange={(value) => handleFieldChange('tableCount', Number(value))}
+                      min={0}
+                      inputProps={{
+                        min: 0,
+                        placeholder: "0"
+                      }}
                     />
                   </div>
+
+                  {(formData.chairCount > 0 || formData.tableCount > 0) && (
+                    <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+                      <h4 className="font-medium mb-2">Biaya Tambahan:</h4>
+                      <div className="space-y-1 text-sm">
+                        {formData.chairCount > 0 && (
+                          <div className="flex justify-between">
+                            <span>Kursi ({formData.chairCount} x Rp 10.000)</span>
+                            <span>Rp {(formData.chairCount * 10000).toLocaleString()}</span>
+                          </div>
+                        )}
+                        {formData.tableCount > 0 && (
+                          <div className="flex justify-between">
+                            <span>Meja ({formData.tableCount} x Rp 25.000)</span>
+                            <span>Rp {(formData.tableCount * 25000).toLocaleString()}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between font-medium pt-2 border-t border-border mt-2">
+                          <span>Total Biaya Tambahan</span>
+                          <span>Rp {((formData.chairCount * 10000) + (formData.tableCount * 25000)).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -600,11 +623,27 @@ export default function TenantRegistration() {
                         </div>
                         
                         <div className="border-t pt-4">
-                          <div className="flex justify-between items-center">
-                            <h4 className="font-semibold">Total Pembayaran</h4>
-                            <p className="text-xl font-bold text-destructive">
-                              Rp {calculateTotalPayment().toLocaleString()}
-                            </p>
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <h4 className="font-semibold text-sm text-muted-foreground">Biaya Spot</h4>
+                              <p className="font-medium">
+                                Rp {(calculateTotalPayment() - calculateAdditionalCosts()).toLocaleString()}
+                              </p>
+                            </div>
+                            {(formData.chairCount > 0 || formData.tableCount > 0) && (
+                              <div className="flex justify-between items-center">
+                                <h4 className="font-semibold text-sm text-muted-foreground">Biaya Tambahan</h4>
+                                <p className="font-medium">
+                                  Rp {calculateAdditionalCosts().toLocaleString()}
+                                </p>
+                              </div>
+                            )}
+                            <div className="flex justify-between items-center pt-2 border-t">
+                              <h4 className="font-semibold">Total Pembayaran</h4>
+                              <p className="text-xl font-bold text-destructive">
+                                Rp {calculateTotalPayment().toLocaleString()}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -673,6 +712,25 @@ export default function TenantRegistration() {
                           <p key={date} className="text-sm">{dateOption?.label}</p>
                         );
                       })}
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-3 mt-3">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <h4 className="font-semibold text-sm text-muted-foreground">Biaya Spot</h4>
+                        <p className="font-medium">
+                          Rp {(calculateTotalPayment() - calculateAdditionalCosts()).toLocaleString()}
+                        </p>
+                      </div>
+                      {(formData.chairCount > 0 || formData.tableCount > 0) && (
+                        <div className="flex justify-between items-center">
+                          <h4 className="font-semibold text-sm text-muted-foreground">Biaya Tambahan</h4>
+                          <p className="font-medium">
+                            Rp {calculateAdditionalCosts().toLocaleString()}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

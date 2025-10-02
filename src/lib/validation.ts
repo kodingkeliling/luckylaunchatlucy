@@ -18,6 +18,16 @@ export function validateFunRunForm(formData: any): ValidationErrors {
     errors.responsiblePerson = 'Nama Penanggung Jawab harus diisi';
   }
 
+  if (formData.isCommunity) {
+    if (!formData.communityQuantity) {
+      errors.communityQuantity = 'Jumlah orang harus diisi';
+    } else if (formData.communityQuantity < 1) {
+      errors.communityQuantity = 'Jumlah orang minimal 1 orang';
+    } else if (formData.communityQuantity > 25) {
+      errors.communityQuantity = 'Jumlah orang maksimal 25 orang';
+    }
+  }
+
   if (!formData.healthHistory?.trim()) {
     errors.healthHistory = 'Riwayat Kesehatan harus diisi';
   }

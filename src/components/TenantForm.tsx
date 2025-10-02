@@ -4,12 +4,9 @@ import { useState } from 'react';
 import { tenantSpots, trunkPackages, FormData, sampleFormData } from '@/data/mockData';
 import { validateTenantForm, ValidationErrors } from '@/lib/validation';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/Alert';
+import { FormField } from '@/components/ui/form-field';
 
 export default function TenantForm() {
   const [formData, setFormData] = useState<FormData>(sampleFormData);
@@ -144,7 +141,7 @@ export default function TenantForm() {
         </div>
         
         <Card className="max-w-4xl mx-auto">
-          <CardContent className="p-8">
+          <CardContent>
           {submitSuccess ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
@@ -167,145 +164,104 @@ export default function TenantForm() {
           ) : (
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">Nama Lengkap *</Label>
-                  <Input
-                    id="fullName"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className={errors.fullName ? "border-destructive" : ""}
-                  />
-                  {errors.fullName && (
-                    <p className="text-sm text-destructive">{errors.fullName}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Nama Lengkap"
+                  name="fullName"
+                  type="text"
+                  value={formData.fullName}
+                  onChange={(value) => handleChange({ target: { name: 'fullName', value: value as string } })}
+                  required
+                  error={errors.fullName}
+                />
                 
-                <div className="space-y-2">
-                  <Label htmlFor="businessName">Nama Brand/Usaha *</Label>
-                  <Input
-                    id="businessName"
-                    name="businessName"
-                    value={formData.businessName}
-                    onChange={handleChange}
-                    className={errors.businessName ? "border-destructive" : ""}
-                  />
-                  {errors.businessName && (
-                    <p className="text-sm text-destructive">{errors.businessName}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Nama Brand/Usaha"
+                  name="businessName"
+                  type="text"
+                  value={formData.businessName}
+                  onChange={(value) => handleChange({ target: { name: 'businessName', value: value as string } })}
+                  required
+                  error={errors.businessName}
+                />
                 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className={errors.email ? "border-destructive" : ""}
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(value) => handleChange({ target: { name: 'email', value: value as string } })}
+                  required
+                  error={errors.email}
+                />
                 
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Nomor Telepon *</Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className={errors.phone ? "border-destructive" : ""}
-                  />
-                  {errors.phone && (
-                    <p className="text-sm text-destructive">{errors.phone}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Nomor Telepon"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(value) => handleChange({ target: { name: 'phone', value: value as string } })}
+                  inputProps={{
+                    inputMode: "numeric",
+                    pattern: "[0-9]*"
+                  }}
+                  required
+                  error={errors.phone}
+                />
               </div>
               
               <div className="mb-6">
-                <div className="space-y-2">
-                  <Label htmlFor="productType">Jenis Produk *</Label>
-                  <Input
-                    id="productType"
-                    name="productType"
-                    value={formData.productType}
-                    onChange={handleChange}
-                    placeholder="Contoh: Makanan, Minuman, Fashion, Aksesoris, dll."
-                    className={errors.productType ? "border-destructive" : ""}
-                  />
-                  {errors.productType && (
-                    <p className="text-sm text-destructive">{errors.productType}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Jenis Produk"
+                  name="productType"
+                  type="text"
+                  value={formData.productType}
+                  onChange={(value) => handleChange({ target: { name: 'productType', value: value as string } })}
+                  placeholder="Contoh: Makanan, Minuman, Fashion, Aksesoris, dll."
+                  required
+                  error={errors.productType}
+                />
               </div>
 
               <div className="mb-6">
-                <div className="space-y-2">
-                  <Label htmlFor="packageType">Tipe Paket *</Label>
-                  <Select value={formData.packageType} onValueChange={(value: string) => handleChange({ target: { name: 'packageType', value } })}>
-                    <SelectTrigger className={errors.packageType ? "border-destructive" : ""}>
-                      <SelectValue placeholder="Pilih Tipe Paket" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {packageTypeOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.packageType && (
-                    <p className="text-sm text-destructive">{errors.packageType}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Tipe Paket"
+                  name="packageType"
+                  type="select"
+                  value={formData.packageType}
+                  onChange={(value) => handleChange({ target: { name: 'packageType', value: value as string } })}
+                  selectOptions={packageTypeOptions}
+                  placeholder="Pilih Tipe Paket"
+                  required
+                  error={errors.packageType}
+                />
               </div>
 
               <div className="mb-6">
-                <div className="space-y-2">
-                  <Label htmlFor="duration">Durasi *</Label>
-                  <Select value={formData.duration} onValueChange={(value: string) => handleChange({ target: { name: 'duration', value } })}>
-                    <SelectTrigger className={errors.duration ? "border-destructive" : ""}>
-                      <SelectValue placeholder="Pilih Durasi" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getDurationOptions().map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.duration && (
-                    <p className="text-sm text-destructive">{errors.duration}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Durasi"
+                  name="duration"
+                  type="select"
+                  value={formData.duration}
+                  onChange={(value) => handleChange({ target: { name: 'duration', value: value as string } })}
+                  selectOptions={getDurationOptions()}
+                  placeholder="Pilih Durasi"
+                  required
+                  error={errors.duration}
+                />
               </div>
               
               <div className="mb-6">
-                <div className="space-y-2">
-                  <Label htmlFor="spotPreference">Preferensi Lokasi Tenan *</Label>
-                  <Select value={formData.spotPreference} onValueChange={(value: string) => handleChange({ target: { name: 'spotPreference', value } })}>
-                    <SelectTrigger className={errors.spotPreference ? "border-destructive" : ""}>
-                      <SelectValue placeholder="Pilih Lokasi Tenan" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getSpotOptions().map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.spotPreference && (
-                    <p className="text-sm text-destructive">{errors.spotPreference}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Preferensi Lokasi Tenan"
+                  name="spotPreference"
+                  type="select"
+                  value={formData.spotPreference}
+                  onChange={(value) => handleChange({ target: { name: 'spotPreference', value: value as string } })}
+                  selectOptions={getSpotOptions()}
+                  placeholder="Pilih Lokasi Tenan"
+                  required
+                  error={errors.spotPreference}
+                />
               </div>
 
               {formData.spotPreference && formData.duration && (
@@ -332,17 +288,15 @@ export default function TenantForm() {
               )}
               
               <div className="mb-6">
-                <div className="space-y-2">
-                  <Label htmlFor="additionalRequirements">Kebutuhan Tambahan</Label>
-                  <Textarea
-                    id="additionalRequirements"
-                    name="additionalRequirements"
-                    value={formData.additionalRequirements}
-                    onChange={handleChange}
-                    rows={4}
-                    placeholder="Kebutuhan khusus atau informasi tambahan yang perlu kami ketahui"
-                  />
-                </div>
+                <FormField
+                  label="Kebutuhan Tambahan"
+                  name="additionalRequirements"
+                  type="textarea"
+                  value={formData.additionalRequirements}
+                  onChange={(value) => handleChange({ target: { name: 'additionalRequirements', value: value as string } })}
+                  placeholder="Kebutuhan khusus atau informasi tambahan yang perlu kami ketahui"
+                  rows={4}
+                />
               </div>
               
               {submitError && (

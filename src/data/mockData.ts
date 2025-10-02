@@ -60,6 +60,7 @@ export interface FunRunFormData {
   participantName: string;
   gender: string;
   responsiblePerson: string; // If community
+  communityQuantity: number; // Number of people in community (1-25)
   healthHistory: string;
   whatsappNumber: string;
   emergencyNumber: string;
@@ -271,7 +272,8 @@ export interface TenantFormData {
   packageType: string; // 'trunk' or 'popup'
   selectedSpot: string;
   duration: string; // 'threeDayFull', 'threeDayPartial', 'oneDay'
-  additionalNeeds: string;
+  chairCount: number;
+  tableCount: number;
   totalPayment: number;
   paymentMethod: string;
 }
@@ -288,7 +290,8 @@ export const sampleTenantFormData: TenantFormData = {
   packageType: "",
   selectedSpot: "",
   duration: "",
-  additionalNeeds: "",
+  chairCount: 0,
+  tableCount: 0,
   totalPayment: 0,
   paymentMethod: ""
 };
@@ -322,6 +325,7 @@ export const sampleFunRunFormData: FunRunFormData = {
   participantName: "",
   gender: "",
   responsiblePerson: "",
+  communityQuantity: 1,
   healthHistory: "",
   whatsappNumber: "",
   emergencyNumber: "",
