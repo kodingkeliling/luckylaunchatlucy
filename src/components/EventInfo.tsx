@@ -1,75 +1,105 @@
-import Image from 'next/image';
 import { eventData } from '@/data/mockData';
+import { Calendar, MapPin, Users } from 'lucide-react';
+import Image from 'next/image';
 
 export default function EventInfo() {
   return (
-    <section id="event-info" className="py-20 bg-light">
-      <div className="container">
-        <div className="text-center mb-12">
-          <h2 className="section-title">LUCKY LAUNCH</h2>
-          <div className="w-24 h-1 bg-accent mx-auto mb-6"></div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="text-lg mb-6">
-              {eventData.eventDescription}
+    <section id="event-info" className="relative py-12 overflow-hidden bg-[#1a1a1a]">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 z-0 opacity-80">
+        <Image
+          src="/images/bg-kotakhitam.png"
+          alt="Background Pattern"
+          fill
+          className="object-cover mix-blend-overlay"
+          quality={100}
+        />
+      </div>
+
+      {/* Asap hitam di bawah */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-black z-0" />
+
+      <div className="container relative z-10 px-4 mx-auto">
+        {/* New Header Section */}
+        <header className="flex flex-col md:flex-row items-center justify-between mb-4 py-8">
+          {/* Left: Event Title */}
+          <div className="text-left mb-6 md:mb-0">
+            <h2 className="text-3xl md:text-4xl font-bold text-white font-raleway">
+              LUCKY LAUNCH AT LUCY
+            </h2>
+          </div>
+          
+          {/* Right: Date */}
+          <div className="text-right">
+            <p className="text-xl md:text-2xl font-bold text-white font-raleway">
+              OCTOBER 24-26, 2025
             </p>
-            
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-medium">Tanggal</p>
-                <p className="text-lg">{eventData.eventDate}</p>
-              </div>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Description */}
+          <div className="lg:col-span-2 relative bg-white/95 rounded-2xl p-10 h-full shadow-2xl backdrop-blur-sm border border-white/10 overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+              <Image
+                src="/images/LLL-putih.png"
+                alt="LLL Logo"
+                width={400}
+                height={400}
+                className="object-contain"
+              />
             </div>
-            
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-medium">Lokasi</p>
-                <p className="text-lg">{eventData.eventLocation}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-medium">Penyelenggara</p>
-                <p className="text-lg">{eventData.organizer}</p>
+            <div className="relative z-10">
+              <div className="flex flex-col h-full justify-center">
+                <div className="space-y-8 text-black font-raleway text-xl leading-relaxed">
+                  <p className="text-justify">
+                    Lucky Launch merupakan sebuah event kolaboratif yang menggabungkan aktivitas olahraga, hiburan, serta dukungan terhadap brand lokal. Acara ini diawali dengan kegiatan Fun Run yang berlangsung pada dini hari, dengan titik start dan finish berada di area utama Pop Up Market.
+                  </p>
+                  <p className="text-justify">
+                    Setelah Fun Run, para peserta akan disambut dengan berbagai rangkaian kegiatan yang memadukan pengalaman belanja, kuliner, hiburan, hingga launching 777.ltd.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="relative h-64">
-              <Image
-                src="/images/elements/Elemen Pattern.png"
-                alt="Fun Run"
-                fill
-                className="object-cover rounded-lg"
-              />
-            </div>
-            <div className="relative h-64 mt-8">
-              <Image
-                src="/images/DENAH POP UP.png"
-                alt="Pop Up Market"
-                fill
-                className="object-cover rounded-lg"
-              />
+
+          {/* Right Column - Event Info */}
+          <div className="relative bg-white/95 rounded-2xl p-10 h-full shadow-2xl backdrop-blur-sm border border-white/10 overflow-hidden">
+            <div className="relative z-10">
+              <h3 className="text-2xl text-black mb-8 font-ttchocolates tracking-tight border-b border-black/20 pb-4">
+                INFORMASI ACARA
+              </h3>
+              <div className="space-y-6">
+                <div className="flex items-start">
+                  <div className="bg-black p-3 rounded-xl mr-4 flex-shrink-0 shadow-lg">
+                    <Calendar className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="text-black mb-1 font-raleway text-sm uppercase tracking-wider">Tanggal</h4>
+                    <p className="text-black font-raleway text-lg">{eventData.eventDate}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-black p-3 rounded-xl mr-4 flex-shrink-0 shadow-lg">
+                    <MapPin className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="text-black mb-1 font-raleway text-sm uppercase tracking-wider">Lokasi</h4>
+                    <p className="text-black font-raleway text-lg">{eventData.eventLocation}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-black p-3 rounded-xl mr-4 flex-shrink-0 shadow-lg">
+                    <Users className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="text-black mb-1 font-raleway text-sm uppercase tracking-wider">Penyelenggara</h4>
+                    <p className="text-black font-raleway text-lg">{eventData.organizer}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -77,4 +107,3 @@ export default function EventInfo() {
     </section>
   );
 }
-

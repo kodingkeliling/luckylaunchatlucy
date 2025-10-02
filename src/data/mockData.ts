@@ -73,7 +73,7 @@ export interface FunRunFormData {
 
 export const eventData: EventData = {
   eventName: "Lucky Launch at Lucy",
-  eventDate: "26 Oktober 2025",
+  eventDate: "24-26 Oktober 2025",
   eventLocation: "Lucy Curated Compound",
   eventDescription: "Lucky Launch merupakan aktiviti event kolaborasi yang menggabungkan aktivitas olahraga, hiburan, serta dukungan terhadap brand lokal. Acara ini dirancang dengan tujuan untuk menggerakan perekonomian lokal dan mempromosikan gaya hidup sehat melalui lari 777 Ltd.",
   organizer: "Triple Seven Ltd.",

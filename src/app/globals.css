@@ -2,6 +2,99 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Raleway Font Family */
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* TT Chocolates Font Family */
+@font-face {
+  font-family: 'TT Chocolates';
+  src: url('/fonts/TT Chocolates Trial Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Chocolates';
+  src: url('/fonts/TT Chocolates Trial Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Chocolates';
+  src: url('/fonts/TT Chocolates Trial Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Chocolates';
+  src: url('/fonts/TT Chocolates Trial ExtraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base Styles */
+:root {
+  --primary: #d5df40;
+  --secondary: #2c4059;
+  --accent: #be2625;
+  --light: #e5e5e5;
+  --white: #ffffff;
+  --black: #000000;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+  color: var(--secondary);
+  background-color: var(--white);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'TT Chocolates', sans-serif;
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+.number-font {
+  font-family: 'TT Chocolates', sans-serif;
+  font-weight: 700;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -58,75 +151,6 @@
   }
 }
 
-@font-face {
-  font-family: 'Raleway';
-  src: url('/fonts/Raleway-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Raleway';
-  src: url('/fonts/Raleway-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Raleway';
-  src: url('/fonts/Raleway-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'TT Chocolates';
-  src: url('/fonts/TT Chocolates Trial Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'TT Chocolates';
-  src: url('/fonts/TT Chocolates Trial Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'TT Chocolates';
-  src: url('/fonts/TT Chocolates Trial Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-:root {
-  --primary-color: #d5df40;
-  --secondary-color: #2c4059;
-  --accent-color: #be2625;
-  --light-color: #e5e5e5;
-}
-
-body {
-  font-family: 'Raleway', sans-serif;
-  color: #2c4059;
-  background-color: #ffffff;
-  position: relative;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'TT Chocolates', sans-serif;
-}
-
-.number-font {
-  font-family: 'TT Chocolates', sans-serif;
-}
 
 .btn-primary {
   @apply bg-primary text-secondary font-bold py-3 px-6 rounded-full transition-all hover:bg-opacity-90;

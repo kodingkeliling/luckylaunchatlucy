@@ -9,6 +9,10 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      sans: ['Raleway', 'sans-serif'],
+      display: ['TT Chocolates', 'sans-serif'],
+    },
     container: {
       center: true,
       padding: "2rem",
