@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export default function EventInfo() {
   return (
-    <section id="event-info" className="relative py-12 overflow-hidden bg-[#1a1a1a]">
+    <section id="event-info" className="relative py-12 pb-28 overflow-hidden bg-[#1a1a1a]">
       {/* Background Pattern */}
       <div className="absolute inset-0 z-0 opacity-80">
         <Image
