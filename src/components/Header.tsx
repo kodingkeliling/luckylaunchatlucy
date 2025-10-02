@@ -3,11 +3,11 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Background image with overlay */}
+    <header className="relative w-full min-h-screen">
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/40 z-10"></div>
       
-      {/* Background image of runners */}
+      {/* Background image */}
       <div className="absolute inset-0 w-full h-full">
         <Image 
           src="/images/elements/Elemen.png"
@@ -18,38 +18,34 @@ export default function Header() {
         />
       </div>
       
-      {/* Logo and title container */}
-      <div className="relative z-20 text-center">
-        <div className="mb-8">
-          <Image 
-            src="/images/LLL - Logo B&W-01.png"
-            alt="Lucky Launch at Lucy Logo"
-            width={300}
-            height={300}
-            className="mx-auto"
-          />
-        </div>
-        
-        <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 font-ttchocolates">
-          LUCKY LAUNCH
-        </h1>
-        <h2 className="text-2xl md:text-3xl text-primary font-medium mb-8">
-          by tripleseven
-        </h2>
-        
-        <p className="text-white text-lg md:text-xl max-w-2xl mx-auto mb-12">
-          Lucky Launch merupakan aktiviti event kolaborasi yang menggabungkan aktivitas olahraga, hiburan, 
-          serta dukungan terhadap brand lokal. Acara ini dirancang dengan tujuan untuk menggerakan 
-          perekonomian lokal dan mempromosikan gaya hidup sehat melalui lari 777 Ltd.
-        </p>
-        
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <Link href="/funrun" className="btn-primary">
-            FUN RUN
-          </Link>
-          <Link href="/popup-market" className="btn-secondary">
-            POP UP MARKET
-          </Link>
+      {/* Content */}
+      <div className="relative z-20 flex flex-col justify-center items-center text-center min-h-screen px-4 py-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-6 md:mb-10">
+            <Image 
+              src="/images/LLL - Logo B&W-01.png"
+              alt="Lucky Launch at Lucy Logo"
+              width={250}
+              height={250}
+              className="mx-auto w-auto h-auto max-w-[200px] md:max-w-[300px]"
+            />
+          </div>
+          
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-2 md:mb-4 font-ttchocolates">
+            LUCKY LAUNCH
+          </h1>
+          <h2 className="text-xl md:text-2xl lg:text-3xl text-primary font-medium mb-6 md:mb-8">
+            by tripleseven
+          </h2>
+                    
+          <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
+            <Link href="/funrun" className="btn-primary px-6 py-3 text-sm sm:text-base">
+              FUN RUN
+            </Link>
+            <Link href="/popup-market" className="btn-secondary px-6 py-3 text-sm sm:text-base">
+              POP UP MARKET
+            </Link>
+          </div>
         </div>
       </div>
     </header>
