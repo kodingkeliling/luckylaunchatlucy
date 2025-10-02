@@ -38,7 +38,7 @@ export default function FileUpload({
   const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 
   const getRedirectUrl = () => {
-    return process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URL;
+    return process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URL || 'http://localhost:3002/auth/google/callback';
   };
 
   // Check authentication status on component mount
@@ -51,6 +51,7 @@ export default function FileUpload({
     try {
       // First check localStorage as fallback
       const localToken = localStorage.getItem('google_access_token');
+      console.log('Local token found:', !!localToken);
       if (localToken) {
         setIsAuthenticated(true);
         setIsCheckingAuth(false);
@@ -58,9 +59,12 @@ export default function FileUpload({
       }
 
       // Then check server-side status
+      console.log('Checking server-side auth status...');
       const response = await fetch('/api/auth/google/status');
+      console.log('Auth status response:', response.status);
       if (response.ok) {
         const data = await response.json();
+        console.log('Auth status data:', data);
         setIsAuthenticated(data.authenticated);
       }
     } catch (error) {
@@ -203,15 +207,32 @@ export default function FileUpload({
     setUploading(true);
     setErrorMessage(null); // Clear any previous errors
     try {
+      // Get access token from localStorage or cookies
+      const accessToken = localStorage.getItem('google_access_token');
+      console.log('Upload - Access token found:', !!accessToken);
+      
       const formData = new FormData();
       formData.append('file', file);
+      
+      // Add access token to form data as fallback
+      if (accessToken) {
+        formData.append('accessToken', accessToken);
+        console.log('Added access token to form data');
+      }
 
+      console.log('Uploading file:', file.name, 'Size:', file.size);
       const response = await fetch('/api/upload', {
         method: 'POST',
+        headers: {
+          // Add Authorization header if we have token
+          ...(accessToken && { 'Authorization': `Bearer ${accessToken}` })
+        },
         body: formData,
       });
 
+      console.log('Upload response status:', response.status);
       const data = await response.json();
+      console.log('Upload response data:', data);
 
       if (data.success) {
         onUploadSuccess(data.data.url, data.data.name);

@@ -87,3 +87,7 @@ export async function submitFunRunRegistration(data: any) {
     data
   });
 }
+
+export async function getBookingsFromSheet() {
+  return fetchFromGoogleScript('tenants', 'GET');
+}

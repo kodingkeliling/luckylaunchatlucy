@@ -21,6 +21,7 @@ import FileUpload from '@/components/ui/FileUpload';
 import WhatsAppInput from '@/components/ui/WhatsAppInput';
 import LayoutMap from './LayoutMap';
 import { spots } from './LayoutMap';
+import { useBookings } from '@/hooks/useBookings';
 
 interface ValidationErrors {
   [key: string]: string;
@@ -37,6 +38,7 @@ export default function TenantRegistration() {
   const [uploadedPaymentUrl, setUploadedPaymentUrl] = useState<string | null>(null);
   const [paymentPreviewUrl, setPaymentPreviewUrl] = useState<string | null>(null);
   const [isUploadingPayment, setIsUploadingPayment] = useState(false);
+  const { isDurationBookedForSpot } = useBookings();
 
   // Cleanup blob URL when component unmounts (like wisuda)
   useEffect(() => {
@@ -50,8 +52,6 @@ export default function TenantRegistration() {
   // Cleanup all states on component unmount
   useEffect(() => {
     return () => {
-      // Reset all states to prevent stuck states
-      console.log('TenantRegistration unmounting, cleaning up states...');
       setSelectedPaymentFile(null);
       setUploadedPaymentUrl(null);
       setPaymentPreviewUrl(null);
@@ -204,10 +204,21 @@ export default function TenantRegistration() {
     }
     
     const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
-    if (selectedSpot?.size === 'Trunk-Package') {
-      return durationOptions.TrunkPackage;
+    if (!selectedSpot) return [{ value: 'disabled', label: 'Spot tidak ditemukan' }];
+    
+    let availableOptions = [];
+    
+    if (selectedSpot.size === 'Trunk-Package') {
+      availableOptions = durationOptions.TrunkPackage;
+    } else {
+      availableOptions = durationOptions.PopupMarketPage;
     }
-    return durationOptions.PopupMarketPage;
+    
+    // Filter out options where duration is already booked
+    return availableOptions.filter(option => {
+      // Check if this specific duration is already booked for this spot
+      return !isDurationBookedForSpot(formData.selectedSpot, option.label);
+    });
   };
 
   const getDurationLabel = () => {
