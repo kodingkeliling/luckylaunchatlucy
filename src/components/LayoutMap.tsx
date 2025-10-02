@@ -20,7 +20,7 @@ interface SpotInfo {
   };
 }
 
-const spots: SpotInfo[] = [
+export const spots: SpotInfo[] = [
   // PARKING AREA - berdasarkan gambar
   { id: 'spot-1', number: 1, x: 30, y: 62, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
@@ -30,9 +30,9 @@ const spots: SpotInfo[] = [
   
   // HALLWAY & TOILET AREA
   { id: 'spot-3', number: 3, x: 59.3, y: 62.5, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
   
   // EXTRA BAR AREA (atas)
   { id: 'spot-8', number: 8, x: 58, y: 43.5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
@@ -50,6 +50,12 @@ const spots: SpotInfo[] = [
   // AREA BELAKANG (bawah)
   { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
   { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+
+  { id: 'spot-19', number: 19, x: 7.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-20', number: 20, x: 13.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-21', number: 21, x: 19.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-22', number: 22, x: 13, y: 58, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-23', number: 23, x: 18.4, y: 57.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
 ];
 
 interface LayoutMapProps {
@@ -198,8 +204,8 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                 const getBoothColor = (size: string) => {
                   if (size === '3x3m') return 'bg-red-600 hover:bg-red-700'; // BOOTH 3X3 - Merah
                   if (size === '2x2m') return 'bg-blue-900 hover:bg-blue-800'; // BOOTH 2X2 - Biru gelap
-                  if (size === '1x1m') return 'bg-lime-500 hover:bg-lime-600'; // BOOTH 1X1 - Hijau lime
-                  return 'bg-primary hover:bg-primary/80'; // Default
+                  if (size === '1x1m') return 'bg-primary hover:bg-lime-600'; // BOOTH 1X1 - Hijau lime
+                  return 'bg-gray-500 hover:bg-gray-500/80'; // Default
                 };
 
                 return (
@@ -245,11 +251,19 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                 <div>
                   <span className="font-medium">Ukuran:</span> {selectedSpot.size}
                 </div>
+                {selectedSpot.price.threeDay > 0 && (
                 <div>
                   <span className="font-medium">3 Hari:</span> Rp {selectedSpot.price.threeDay.toLocaleString()}
                 </div>
+                )}
                 <div>
                   <span className="font-medium">2 Hari:</span> Rp {selectedSpot.price.twoDay.toLocaleString()}
+                  {selectedSpot.area === 'Trunk Area' && (
+                    <>
+                    <br />
+                    <span className="text-xs text-gray-500">+1 HARI INDOR UK 3x3 24 OKTOBER</span>
+                    </>
+                  )}
                 </div>
                 <div>
                   <span className="font-medium">1 Hari:</span> Rp {selectedSpot.price.oneDay.toLocaleString()}

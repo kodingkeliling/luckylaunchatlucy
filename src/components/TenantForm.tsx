@@ -99,6 +99,8 @@ export default function TenantForm() {
     { value: 'popup', label: 'POP UP PACKAGE' }
   ];
 
+  console.log(formData);
+
   const getDurationOptions = () => {
     if (formData.packageType === 'trunk') {
       return [

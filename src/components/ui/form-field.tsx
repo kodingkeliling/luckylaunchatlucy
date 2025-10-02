@@ -90,7 +90,11 @@ export function FormField({
             </SelectTrigger>
             <SelectContent>
               {selectOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem 
+                  key={option.value} 
+                  value={option.value}
+                  disabled={option.value === 'disabled'}
+                >
                   {option.label}
                 </SelectItem>
               ))}

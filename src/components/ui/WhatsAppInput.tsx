@@ -2,8 +2,8 @@
 
 import { FormField } from './form-field';
 
-interface PhoneInputProps {
-  label: string;
+interface WhatsAppInputProps {
+  label?: string;
   name: string;
   value: string;
   onChange: (value: string | number | boolean) => void;
@@ -12,15 +12,15 @@ interface PhoneInputProps {
   placeholder?: string;
 }
 
-export default function PhoneInput({
-  label,
+export default function WhatsAppInput({
+  label = "Nomor WhatsApp",
   name,
   value,
   onChange,
   required = false,
   error,
-  placeholder
-}: PhoneInputProps) {
+  placeholder = "Contoh: 08123456789"
+}: WhatsAppInputProps) {
   const handleChange = (newValue: string | number | boolean) => {
     // Filter out non-numeric characters
     const numericValue = String(newValue).replace(/[^0-9]/g, '');
@@ -51,7 +51,6 @@ export default function PhoneInput({
       value={value}
       onChange={handleChange}
       placeholder={placeholder}
-      required={required}
       error={error}
       inputProps={{
         inputMode: "numeric",

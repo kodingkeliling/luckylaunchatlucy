@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { FormField } from '@/components/ui/form-field';
+import WhatsAppInput from '@/components/ui/WhatsAppInput';
+import PhoneInput from '@/components/ui/PhoneInput';
 
 import { useFunRunSlots } from '@/hooks/useFunRunSlots';
 
@@ -20,13 +22,7 @@ export default function FunRunRegistration() {
   const { slotData, isLoading: isLoadingSlots, error: slotError, refresh } = useFunRunSlots();
 
   const handleFieldChange = (name: string, value: string | number | boolean) => {
-    // Filter out non-numeric characters for phone number fields
-    if (name === 'whatsappNumber' || name === 'emergencyNumber') {
-      const numericValue = String(value).replace(/[^0-9]/g, '');
-      setFormData(prev => ({ ...prev, [name]: numericValue }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
     
     // Clear error when user starts typing
     if (errors[name as keyof ValidationErrors]) {
@@ -309,30 +305,19 @@ export default function FunRunRegistration() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <FormField
-                  label="Nomor WhatsApp"
+                <WhatsAppInput
                   name="whatsappNumber"
-                  type="tel"
                   value={formData.whatsappNumber}
                   onChange={(value) => handleFieldChange('whatsappNumber', value)}
-                  inputProps={{
-                    inputMode: "numeric",
-                    pattern: "[0-9]*"
-                  }}
                   required
                   error={errors.whatsappNumber}
                 />
                 
-                <FormField
+                <PhoneInput
                   label="Nomor Emergency"
                   name="emergencyNumber"
-                  type="tel"
                   value={formData.emergencyNumber}
                   onChange={(value) => handleFieldChange('emergencyNumber', value)}
-                  inputProps={{
-                    inputMode: "numeric",
-                    pattern: "[0-9]*"
-                  }}
                   required
                   error={errors.emergencyNumber}
                 />
