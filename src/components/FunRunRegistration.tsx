@@ -99,7 +99,7 @@ export default function FunRunRegistration() {
               <div className="mb-8">
                 <div className="relative h-64 w-full max-w-md mx-auto mb-6">
                   <Image 
-                    src="/images/LLL - Logo B&W-01.png"
+                    src="/images/logo/LLL - Logo B&W-01.png"
                     alt="Invitation Card"
                     fill
                     className="object-contain"
@@ -164,7 +164,7 @@ export default function FunRunRegistration() {
                 {/* LLL Logo */}
                 <div className="relative w-40 h-40 ">
                   <Image 
-                    src="/images/LLL - Logo B&W-01.png"
+                    src="/images/logo/LLL - Logo B&W-01.png"
                     alt="Lucky Launch at Lucy Logo"
                     fill
                     className="object-contain"
@@ -174,7 +174,7 @@ export default function FunRunRegistration() {
                 {/* LCC Logo */}
                 <div className="relative w-40 h-40">
                   <Image 
-                    src="/images/LCC BANDUNG_Main Logo-Black (2).png"
+                    src="/images/logo/LCC BANDUNG_Main Logo-Black (2).png"
                     alt="Lucy Curated Compound Logo"
                     fill
                     className="object-contain"
