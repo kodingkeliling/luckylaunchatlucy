@@ -17,7 +17,7 @@ export default function EventInfo() {
       </div>
 
       {/* Asap hitam di bawah */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-black z-0" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-black z-0" />
 
       <div className="container relative z-10 px-4 mx-auto">
         {/* New Header Section */}
