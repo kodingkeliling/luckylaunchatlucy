@@ -18,7 +18,7 @@ import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { FormField } from '@/components/ui/form-field';
 import { Label } from '@/components/ui/label';
 import FileUpload from '@/components/ui/FileUpload';
-import WhatsAppInput from '@/components/ui/WhatsAppInput';
+import PhoneInput from '@/components/ui/PhoneInput';
 import LayoutMap from './LayoutMap';
 import { spots } from './LayoutMap';
 import { useBookings } from '@/hooks/useBookings';
@@ -274,14 +274,9 @@ export default function TenantRegistration() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('Form data before validation:', formData);
-    
     if (!validateForm()) {
-      console.log('Form validation failed:', errors);
       return;
     }
-    
-    console.log('Form validation passed, proceeding with submission');
 
     setIsSubmitting(true);
     setSubmitError('');
@@ -427,12 +422,14 @@ export default function TenantRegistration() {
                 </div>
 
                 <div className="mt-6">
-                  <WhatsAppInput
+                  <PhoneInput
+                    label="Nomor WhatsApp"
                     name="whatsappNumber"
                     value={formData.whatsappNumber}
                     onChange={(value) => handleFieldChange('whatsappNumber', value)}
                     required
                     error={errors.whatsappNumber}
+                    placeholder="Contoh: 08123456789"
                   />
                 </div>
               </div>
