@@ -3,7 +3,7 @@
 import { FormField } from './form-field';
 
 interface PhoneInputProps {
-  label: string;
+  label?: string;
   name: string;
   value: string;
   onChange: (value: string | number | boolean) => void;
@@ -13,7 +13,7 @@ interface PhoneInputProps {
 }
 
 export default function PhoneInput({
-  label,
+  label = "Nomor Telepon",
   name,
   value,
   onChange,

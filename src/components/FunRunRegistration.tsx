@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { FormField } from '@/components/ui/form-field';
-import WhatsAppInput from '@/components/ui/WhatsAppInput';
 import PhoneInput from '@/components/ui/PhoneInput';
 
 import { useFunRunSlots } from '@/hooks/useFunRunSlots';
@@ -197,8 +196,21 @@ export default function FunRunRegistration() {
                   </Alert>
                 ) : (
                   <>
-                    <div className="mb-2">
-                     Tersisa {slotData.availableSlots} dari {slotData.maxSlots} slot tersedia
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        Tersisa {slotData.availableSlots} dari {slotData.maxSlots} slot tersedia
+                      </div>
+                      <button
+                        type="button"
+                        onClick={refresh}
+                        className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                        title="Refresh data slot"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Refresh
+                      </button>
                     </div>
                     
                     <div className="w-full bg-muted rounded-full h-2 mb-3">
@@ -305,12 +317,14 @@ export default function FunRunRegistration() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <WhatsAppInput
+                <PhoneInput
+                  label="Nomor WhatsApp"
                   name="whatsappNumber"
                   value={formData.whatsappNumber}
                   onChange={(value) => handleFieldChange('whatsappNumber', value)}
                   required
                   error={errors.whatsappNumber}
+                  placeholder="Contoh: 08123456789"
                 />
                 
                 <PhoneInput
@@ -320,6 +334,7 @@ export default function FunRunRegistration() {
                   onChange={(value) => handleFieldChange('emergencyNumber', value)}
                   required
                   error={errors.emergencyNumber}
+                  placeholder="Contoh: 08123456789"
                 />
                 
                 <FormField
