@@ -1,3 +1,5 @@
+import PopupMarketPage from "@/app/popup-market/page";
+
 export interface EventData {
   eventName: string;
   eventDate: string;
@@ -276,6 +278,10 @@ export interface TenantFormData {
   tableCount: number;
   totalPayment: number;
   paymentMethod: string;
+  
+  // Payment Proof
+  paymentProofUrl: string;
+  paymentProofFileName: string;
 }
 
 export const sampleTenantFormData: TenantFormData = {
@@ -293,7 +299,9 @@ export const sampleTenantFormData: TenantFormData = {
   chairCount: 0,
   tableCount: 0,
   totalPayment: 0,
-  paymentMethod: ""
+  paymentMethod: "",
+  paymentProofUrl: "",
+  paymentProofFileName: ""
 };
 
 // Legacy interface for backward compatibility
@@ -376,11 +384,18 @@ export const packageTypeOptions = [
   { value: "popup", label: "POP UP PACKAGE" }
 ];
 
-export const durationOptions = [
+export const durationOptions = {
+  PopupMarketPage:[
   { value: "threeDayFull", label: "3 Hari (24,25,26 Oktober)" },
   { value: "threeDayPartial", label: "2 Hari (25,26 Oktober)" },
   { value: "oneDay", label: "1 Hari (26 Oktober)" }
-];
+],
+TrunkPackage: [
+  { value: "twoDay", label: "2 Hari (24, 26 Oktober)" },
+  { value: "oneDay", label: "1 Hari (26 Oktober)" }
+]
+};
+
 
 // Informasi pembayaran
 export const paymentInfo = {

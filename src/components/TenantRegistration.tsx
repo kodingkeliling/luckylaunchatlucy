@@ -5,12 +5,9 @@ import Image from 'next/image';
 import { 
   TenantFormData, 
   sampleTenantFormData, 
-  tenantSpots, 
-  trunkPackages,
   purposeOptions,
   productTypeOptions,
   dateOptions,
-  packageTypeOptions,
   durationOptions,
   paymentInfo,
   packageInclusions
@@ -20,11 +17,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { FormField } from '@/components/ui/form-field';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
+import FileUpload from '@/components/ui/FileUpload';
+import PhoneInput from '@/components/ui/PhoneInput';
 import LayoutMap from './LayoutMap';
+import { spots } from './LayoutMap';
+import { useBookings } from '@/hooks/useBookings';
 
 interface ValidationErrors {
   [key: string]: string;
@@ -37,12 +34,65 @@ export default function TenantRegistration() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
   const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
+  const [selectedPaymentFile, setSelectedPaymentFile] = useState<File | null>(null);
+  const [uploadedPaymentUrl, setUploadedPaymentUrl] = useState<string | null>(null);
+  const [paymentPreviewUrl, setPaymentPreviewUrl] = useState<string | null>(null);
+  const [isUploadingPayment, setIsUploadingPayment] = useState(false);
+  const { isDurationBookedForSpot } = useBookings();
+
+  // Cleanup blob URL when component unmounts (like wisuda)
+  useEffect(() => {
+    return () => {
+      if (paymentPreviewUrl) {
+        URL.revokeObjectURL(paymentPreviewUrl);
+      }
+    };
+  }, [paymentPreviewUrl]);
+
+  // Cleanup all states on component unmount
+  useEffect(() => {
+    return () => {
+      setSelectedPaymentFile(null);
+      setUploadedPaymentUrl(null);
+      setPaymentPreviewUrl(null);
+      setIsUploadingPayment(false);
+      setSubmitError('');
+      setSubmitSuccess(false);
+    };
+  }, []);
+
+  // Create preview when upload is successful (like wisuda)
+  useEffect(() => {
+    if (uploadedPaymentUrl && selectedPaymentFile && !paymentPreviewUrl) {
+      const blobUrl = URL.createObjectURL(selectedPaymentFile);
+      setPaymentPreviewUrl(blobUrl);
+    }
+  }, [uploadedPaymentUrl, selectedPaymentFile, paymentPreviewUrl]);
 
   const handleFieldChange = (name: string, value: string | number | boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    // Prevent setting disabled value
+    if (value === 'disabled') return;
+    
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        [name]: value
+      };
+      
+      // Clear duration when spot selection changes to avoid invalid combinations
+      if (name === 'selectedSpot') {
+        newData.duration = '';
+        // Also clear duration error if it exists
+        if (errors.duration) {
+          setErrors(prev => ({
+            ...prev,
+            duration: ''
+          }));
+        }
+      }
+      
+      return newData;
+    });
     
     // Clear error when user starts typing
     if (errors[name]) {
@@ -53,20 +103,43 @@ export default function TenantRegistration() {
     }
   };
 
-  const handleCheckboxChange = (name: string, checked: boolean) => {
+  const handlePaymentUploadSuccess = (fileUrl: string, fileName: string) => {
+    setUploadedPaymentUrl(fileUrl);
     setFormData(prev => ({
       ...prev,
-      [name]: checked
+      paymentProofUrl: fileUrl,
+      paymentProofFileName: fileName
     }));
+    
+    // Create preview from local file for smooth display (like wisuda)
+    if (selectedPaymentFile && !paymentPreviewUrl) {
+      const blobUrl = URL.createObjectURL(selectedPaymentFile);
+      setPaymentPreviewUrl(blobUrl);
+    }
   };
 
-  const handleDateSelection = (date: string, checked: boolean) => {
+  const handlePaymentUploadError = (error: string) => {
+    console.error('Payment upload error:', error);
+    setSubmitError(error);
+  };
+
+  const handlePaymentFileSelect = (file: File) => {
+    setSelectedPaymentFile(file);
+  };
+
+  const handleRemovePaymentFile = () => {
+    setSelectedPaymentFile(null);
+    setUploadedPaymentUrl(null);
     setFormData(prev => ({
       ...prev,
-      selectedDates: checked 
-        ? [...prev.selectedDates, date]
-        : prev.selectedDates.filter(d => d !== date)
+      paymentProofUrl: '',
+      paymentProofFileName: ''
     }));
+    // Clean up blob URL properly
+    if (paymentPreviewUrl) {
+      URL.revokeObjectURL(paymentPreviewUrl);
+      setPaymentPreviewUrl(null);
+    }
   };
 
   const calculateAdditionalCosts = () => {
@@ -78,53 +151,34 @@ export default function TenantRegistration() {
   const calculateTotalPayment = () => {
     if (!formData.selectedSpot || !formData.duration) return 0;
     
-    // Import spots data from LayoutMap
-    const spots = [
-      // PARKING AREA - berdasarkan gambar
-      { id: 'spot-1', number: 1, x: 30, y: 62, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      
-      // TRUNK AREA & SEATING AREA
-      { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      
-      // HALLWAY & TOILET AREA
-      { id: 'spot-3', number: 3, x: 59.3, y: 62.5, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      
-      // EXTRA BAR AREA (atas)
-      { id: 'spot-8', number: 8, x: 58, y: 43.5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-9', number: 9, x: 61.2, y: 42, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-10', number: 10, x: 64.7, y: 42, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-11', number: 11, x: 67.9, y: 42.4, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      
-      // BAR AREA
-      { id: 'spot-12', number: 12, x: 70.4, y: 52, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-13', number: 13, x: 79.8, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-      { id: 'spot-14', number: 14, x: 82.6, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-      { id: 'spot-15', number: 15, x: 85.4, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-      { id: 'spot-16', number: 16, x: 90.8, y: 52.9, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
-      
-      // AREA BELAKANG (bawah)
-      { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-    ];
-    
     const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
     if (!selectedSpot) return 0;
 
     let basePrice = 0;
-    switch (formData.duration) {
-      case 'threeDayFull':
-        basePrice = selectedSpot.price.threeDay;
-        break;
-      case 'threeDayPartial':
-        basePrice = selectedSpot.price.twoDay;
-        break;
-      case 'oneDay':
-        basePrice = selectedSpot.price.oneDay;
-        break;
+    
+    // Handle TrunkPackage pricing
+    if (selectedSpot.size === 'Trunk-Package') {
+      switch (formData.duration) {
+        case 'twoDay':
+          basePrice = selectedSpot.price.twoDay;
+          break;
+        case 'oneDay':
+          basePrice = selectedSpot.price.oneDay;
+          break;
+      }
+    } else {
+      // Handle regular PopupMarketPage pricing
+      switch (formData.duration) {
+        case 'threeDayFull':
+          basePrice = selectedSpot.price.threeDay;
+          break;
+        case 'threeDayPartial':
+          basePrice = selectedSpot.price.twoDay;
+          break;
+        case 'oneDay':
+          basePrice = selectedSpot.price.oneDay;
+          break;
+      }
     }
 
     // Add additional costs
@@ -132,37 +186,6 @@ export default function TenantRegistration() {
   };
 
   const getSelectedSpotInfo = () => {
-    const spots = [
-      // PARKING AREA - berdasarkan gambar
-      { id: 'spot-1', number: 1, x: 30, y: 62, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      
-      // TRUNK AREA & SEATING AREA
-      { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      
-      // HALLWAY & TOILET AREA
-      { id: 'spot-3', number: 3, x: 59.3, y: 62.5, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      
-      // EXTRA BAR AREA (atas)
-      { id: 'spot-8', number: 8, x: 58, y: 43.5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-9', number: 9, x: 61.2, y: 42, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-10', number: 10, x: 64.7, y: 42, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-11', number: 11, x: 67.9, y: 42.4, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      
-      // BAR AREA
-      { id: 'spot-12', number: 12, x: 70.4, y: 52, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-      { id: 'spot-13', number: 13, x: 79.8, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-      { id: 'spot-14', number: 14, x: 82.6, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-      { id: 'spot-15', number: 15, x: 85.4, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-      { id: 'spot-16', number: 16, x: 90.8, y: 52.9, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
-      
-      // AREA BELAKANG (bawah)
-      { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-      { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-    ];
     
     const spot = spots.find(spot => spot.id === formData.selectedSpot);
     if (!spot) return null;
@@ -175,8 +198,32 @@ export default function TenantRegistration() {
     };
   };
 
+  const getDurationOptions = () => {
+    if (!formData.selectedSpot) {
+      return [{ value: 'disabled', label: 'Pilih spot terlebih dahulu' }];
+    }
+    
+    const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
+    if (!selectedSpot) return [{ value: 'disabled', label: 'Spot tidak ditemukan' }];
+    
+    let availableOptions = [];
+    
+    if (selectedSpot.size === 'Trunk-Package') {
+      availableOptions = durationOptions.TrunkPackage;
+    } else {
+      availableOptions = durationOptions.PopupMarketPage;
+    }
+    
+    // Filter out options where duration is already booked
+    return availableOptions.filter(option => {
+      // Check if this specific duration is already booked for this spot
+      return !isDurationBookedForSpot(formData.selectedSpot, option.label);
+    });
+  };
+
   const getDurationLabel = () => {
-    const duration = durationOptions.find(opt => opt.value === formData.duration);
+    const options = getDurationOptions();
+    const duration = options.find(opt => opt.value === formData.duration);
     return duration ? duration.label : '';
   };
 
@@ -209,11 +256,15 @@ export default function TenantRegistration() {
     if (!formData.selectedSpot) {
       newErrors.selectedSpot = 'Posisi Tenan harus dipilih';
     }
-    if (formData.selectedDates.length === 0) {
-      newErrors.selectedDates = 'Minimal pilih satu tanggal';
-    }
-    if (!formData.duration) {
+    // Temporarily skip date validation since date selection is hidden
+    // if (formData.selectedDates.length === 0) {
+    //   newErrors.selectedDates = 'Minimal pilih satu tanggal';
+    // }
+    if (!formData.duration || formData.duration === 'disabled') {
       newErrors.duration = 'Durasi harus dipilih';
+    }
+    if (!formData.paymentProofUrl.trim()) {
+      newErrors.paymentProof = 'Bukti pembayaran harus diupload';
     }
 
     setErrors(newErrors);
@@ -232,8 +283,13 @@ export default function TenantRegistration() {
 
     try {
       const totalPayment = calculateTotalPayment();
-      const formDataWithTotal = {
+      
+      // Ensure selectedDates has default values if empty (since date selection is hidden)
+      const formDataWithDefaults = {
         ...formData,
+        selectedDates: formData.selectedDates.length > 0 
+          ? formData.selectedDates 
+          : ['24 Oktober', '25 Oktober', '26 Oktober'], // Default dates
         totalPayment
       };
 
@@ -242,7 +298,7 @@ export default function TenantRegistration() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formDataWithTotal),
+        body: JSON.stringify(formDataWithDefaults),
       });
 
       if (response.ok) {
@@ -366,18 +422,14 @@ export default function TenantRegistration() {
                 </div>
 
                 <div className="mt-6">
-                  <FormField
+                  <PhoneInput
                     label="Nomor WhatsApp"
                     name="whatsappNumber"
-                    type="tel"
                     value={formData.whatsappNumber}
                     onChange={(value) => handleFieldChange('whatsappNumber', value)}
-                    inputProps={{
-                      inputMode: "numeric",
-                      pattern: "[0-9]*"
-                    }}
                     required
                     error={errors.whatsappNumber}
+                    placeholder="Contoh: 08123456789"
                   />
                 </div>
               </div>
@@ -480,8 +532,14 @@ export default function TenantRegistration() {
                     placeholder="Pilih Durasi"
                     required
                     error={errors.duration}
-                    selectOptions={durationOptions}
+                    selectOptions={getDurationOptions()}
+                    disabled={!formData.selectedSpot}
                   />
+                  {!formData.selectedSpot && (
+                    <p className="text-sm text-red-500 mt-2">
+                      Silakan pilih posisi tenan terlebih dahulu untuk memilih durasi
+                    </p>
+                  )}
                 </div>
 
                 {/* Tambahan Kebutuhan */}
@@ -548,6 +606,61 @@ export default function TenantRegistration() {
 
               </div>
 
+              {/* Payment Information and Proof */}
+              <div>
+                <div className="flex items-center mb-6">
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white font-bold text-sm">3</span>
+                  </div>
+                  <h3 className="text-xl font-semibold">INFORMASI PEMBAYARAN</h3>
+                </div>
+
+                {/* Payment Information */}
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h4 className="font-semibold text-blue-900 mb-3">Transfer ke:</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="font-medium text-blue-800">Bank:</span>
+                      <span className="text-blue-700">{paymentInfo.bank}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-blue-800">No. Rekening:</span>
+                      <span className="text-blue-700 font-mono">{paymentInfo.accountNumber}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-blue-800">Atas Nama:</span>
+                      <span className="text-blue-700">{paymentInfo.accountName}</span>
+                    </div>
+                  </div>
+                  <div className="mt-3 p-3 bg-yellow-100 border border-yellow-300 rounded">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Catatan:</strong> Silakan transfer sesuai dengan total pembayaran yang tertera di ringkasan pesanan, kemudian upload bukti transfer di bawah ini.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Payment Proof Upload */}
+                <div className="mb-6">
+                  <Label htmlFor="paymentProof">Bukti Pembayaran *</Label>
+                  <div className="mt-2">
+                    <FileUpload
+                      onUploadSuccess={handlePaymentUploadSuccess}
+                      onUploadError={handlePaymentUploadError}
+                      disabled={isUploadingPayment}
+                      onFileSelect={handlePaymentFileSelect}
+                      selectedFile={selectedPaymentFile}
+                      uploadedFileUrl={uploadedPaymentUrl}
+                      previewUrl={paymentPreviewUrl}
+                      isUploading={isUploadingPayment}
+                      onRemoveFile={handleRemovePaymentFile}
+                    />
+                  </div>
+                  {errors.paymentProof && (
+                    <p className="text-sm text-destructive mt-2">{errors.paymentProof}</p>
+                  )}
+                </div>
+              </div>
+
               {/* Informasi Paket */}
               <div className="mb-6">
                 <h4 className="font-semibold mb-3">{packageInclusions.title}</h4>
@@ -579,7 +692,7 @@ export default function TenantRegistration() {
                   disabled={isSubmitting}
                   className="w-full"
                 >
-                  {isSubmitting ? 'Mengirim...' : 'Daftar Sekarang'}
+                  {isSubmitting ? 'Mengirim...' : 'Pesan Sekarang'}
                 </Button>
               </div>
             </form>

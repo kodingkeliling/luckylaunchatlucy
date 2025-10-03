@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useBookings } from '@/hooks/useBookings';
 
 interface SpotInfo {
   id: string;
@@ -20,7 +21,7 @@ interface SpotInfo {
   };
 }
 
-const spots: SpotInfo[] = [
+export const spots: SpotInfo[] = [
   // PARKING AREA - berdasarkan gambar
   { id: 'spot-1', number: 1, x: 30, y: 62, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
@@ -29,10 +30,10 @@ const spots: SpotInfo[] = [
   { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
   
   // HALLWAY & TOILET AREA
-  { id: 'spot-3', number: 3, x: 59.3, y: 62.5, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-3', number: 3, x: 59.2, y: 62.8, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
   
   // EXTRA BAR AREA (atas)
   { id: 'spot-8', number: 8, x: 58, y: 43.5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
@@ -50,6 +51,12 @@ const spots: SpotInfo[] = [
   // AREA BELAKANG (bawah)
   { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
   { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+
+  { id: 'spot-19', number: 19, x: 7.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-20', number: 20, x: 13.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-21', number: 21, x: 19.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-22', number: 22, x: 13, y: 58, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-23', number: 23, x: 18.4, y: 57.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
 ];
 
 interface LayoutMapProps {
@@ -66,6 +73,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [containerHeight, setContainerHeight] = useState(600);
   const mapRef = useRef<HTMLDivElement>(null);
+  const { isSpotCompletelyBooked, getBookedDurationsForSpot, isLoading: isLoadingBookings } = useBookings();
 
   // Sync selectedSpot with props
   useEffect(() => {
@@ -156,10 +164,22 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
           </div>
         </CardHeader>
         <CardContent>
-          <div className='overflow-scroll w-full'>
+          <div className='overflow-scroll w-full relative'>    
+          {/* Loading Overlay */}
+          {isLoadingBookings && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10">
+              <div className="flex flex-col items-center gap-3">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <p className="text-sm text-gray-600 font-medium">Loading data...</p>
+              </div>
+            </div>
+          )}
+          
           <div 
             ref={mapRef}
-            className="relative overflow-hidden rounded-lg border-2 border-gray-300 mx-auto"
+            className={`relative overflow-hidden rounded-lg border-2 border-gray-300 mx-auto transition-all duration-300 ${
+              isLoadingBookings ? 'blur-sm pointer-events-none' : ''
+            }`}
             style={{ 
               height: `596px`,
               width: '782px',
@@ -198,33 +218,42 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                 const getBoothColor = (size: string) => {
                   if (size === '3x3m') return 'bg-red-600 hover:bg-red-700'; // BOOTH 3X3 - Merah
                   if (size === '2x2m') return 'bg-blue-900 hover:bg-blue-800'; // BOOTH 2X2 - Biru gelap
-                  if (size === '1x1m') return 'bg-lime-500 hover:bg-lime-600'; // BOOTH 1X1 - Hijau lime
-                  return 'bg-primary hover:bg-primary/80'; // Default
+                  if (size === '1x1m') return 'bg-primary hover:bg-lime-600'; // BOOTH 1X1 - Hijau lime
+                  if (size === 'Trunk-Package') return 'bg-purple-600 hover:bg-purple-700'; // TRUNK PACKAGE - Ungu
+                  return 'bg-gray-500 hover:bg-gray-500/80'; // Default
                 };
+
+                const isCompletelyBooked = isSpotCompletelyBooked(spot.id);
+                const isAvailable = spot.available && !isCompletelyBooked;
 
                 return (
                   <button
                     key={spot.id}
                     onClick={() => {
-                      setSelectedSpot(spot);
-                      onSpotSelect?.(spot.id);
+                      if (isAvailable) {
+                        setSelectedSpot(spot);
+                        onSpotSelect?.(spot.id);
+                      }
                     }}
                     type="button"
-                    className={`absolute w-5 h-5 rounded-full  flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
+                    className={`absolute w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
                       selectedSpot?.id === spot.id
                         ? 'border-white ring-2 ring-primary ring-offset-2 scale-125' // Selected state
                         : 'border-transparent'
                     } ${
-                      spot.available 
-                        ? getBoothColor(spot.size)
-                        : 'bg-gray-400 cursor-not-allowed'
+                      isCompletelyBooked
+                        ? 'bg-gray-400 cursor-not-allowed' // Completely Booked - Orange
+                        : isAvailable 
+                          ? getBoothColor(spot.size)
+                          : 'bg-gray-400 cursor-not-allowed' // Not available
                     }`}
                     style={{ 
                       left: `${spot.x}%`, 
                       top: `${spot.y}%`,
                       transform: 'translate(-50%, -50%)'
                     }}
-                    disabled={!spot.available}
+                    disabled={!isAvailable}
+                    title={isCompletelyBooked ? 'Completely Booked' : !spot.available ? 'Not Available' : `Spot ${spot.number}`}
                   >
                     {spot.number}
                   </button>
@@ -233,10 +262,12 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
             </div>
             </div>
           </div>
-          
+
           {/* Spot Information */}
           {selectedSpot && (
-            <div className="mt-4 p-3 md:p-4 bg-muted rounded-lg sticky left-0">
+            <div className={`mt-4 p-3 md:p-4 bg-muted rounded-lg sticky left-0 transition-all duration-300 ${
+              isLoadingBookings ? 'opacity-50' : ''
+            }`}>
               <h3 className="font-semibold mb-2 text-sm md:text-base">Spot {selectedSpot.number}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs md:text-sm">
                 <div>
@@ -245,27 +276,63 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                 <div>
                   <span className="font-medium">Ukuran:</span> {selectedSpot.size}
                 </div>
+                {selectedSpot.price.threeDay > 0 && (
                 <div>
                   <span className="font-medium">3 Hari:</span> Rp {selectedSpot.price.threeDay.toLocaleString()}
                 </div>
+                )}
                 <div>
                   <span className="font-medium">2 Hari:</span> Rp {selectedSpot.price.twoDay.toLocaleString()}
+                  {selectedSpot.area === 'Trunk Area' && (
+                    <>
+                    <br />
+                    <span className="text-xs text-gray-500">+1 HARI INDOR UK 3x3 24 OKTOBER</span>
+                    </>
+                  )}
                 </div>
                 <div>
                   <span className="font-medium">1 Hari:</span> Rp {selectedSpot.price.oneDay.toLocaleString()}
                 </div>
                 <div>
                   <span className="font-medium">Status:</span> 
-                  <span className={`ml-1 ${selectedSpot.available ? 'text-green-600' : 'text-red-600'}`}>
-                    {selectedSpot.available ? 'Tersedia' : 'Terisi'}
+                  <span className={`ml-1 ${
+                    isSpotCompletelyBooked(selectedSpot.id) 
+                      ? 'text-orange-600' 
+                      : selectedSpot.available 
+                        ? 'text-green-600' 
+                        : 'text-red-600'
+                  }`}>
+                    {isSpotCompletelyBooked(selectedSpot.id) 
+                      ? 'Completely Booked' 
+                      : selectedSpot.available 
+                        ? 'Available' 
+                        : 'Not Available'
+                    }
                   </span>
                 </div>
+                {getBookedDurationsForSpot(selectedSpot.id).length > 0 && (
+                  <div className="md:col-span-2">
+                    <span className="font-medium">Booked Durations:</span>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {getBookedDurationsForSpot(selectedSpot.id).map((duration, index) => (
+                        <span 
+                          key={index}
+                          className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full"
+                        >
+                          {duration}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
           
           {/* Legend */}
-          <div className="mt-4 flex flex-wrap gap-4 text-xs md:text-sm justify-center md:justify-start sticky left-0">
+          <div className={`mt-4 flex flex-wrap gap-4 text-xs md:text-sm justify-center md:justify-start sticky left-0 transition-all duration-300 ${
+            isLoadingBookings ? 'opacity-50' : ''
+          }`}>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-red-600 rounded-full"></div>
               <span>BOOTH 3X3</span>
@@ -275,17 +342,23 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
               <span>BOOTH 2X2</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-lime-500 rounded-full"></div>
+              <div className="w-4 h-4 bg-primary rounded-full"></div>
               <span>BOOTH 1X1</span>
             </div>
             <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
+              <span>TRUNK PACKAGE</span>
+            </div>
+            <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-gray-400 rounded-full"></div>
-              <span>Terisi</span>
+              <span>BOOKED</span>
             </div>
           </div>
           
           {/* Instructions */}
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs md:text-sm text-blue-800 sticky left-0">
+          <div className={`mt-4 p-3 bg-blue-50 rounded-lg text-xs md:text-sm text-blue-800 sticky left-0 transition-all duration-300 ${
+            isLoadingBookings ? 'opacity-50' : ''
+          }`}>
             <p><strong>Cara menggunakan:</strong></p>
             <ul className="list-disc list-inside mt-1 space-y-1">
               <li>Scroll mouse untuk zoom in/out</li>
