@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useBookings } from '@/hooks/useBookings';
+import { useBookingData } from '@/hooks/useBookingData';
 
 interface SpotInfo {
   id: string;
@@ -73,7 +73,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [containerHeight, setContainerHeight] = useState(600);
   const mapRef = useRef<HTMLDivElement>(null);
-  const { isSpotCompletelyBooked, getBookedDurationsForSpot, isLoading: isLoadingBookings } = useBookings();
+  const { isSpotCompletelyBooked, getBookedDurationsForSpot, isLoading: isLoadingBookings } = useBookingData();
 
   // Sync selectedSpot with props
   useEffect(() => {
@@ -312,16 +312,34 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                 </div>
                 {getBookedDurationsForSpot(selectedSpot.id).length > 0 && (
                   <div className="md:col-span-2">
-                    <span className="font-medium">Booked Durations:</span>
+                    <span className="font-medium">Durasi yang Sudah Dibooking:</span>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      {getBookedDurationsForSpot(selectedSpot.id).map((duration, index) => (
-                        <span 
-                          key={index}
-                          className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full"
-                        >
-                          {duration}
-                        </span>
-                      ))}
+                      {getBookedDurationsForSpot(selectedSpot.id).map((duration, index) => {
+                        // Convert duration value to readable label
+                        const getDurationLabel = (durationValue: string) => {
+                          switch (durationValue) {
+                            case 'threeDayFull':
+                              return '3 Hari (24,25,26 Oktober)';
+                            case 'threeDayPartial':
+                              return '2 Hari (25,26 Oktober)';
+                            case 'twoDay':
+                              return '2 Hari (24,26 Oktober)';
+                            case 'oneDay':
+                              return '1 Hari (26 Oktober)';
+                            default:
+                              return durationValue;
+                          }
+                        };
+                        
+                        return (
+                          <span 
+                            key={index}
+                            className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full font-medium"
+                          >
+                            {getDurationLabel(duration)}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

@@ -8,14 +8,10 @@ export const revalidate = 0;
 // GET /api/funrun/slots - Get current slot availability
 export async function GET() {
   try {
-    console.log('🔄 API: Fetching slot data from Google Sheets...');
-    
     // Fetch current registrations from Google Sheets
     const response = await fetchFromGoogleScript('FunRun', 'GET');
-    console.log('📊 API: Google Script response:', response);
     
     if (!response.success) {
-      console.error('❌ API: Failed to fetch from Google Script:', response.error);
       return NextResponse.json(
         { 
           error: 'Failed to fetch slot data from Google Sheets', 
@@ -27,7 +23,6 @@ export async function GET() {
 
     // Calculate current slots used (including community quantity)
     const registrations = response.data?.data || [];
-    console.log('📋 API: Raw registrations data:', registrations);
     
     let currentSlots = 0;
     
@@ -38,12 +33,10 @@ export async function GET() {
           const quantity = registration.communityQuantity;
           // Handle empty string, null, undefined, or 0
           const parsedQuantity = (quantity && quantity !== '' && quantity !== '0') ? parseInt(quantity) : 1;
-          console.log(`👥 Community registration: ${parsedQuantity} slots`);
           return total + parsedQuantity;
         }
         
         // Individual registration counts as 1
-        console.log('👤 Individual registration: 1 slot');
         return total + 1;
       }, 0);
     }
@@ -58,7 +51,6 @@ export async function GET() {
       isFull: availableSlots <= 0
     };
 
-    console.log('✅ API: Calculated slot data:', slotData);
 
     const jsonResponse = NextResponse.json({
       success: true,

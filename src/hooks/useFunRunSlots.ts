@@ -20,7 +20,6 @@ export function useFunRunSlots() {
 
   const fetchSlotData = async () => {
     try {
-      console.log('🔄 Fetching slot data...');
       const response = await fetch('/api/funrun/slots', {
         method: 'GET',
         headers: {
@@ -34,22 +33,14 @@ export function useFunRunSlots() {
       });
       const result = await response.json();
       
-      console.log('📊 Slot data response:', result);
-      console.log('🕐 Response timestamp:', result.timestamp);
-      console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
-      
       if (response.ok && result.success) {
         setSlotData(result.data);
         setError(null);
-        console.log('✅ Slot data updated:', result.data);
-        console.log('🕐 Data fetched at:', new Date().toISOString());
       } else {
         setError(result.error || 'Failed to fetch slot data');
-        console.error('❌ Slot data error:', result.error);
       }
     } catch (error: any) {
       setError('Error fetching slot data');
-      console.error('❌ Slot data fetch error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +52,6 @@ export function useFunRunSlots() {
     
     // Set up auto-refresh every 30 seconds
     intervalRef.current = setInterval(() => {
-      console.log('⏰ Auto-refreshing slot data...');
       fetchSlotData();
     }, 30000);
 
@@ -74,7 +64,6 @@ export function useFunRunSlots() {
   }, []);
 
   const refresh = async () => {
-    console.log('🔄 Manual refresh triggered');
     setIsLoading(true);
     await fetchSlotData();
   };

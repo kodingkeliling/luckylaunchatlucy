@@ -8,7 +8,6 @@ export const revalidate = 0;
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.json();
-    console.log('📋 Received tenant form data:', formData);
     
     // Validate required fields
     const requiredFields = [
@@ -45,7 +44,18 @@ export async function POST(request: NextRequest) {
       'Jenis Product': formData.productType,
       'Detail Produk': formData.productDetail,
       'Posisi Tenan': formData.selectedSpot,
-      'Tanggal': formData.selectedDates.join(', '),
+      'Tanggal': (() => {
+        // For Trunk Package, filter out 25 Oktober if it exists
+        if (formData.selectedSpot && formData.selectedSpot.includes('spot-19') || 
+            formData.selectedSpot.includes('spot-20') || 
+            formData.selectedSpot.includes('spot-21') || 
+            formData.selectedSpot.includes('spot-22') || 
+            formData.selectedSpot.includes('spot-23')) {
+          // Trunk Package spots - only 24 and 26 Oktober
+          return formData.selectedDates.filter((date: string) => date !== '25 Oktober').join(', ');
+        }
+        return formData.selectedDates.join(', ');
+      })(),
       'Durasi': formData.duration,
       
       // Tambahan Kebutuhan - format: "Kursi: X, Meja: Y"
@@ -69,14 +79,10 @@ export async function POST(request: NextRequest) {
       
       // Bukti Pembayaran
       'Bukti Pembayaran URL': formData.paymentProofUrl || '',
-      'Bukti Pembayaran File': formData.paymentProofFileName || ''
     };
-
-    console.log('📊 Prepared sheet data:', sheetData);
 
     // Submit to Google Sheets
     const result = await submitTenantForm(sheetData);
-    console.log('📤 Google Sheets submission result:', result);
 
     if (result.success) {
       return NextResponse.json(

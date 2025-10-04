@@ -21,7 +21,7 @@ import FileUpload from '@/components/ui/FileUpload';
 import PhoneInput from '@/components/ui/PhoneInput';
 import LayoutMap from './LayoutMap';
 import { spots } from './LayoutMap';
-import { useBookings } from '@/hooks/useBookings';
+import { useBookingData } from '@/hooks/useBookingData';
 
 interface ValidationErrors {
   [key: string]: string;
@@ -38,7 +38,7 @@ export default function TenantRegistration() {
   const [uploadedPaymentUrl, setUploadedPaymentUrl] = useState<string | null>(null);
   const [paymentPreviewUrl, setPaymentPreviewUrl] = useState<string | null>(null);
   const [isUploadingPayment, setIsUploadingPayment] = useState(false);
-  const { isDurationBookedForSpot } = useBookings();
+  const { isDurationBookedForSpot, isLoading: isLoadingBookings, refresh: refreshBookings } = useBookingData();
 
   // Cleanup blob URL when component unmounts (like wisuda)
   useEffect(() => {
@@ -102,6 +102,27 @@ export default function TenantRegistration() {
       }));
     }
   };
+
+  // Effect to clear duration if it becomes unavailable due to booking
+  useEffect(() => {
+    if (formData.selectedSpot && formData.duration && !isLoadingBookings) {
+      const isCurrentlyBooked = isDurationBookedForSpot(formData.selectedSpot, formData.duration);
+      if (isCurrentlyBooked) {
+        setFormData(prev => ({
+          ...prev,
+          duration: ''
+        }));
+        // Clear duration error if it exists
+        if (errors.duration) {
+          setErrors(prev => ({
+            ...prev,
+            duration: ''
+          }));
+        }
+      }
+    }
+  }, [formData.selectedSpot, formData.duration, isLoadingBookings, isDurationBookedForSpot]);
+
 
   const handlePaymentUploadSuccess = (fileUrl: string, fileName: string) => {
     setUploadedPaymentUrl(fileUrl);
@@ -214,10 +235,11 @@ export default function TenantRegistration() {
       availableOptions = durationOptions.PopupMarketPage;
     }
     
-    // Filter out options where duration is already booked
+    // Always filter out options where duration is already booked, regardless of loading state
+    // This ensures immediate filtering without waiting for loading to complete
     return availableOptions.filter(option => {
       // Check if this specific duration is already booked for this spot
-      return !isDurationBookedForSpot(formData.selectedSpot, option.label);
+      return !isDurationBookedForSpot(formData.selectedSpot, option.value);
     });
   };
 
@@ -256,12 +278,13 @@ export default function TenantRegistration() {
     if (!formData.selectedSpot) {
       newErrors.selectedSpot = 'Posisi Tenan harus dipilih';
     }
-    // Temporarily skip date validation since date selection is hidden
-    // if (formData.selectedDates.length === 0) {
-    //   newErrors.selectedDates = 'Minimal pilih satu tanggal';
-    // }
+    if (formData.selectedDates.length === 0) {
+      newErrors.selectedDates = 'Minimal pilih satu tanggal';
+    }
     if (!formData.duration || formData.duration === 'disabled') {
       newErrors.duration = 'Durasi harus dipilih';
+    } else if (formData.selectedSpot && isDurationBookedForSpot(formData.selectedSpot, formData.duration)) {
+      newErrors.duration = 'Durasi yang dipilih sudah dibooking, silakan pilih durasi lain';
     }
     if (!formData.paymentProofUrl.trim()) {
       newErrors.paymentProof = 'Bukti pembayaran harus diupload';
@@ -284,12 +307,30 @@ export default function TenantRegistration() {
     try {
       const totalPayment = calculateTotalPayment();
       
-      // Ensure selectedDates has default values if empty (since date selection is hidden)
+      // Ensure selectedDates has correct values based on spot type and duration
+      const getCorrectDates = () => {
+        if (formData.selectedDates.length > 0) {
+          return formData.selectedDates;
+        }
+        
+        // Get selected spot info
+        const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
+        if (!selectedSpot) {
+          return ['24 Oktober', '25 Oktober', '26 Oktober']; // Fallback
+        }
+        
+        // For Trunk Package, only 24 and 26 Oktober are available
+        if (selectedSpot.size === 'Trunk-Package') {
+          return ['24 Oktober', '26 Oktober'];
+        }
+        
+        // For regular spots, return all dates
+        return ['24 Oktober', '25 Oktober', '26 Oktober'];
+      };
+
       const formDataWithDefaults = {
         ...formData,
-        selectedDates: formData.selectedDates.length > 0 
-          ? formData.selectedDates 
-          : ['24 Oktober', '25 Oktober', '26 Oktober'], // Default dates
+        selectedDates: getCorrectDates(),
         totalPayment
       };
 
@@ -498,28 +539,7 @@ export default function TenantRegistration() {
                   )}
                 </div>
 
-                {/* Temporarily hide date selection until confirmed
-                <div className="mb-6">
-                  <Label>Tanggal *</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                    {dateOptions.map((date) => (
-                      <div key={date.value} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={date.value}
-                          checked={formData.selectedDates.includes(date.value)}
-                          onCheckedChange={(checked: boolean) => handleDateSelection(date.value, checked)}
-                        />
-                        <Label htmlFor={date.value} className="text-sm cursor-pointer">
-                          {date.label}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                  {errors.selectedDates && (
-                    <p className="text-sm text-destructive mt-2">{errors.selectedDates}</p>
-                  )}
-                </div>
-                */}
+                {/* Date selection is handled automatically based on duration selection */}
 
                 {/* Durasi */}
                 <div className="mb-6">
@@ -535,9 +555,29 @@ export default function TenantRegistration() {
                     selectOptions={getDurationOptions()}
                     disabled={!formData.selectedSpot}
                   />
-                  {!formData.selectedSpot && (
+                  {isLoadingBookings && formData.selectedSpot && (
+                    <p className="text-sm text-blue-600 mt-2">
+                      🔄 Memuat data booking... Durasi yang sudah dibooking akan otomatis tersembunyi
+                    </p>
+                  )}
+                  {!isLoadingBookings && formData.selectedSpot && formData.duration && isDurationBookedForSpot(formData.selectedSpot, formData.duration) && (
+                    <p className="text-sm text-orange-600 mt-2">
+                      ⚠️ Durasi yang dipilih sudah dibooking, silakan pilih durasi lain
+                    </p>
+                  )}
+                  {!isLoadingBookings && !formData.selectedSpot && (
                     <p className="text-sm text-red-500 mt-2">
                       Silakan pilih posisi tenan terlebih dahulu untuk memilih durasi
+                    </p>
+                  )}
+                  {!isLoadingBookings && formData.selectedSpot && getDurationOptions().length === 0 && (
+                    <p className="text-sm text-orange-600 mt-2">
+                      Semua durasi untuk spot ini sudah dibooking
+                    </p>
+                  )}
+                  {!isLoadingBookings && formData.selectedSpot && getDurationOptions().length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Durasi yang sudah dibooking tidak akan muncul dalam pilihan
                     </p>
                   )}
                 </div>
@@ -694,6 +734,11 @@ export default function TenantRegistration() {
                 >
                   {isSubmitting ? 'Mengirim...' : 'Pesan Sekarang'}
                 </Button>
+                {isLoadingBookings && (
+                  <p className="text-xs text-blue-600 mt-2">
+                    ℹ️ Data booking sedang dimuat, durasi yang sudah dibooking akan otomatis tersembunyi
+                  </p>
+                )}
               </div>
             </form>
                 </CardContent>

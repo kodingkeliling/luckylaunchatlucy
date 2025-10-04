@@ -19,7 +19,7 @@ interface FormFieldProps {
   className?: string;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   textareaProps?: React.TextareaHTMLAttributes<HTMLTextAreaElement>;
-  selectOptions?: Array<{ value: string; label: string }>;
+  selectOptions?: Array<{ value: string; label: string; disabled?: boolean }>;
   checkboxLabel?: string;
   rows?: number;
   min?: number;
@@ -93,7 +93,7 @@ export function FormField({
                 <SelectItem 
                   key={option.value} 
                   value={option.value}
-                  disabled={option.value === 'disabled'}
+                  disabled={option.value === 'disabled' || option.disabled}
                 >
                   {option.label}
                 </SelectItem>
