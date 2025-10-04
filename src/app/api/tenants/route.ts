@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { submitTenantForm } from '@/lib/googleScript';
 
+// Force dynamic rendering - prevent static generation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.json();
+    console.log('📋 Received tenant form data:', formData);
     
     // Validate required fields
     const requiredFields = [
@@ -42,17 +47,36 @@ export async function POST(request: NextRequest) {
       'Posisi Tenan': formData.selectedSpot,
       'Tanggal': formData.selectedDates.join(', '),
       'Durasi': formData.duration,
-      'Tambahan Kebutuhan': formData.additionalNeeds || '',
+      
+      // Tambahan Kebutuhan - format: "Kursi: X, Meja: Y"
+      'Tambahan Kebutuhan': (() => {
+        const additions = [];
+        if (formData.chairCount > 0) {
+          additions.push(`Kursi: ${formData.chairCount} (Rp ${(formData.chairCount * 10000).toLocaleString()})`);
+        }
+        if (formData.tableCount > 0) {
+          additions.push(`Meja: ${formData.tableCount} (Rp ${(formData.tableCount * 25000).toLocaleString()})`);
+        }
+        return additions.length > 0 ? additions.join(', ') : 'Tidak ada';
+      })(),
+      
       'Total Pembayaran': formData.totalPayment,
       'Metode Pembayaran': formData.paymentMethod || 'Transfer Bank',
       
       // Timestamp
       'Tanggal Pendaftaran': new Date().toLocaleString('id-ID'),
-      'Status': 'Pending'
+      'Status': 'Pending',
+      
+      // Bukti Pembayaran
+      'Bukti Pembayaran URL': formData.paymentProofUrl || '',
+      'Bukti Pembayaran File': formData.paymentProofFileName || ''
     };
+
+    console.log('📊 Prepared sheet data:', sheetData);
 
     // Submit to Google Sheets
     const result = await submitTenantForm(sheetData);
+    console.log('📤 Google Sheets submission result:', result);
 
     if (result.success) {
       return NextResponse.json(
