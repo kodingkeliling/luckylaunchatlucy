@@ -63,11 +63,9 @@ export default function TenantForm() {
         throw new Error(result.error || 'Failed to submit form');
       }
       
-      console.log('Form submitted successfully:', result);
       setSubmitSuccess(true);
       setFormData(sampleFormData); // Reset form
     } catch (error) {
-      console.error('Error submitting form:', error);
       setSubmitError('Terjadi kesalahan saat mengirim formulir. Silakan coba lagi.');
     } finally {
       setIsSubmitting(false);
@@ -99,7 +97,6 @@ export default function TenantForm() {
     { value: 'popup', label: 'POP UP PACKAGE' }
   ];
 
-  console.log(formData);
 
   const getDurationOptions = () => {
     if (formData.packageType === 'trunk') {

@@ -67,7 +67,6 @@ export async function GET() {
 
     return jsonResponse;
   } catch (error) {
-    console.error('❌ API: Internal server error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -50,10 +50,10 @@ export function useFunRunSlots() {
     // Initial fetch
     fetchSlotData();
     
-    // Set up auto-refresh every 30 seconds
+    // Set up auto-refresh every 2 minutes (120 seconds) - slot data is more dynamic
     intervalRef.current = setInterval(() => {
       fetchSlotData();
-    }, 30000);
+    }, 120000);
 
     // Cleanup interval on unmount
     return () => {

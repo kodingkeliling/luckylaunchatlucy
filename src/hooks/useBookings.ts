@@ -30,7 +30,6 @@ export function useBookings() {
   const [isLoading, setIsLoading] = useState(globalLoadingState);
   const [error, setError] = useState<string | null>(globalErrorState);
   const hasInitialized = useRef(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchBookings = async () => {
     // If already fetching, return the existing promise
@@ -53,7 +52,6 @@ export function useBookings() {
         setIsLoading(true);
         setError(null);
         
-        console.log('🔄 Fetching bookings data...');
         const response = await fetch('/api/bookings', {
           method: 'GET',
           headers: {
@@ -67,15 +65,12 @@ export function useBookings() {
         });
         const result: BookingsResponse = await response.json();
         
-        console.log('📊 Bookings response:', result);
-        console.log('🕐 Response timestamp:', result.timestamp);
         
         if (result.success && result.data) {
           globalBookingsCache = result.data.data;
           setBookings(result.data.data);
           globalErrorState = null;
           setError(null);
-          console.log('Bookings data loaded:', result.data.data.length, 'records');
         } else {
           const errorMsg = result.error || 'Failed to fetch bookings';
           globalErrorState = errorMsg;
@@ -85,7 +80,6 @@ export function useBookings() {
         const errorMsg = err instanceof Error ? err.message : 'Unknown error';
         globalErrorState = errorMsg;
         setError(errorMsg);
-        console.error('Error fetching bookings:', err);
       } finally {
         globalLoadingState = false;
         setIsLoading(false);
@@ -97,24 +91,11 @@ export function useBookings() {
   };
 
   useEffect(() => {
-    // Initial fetch
+    // Initial fetch only
     if (!hasInitialized.current) {
       hasInitialized.current = true;
       fetchBookings();
     }
-    
-    // Set up auto-refresh every 30 seconds
-    intervalRef.current = setInterval(() => {
-      console.log('⏰ Auto-refreshing bookings data...');
-      fetchBookings();
-    }, 30000);
-
-    // Cleanup interval on unmount
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
   }, []);
 
   // Helper function to check if a spot is completely booked (all durations unavailable)
@@ -168,7 +149,6 @@ export function useBookings() {
   };
 
   const refresh = async () => {
-    console.log('🔄 Manual refresh triggered for bookings');
     // Clear cache and fetch fresh data
     globalBookingsCache = null;
     globalErrorState = null;

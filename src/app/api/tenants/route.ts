@@ -97,7 +97,6 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error processing tenant registration:', error);
     return NextResponse.json(
       { message: 'Terjadi kesalahan server' },
       { status: 500 }

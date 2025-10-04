@@ -26,7 +26,6 @@ export function useBookingData() {
   } = useBookingStore();
   
   const hasInitialized = useRef(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchBookings = async () => {
     try {
@@ -66,23 +65,11 @@ export function useBookingData() {
   };
 
   useEffect(() => {
-    // Initial fetch
+    // Initial fetch only
     if (!hasInitialized.current) {
       hasInitialized.current = true;
       fetchBookings();
     }
-    
-    // Set up auto-refresh every 30 seconds
-    intervalRef.current = setInterval(() => {
-      fetchBookings();
-    }, 30000);
-
-    // Cleanup interval on unmount
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
   }, []);
 
   return {

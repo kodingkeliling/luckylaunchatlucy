@@ -58,14 +58,12 @@ export default function FunRunRegistration() {
         throw new Error(result.error || 'Failed to submit form');
       }
       
-      console.log('Fun Run form submitted successfully:', result);
       setSubmitSuccess(true);
       setFormData(sampleFunRunFormData); // Reset form
       
       // Refresh slot data after successful submission
       await refresh();
     } catch (error) {
-      console.error('Error submitting form:', error);
       setSubmitError('Terjadi kesalahan saat mengirim formulir. Silakan coba lagi.');
     } finally {
       setIsSubmitting(false);

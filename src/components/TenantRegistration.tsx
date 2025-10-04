@@ -140,7 +140,6 @@ export default function TenantRegistration() {
   };
 
   const handlePaymentUploadError = (error: string) => {
-    console.error('Payment upload error:', error);
     setSubmitError(error);
   };
 
@@ -278,9 +277,6 @@ export default function TenantRegistration() {
     if (!formData.selectedSpot) {
       newErrors.selectedSpot = 'Posisi Tenan harus dipilih';
     }
-    if (formData.selectedDates.length === 0) {
-      newErrors.selectedDates = 'Minimal pilih satu tanggal';
-    }
     if (!formData.duration || formData.duration === 'disabled') {
       newErrors.duration = 'Durasi harus dipilih';
     } else if (formData.selectedSpot && isDurationBookedForSpot(formData.selectedSpot, formData.duration)) {
@@ -345,6 +341,8 @@ export default function TenantRegistration() {
       if (response.ok) {
         setSubmitSuccess(true);
         setFormData(sampleTenantFormData);
+        // Refresh booking data after successful submission
+        await refreshBookings();
       } else {
         const errorData = await response.json();
         setSubmitError(errorData.message || 'Terjadi kesalahan saat mengirim data');

@@ -44,13 +44,11 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     };
 
-    console.log('Submitting Fun Run data to Google Sheets:', funRunData);
 
     // Save directly to Google Sheets with sheet name "FunRun"
     const response = await submitFunRunRegistration(funRunData);
     
     if (!response.success) {
-      console.error('Google Sheets submission failed:', response.error);
       return NextResponse.json(
         { 
           error: 'Failed to save fun run data to Google Sheets', 
@@ -60,14 +58,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('✅ Fun Run data saved to Google Sheets successfully');
     return NextResponse.json({
       success: true,
       data: funRunData,
       message: 'Fun Run registration saved successfully to Google Sheets'
     });
   } catch (error) {
-    console.error('Error creating fun run registration:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
