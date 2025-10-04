@@ -343,7 +343,6 @@ export default function FunRunRegistration() {
                   type="email"
                   value={formData.email}
                   onChange={(value) => handleFieldChange('email', value)}
-                  required
                   error={errors.email}
                 />
               </div>
