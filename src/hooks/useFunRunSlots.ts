@@ -22,20 +22,27 @@ export function useFunRunSlots() {
     try {
       console.log('🔄 Fetching slot data...');
       const response = await fetch('/api/funrun/slots', {
+        method: 'GET',
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Cache-Control': 'no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0',
           'Pragma': 'no-cache',
-          'Expires': '0'
-        }
+          'Expires': '0',
+          'If-Modified-Since': '0',
+          'If-None-Match': '*',
+        },
+        cache: 'no-store' // Force no caching
       });
       const result = await response.json();
       
       console.log('📊 Slot data response:', result);
+      console.log('🕐 Response timestamp:', result.timestamp);
+      console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
       
       if (response.ok && result.success) {
         setSlotData(result.data);
         setError(null);
         console.log('✅ Slot data updated:', result.data);
+        console.log('🕐 Data fetched at:', new Date().toISOString());
       } else {
         setError(result.error || 'Failed to fetch slot data');
         console.error('❌ Slot data error:', result.error);

@@ -15,18 +15,21 @@ export async function fetchFromGoogleScript<T>(
   data?: any
 ): Promise<ApiResponse<T>> {
   try {
-    // Add timestamp to prevent caching
+    // Add multiple cache-busting parameters
     const timestamp = Date.now();
-    const url = `${GOOGLE_SCRIPT_URL}?sheet=${sheetName}&t=${timestamp}`;
+    const randomId = Math.random().toString(36).substring(7);
+    const url = `${GOOGLE_SCRIPT_URL}?sheet=${sheetName}&t=${timestamp}&r=${randomId}&_cb=${Date.now()}`;
     
     const options: RequestInit = {
       method,
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Cache-Control': 'no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0',
         'Pragma': 'no-cache',
         'Expires': '0',
+        'If-Modified-Since': '0',
+        'If-None-Match': '*',
       },
       redirect: 'follow', // Follow redirects
     };

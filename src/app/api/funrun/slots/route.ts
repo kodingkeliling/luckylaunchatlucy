@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { fetchFromGoogleScript } from '@/lib/googleScript';
 
+// Force dynamic rendering - prevent static generation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET /api/funrun/slots - Get current slot availability
 export async function GET() {
   try {
@@ -58,13 +62,16 @@ export async function GET() {
 
     const jsonResponse = NextResponse.json({
       success: true,
-      data: slotData
+      data: slotData,
+      timestamp: new Date().toISOString() // Add timestamp to response
     });
 
-    // Prevent caching
-    jsonResponse.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    // Aggressive cache prevention
+    jsonResponse.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
     jsonResponse.headers.set('Pragma', 'no-cache');
     jsonResponse.headers.set('Expires', '0');
+    jsonResponse.headers.set('Last-Modified', new Date().toUTCString());
+    jsonResponse.headers.set('ETag', `"${Date.now()}"`);
 
     return jsonResponse;
   } catch (error) {

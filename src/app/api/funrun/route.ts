@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { submitFunRunRegistration } from '@/lib/googleScript';
 
+// Force dynamic rendering - prevent static generation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // POST /api/funrun - Create new fun run registration
 export async function POST(request: NextRequest) {
   try {
