@@ -422,18 +422,16 @@ export default function TenantRegistration() {
       
         {/* Form Section */}
         <div className="md:container px-1 mx-auto md:px-4 py-16 pb-32 lg:pb-16 z-10 flex flex-col lg:flex-row gap-4">
-            <div className="absolute left-4 top-4 md:static md:self-start md:mb-4">
-              <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Kembali
-              </Button>
-            </div>
             {/* Main Form */}
             <div className="flex-1">
               <Card className="max-w-7xl shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
                 <CardContent>
             {/* Header */}
             <div className="text-center mb-8">
+            <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2 mb-2">
+                <ArrowLeft className="w-4 h-4" />
+                Kembali
+              </Button>
               <div className="w-[280px]">
                 <img
                   src="/images/card-popup.png"

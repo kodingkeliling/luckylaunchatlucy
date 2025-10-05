@@ -147,15 +147,13 @@ export default function FunRunRegistration() {
       
       {/* Form Section */}
       <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="mb-6">
-          <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            Kembali
-          </Button>
-        </div>
         <Card className="max-w-4xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
           <CardContent>
             {/* Header inside form */}
+            <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2 mb-2">
+            <ArrowLeft className="w-4 h-4" />
+            Kembali
+          </Button>
             <div className="flex items-center justify-start">
               <div className="w-[280px]">
                 <img

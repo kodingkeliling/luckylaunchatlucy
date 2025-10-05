@@ -66,7 +66,7 @@ export default function EventInfo() {
           {/* Right Column - Event Info */}
           <div className="relative bg-white/95 rounded-2xl p-10 h-full shadow-2xl backdrop-blur-sm border border-white/10 overflow-hidden">
             <div className="relative z-10">
-              <h3 className="text-2xl text-black mb-8 font-ttchocolates tracking-tight border-b border-black/20 pb-4">
+              <h3 className="text-2xl text-black mb-8 tracking-tight border-b border-black/20 pb-4 font-raleway">
                 INFORMASI ACARA
               </h3>
               <div className="space-y-6">
