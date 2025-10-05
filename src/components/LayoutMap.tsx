@@ -23,8 +23,8 @@ interface SpotInfo {
 
 export const spots: SpotInfo[] = [
   // PARKING AREA - berdasarkan gambar
-  { id: 'spot-1', number: 1, x: 30, y: 62, size: '2x2m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  { id: 'spot-1', number: 1, x: 30, y: 62, size: '2x2m', area: 'Parking Area', available: true, price: { threeDay: 375000, twoDay: 350000, oneDay: 275000 } },
+  { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 450000, twoDay: 325000, oneDay: 300000 } },
   
   // TRUNK AREA & SEATING AREA
   { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },

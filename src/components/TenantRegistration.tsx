@@ -284,9 +284,9 @@ export default function TenantRegistration() {
     } else if (formData.selectedSpot && isDurationBookedForSpot(formData.selectedSpot, formData.duration)) {
       newErrors.duration = 'Durasi yang dipilih sudah dibooking, silakan pilih durasi lain';
     }
-    if (!formData.paymentProofUrl.trim()) {
-      newErrors.paymentProof = 'Bukti pembayaran harus diupload';
-    }
+    // if (!formData.paymentProofUrl.trim()) {
+    //   newErrors.paymentProof = 'Bukti pembayaran harus diupload';
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -373,7 +373,7 @@ export default function TenantRegistration() {
           <Card className="max-w-2xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
             <CardContent className="text-center">
               <div className="mb-6">
-                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-10 h-10 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -384,14 +384,14 @@ export default function TenantRegistration() {
                 </p>
               </div>
               
-              <div className="bg-muted p-4 rounded-lg mb-6">
+              {/* <div className="bg-muted p-4 rounded-lg mb-6">
                 <h3 className="font-semibold mb-2">Informasi Pembayaran:</h3>
                 <p className="text-sm">
                   <strong>Bank:</strong> {paymentInfo.bank}<br/>
                   <strong>No. Rekening:</strong> {paymentInfo.accountNumber}<br/>
                   <strong>Atas Nama:</strong> {paymentInfo.accountName}
                 </p>
-              </div>
+              </div> */}
 
               <Button 
                 onClick={() => setSubmitSuccess(false)}
@@ -658,15 +658,13 @@ export default function TenantRegistration() {
               </div>
 
               {/* Payment Information and Proof */}
-              <div>
+              {/* <div>
                 <div className="flex items-center mb-6">
                   <div className="w-8 h-8 bg-destructive text-white rounded-full flex items-center justify-center mr-3">
                     <span className="text-white font-bold text-sm">3</span>
                   </div>
                   <h3 className="text-xl font-semibold">INFORMASI PEMBAYARAN</h3>
                 </div>
-
-                {/* Payment Information */}
                 <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <h4 className="font-semibold text-blue-900 mb-3">Transfer ke:</h4>
                   <div className="space-y-2 text-sm">
@@ -689,8 +687,6 @@ export default function TenantRegistration() {
                     </p>
                   </div>
                 </div>
-
-                {/* Payment Proof Upload */}
                 <div className="mb-6">
                   <Label htmlFor="paymentProof">Bukti Pembayaran *</Label>
                   <div className="mt-2">
@@ -710,7 +706,7 @@ export default function TenantRegistration() {
                     <p className="text-sm text-destructive mt-2">{errors.paymentProof}</p>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               {/* Informasi Paket */}
               <div className="mb-6">
@@ -743,7 +739,7 @@ export default function TenantRegistration() {
                   disabled={isSubmitting}
                   className="w-full"
                 >
-                  {isSubmitting ? 'Mengirim...' : 'Pesan Sekarang'}
+                  {isSubmitting ? 'Mengirim...' : 'Daftar Sekarang'}
                 </Button>
               </div>
             </form>
