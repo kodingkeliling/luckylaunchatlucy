@@ -747,11 +747,6 @@ export default function TenantRegistration() {
                 >
                   {isSubmitting ? 'Mengirim...' : 'Pesan Sekarang'}
                 </Button>
-                {isLoadingBookings && (
-                  <p className="text-xs text-blue-600 mt-2">
-                    ℹ️ Data booking sedang dimuat, durasi yang sudah dibooking akan otomatis tersembunyi
-                  </p>
-                )}
               </div>
             </form>
                 </CardContent>

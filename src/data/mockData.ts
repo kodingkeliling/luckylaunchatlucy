@@ -347,7 +347,7 @@ export const sampleFunRunFormData: FunRunFormData = {
 export const packageInclusions = {
   title: "SEMUA PAKET AKAN MENDAPATKAN:",
   items: [
-    "ELECTRICAL TERMINAL 4 LUBANG",
+    "ELECTRICAL TERMINAL 2 LUBANG",
     "MEJA 1 (JIKA MEMBUTUHKAN)",
     "KURSI 1 (JIKA MEMBUTUHKAN)"
   ],

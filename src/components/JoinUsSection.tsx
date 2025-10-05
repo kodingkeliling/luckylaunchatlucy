@@ -25,7 +25,7 @@ const JoinUsSection: React.FC = () => {
         </p>
 
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10">
-          <Link href="#popup-market" className="block w-full md:w-1/2" prefetch={false}>
+          <Link href="/popup-market" className="block w-full md:w-1/2" prefetch={false}>
             <Image
               src="/images/card-popup.png"
               alt="Pop Up & Trunk"
@@ -35,7 +35,7 @@ const JoinUsSection: React.FC = () => {
               priority
             />
           </Link>
-          <Link href="#funrun" className="block w-full md:w-1/2" prefetch={false}>
+          <Link href="/funrun" className="block w-full md:w-1/2" prefetch={false}>
             <Image
               src="/images/card-funrun.png"
               alt="Fun Run"
