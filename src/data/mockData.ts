@@ -244,8 +244,8 @@ export const tenantSpots: TenantSpot[] = [
     }
   },
   {
-    id: "area-outdoor-2slot",
-    name: "AREA OUTDOOR (2 SLOT)",
+    id: "area-outdoor-1slot",
+    name: "AREA OUTDOOR (1 SLOT)",
     location: "Area Outdoor",
     size: "3X3M",
     availability: true,

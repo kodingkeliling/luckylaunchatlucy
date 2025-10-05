@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="text-center md:text-left">
             <div className="mb-4">
               <Image 
-                src="/images/LLL-kuning.png"
+                src="/images/LLL-putih.png"
                 alt="Lucky Launch at Lucy Logo"
                 width={120}
                 height={120}

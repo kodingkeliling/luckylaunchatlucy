@@ -80,8 +80,8 @@ const InfoBooth: React.FC = () => {
                     ['Area Bar (1 slot)','1x1m','250k','200k','150k'],
                     ['Area Extra Belakang (2 slot)','3x3m','300k','250k','200k'],
                     ['Area Belakang (4 slot)','3x3m','300k','250k','200k'],
-                    ['Area outdoor (2 slot)','3x3m','450k','350k','300k'],
-                    ['Area outdoor (2 slot)','2x2m','375k','325k','275k'],
+                    ['Area outdoor (1 slot)','3x3m','450k','350k','300k'],
+                    ['Area outdoor (1 slot)','2x2m','375k','325k','275k'],
                   ].map((row, idx) => (
                     <tr key={idx} className={`${idx % 2 === 0 ? 'bg-red-600' : 'bg-red-500'}`}>
                       <td className="py-3 px-3 font-medium text-white border-b border-red-400">{row[0]}</td>
