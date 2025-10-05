@@ -51,7 +51,7 @@ export const spots: SpotInfo[] = [
   
   // AREA BELAKANG (bawah)
   { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '2x2m', area: 'Outdoor', available: true, price: { threeDay: 375000, twoDay: 325000, oneDay: 275000 } },
+  { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Outdoor', available: true, price: { threeDay: 375000, twoDay: 325000, oneDay: 275000 } },
 
   { id: 'spot-19', number: 19, x: 7.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
   { id: 'spot-20', number: 20, x: 13.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
