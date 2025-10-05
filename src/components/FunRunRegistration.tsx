@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { funRunData, FunRunFormData, sampleFunRunFormData } from '@/data/mockData';
 import { validateFunRunForm, ValidationErrors } from '@/lib/validation';
 import { Button } from '@/components/ui/button';
+import Footer from '@/components/Footer';
+import { ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { FormField } from '@/components/ui/form-field';
@@ -77,8 +79,15 @@ export default function FunRunRegistration() {
 
   if (submitSuccess) {
     return (
+      <>
       <section id="fun-run-registration" className="py-20 bg-background">
         <div className="container mx-auto px-4">
+          <div className="mb-6 relative z-10">
+            <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Kembali
+            </Button>
+          </div>
           <div className="max-w-4xl mx-auto text-center">
             <Card className="p-12">
               <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-8">
@@ -119,10 +128,13 @@ export default function FunRunRegistration() {
           </div>
         </div>
       </section>
+      <Footer />
+      </>
     );
   }
 
   return (
+    <>
     <section id="fun-run-registration" className="min-h-screen bg-[#f5f5f5] relative overflow-hidden">
       {/* Grid Texture Background */}
       <div className="absolute inset-0" style={{
@@ -135,48 +147,22 @@ export default function FunRunRegistration() {
       
       {/* Form Section */}
       <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="mb-6">
+          <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            Kembali
+          </Button>
+        </div>
         <Card className="max-w-4xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
           <CardContent>
             {/* Header inside form */}
-            <div className="flex items-center justify-between flex-col md:flex-row">
-                    {/* Center Title */}
-                <div>
-                  <div className="relative">
-                    <h1 className="flex items-center text-7xl md:text-8xl font-black tracking-tighter">
-                      <div className="relative">
-                        <div className="bg-[#be2625] text-black px-5 py-2 -skew-x-12 transform">
-                          <span className="block skew-x-12 transform">FUN</span>
-                        </div>
-                        <div className="absolute top-0 left-0 bg-black bg-opacity-25 text-transparent px-5 py-2 -skew-x-12 transform translate-x-[3px] translate-y-[3px]">
-                          <span className="block skew-x-12 transform">FUN</span>
-                        </div>
-                      </div>
-                      <span className="transform -rotate-12 -ml-3 text-[#be2625]">RUN</span>
-                    </h1>
-                    <div className="text-lg font-semibold text-foreground mt-2">Lucky Launch at Lucy</div>
-                  </div>
-                </div>
-              {/* Logo Section */}
-              <div className="flex justify-center items-center gap-2">
-                {/* LLL Logo */}
-                <div className="relative w-40 h-40 ">
-                  <Image 
-                    src="/images/logo/LLL - Logo B&W-01.png"
-                    alt="Lucky Launch at Lucy Logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                
-                {/* LCC Logo */}
-                <div className="relative w-40 h-40">
-                  <Image 
-                    src="/images/logo/LCC BANDUNG_Main Logo-Black (2).png"
-                    alt="Lucy Curated Compound Logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
+            <div className="flex items-center justify-start">
+              <div className="w-[280px]">
+                <img
+                  src="/images/card-funrun.png"
+                  alt="Fun Run"
+                  className="w-full h-auto"
+                />
               </div>
             </div>
                {/* Slot Counter */}
@@ -377,7 +363,7 @@ export default function FunRunRegistration() {
                 />
 
                 <FormField
-                  label="Saya menyatakan bahwa saya dalam kondisi sehat dan sanggup mengikuti kegiatan Fun Run dengan penuh tanggung jawab. Panitia tidak bertanggung jawab atas resiko kesehatan yang timbul selama kegiatan berlangsung."
+                  label="Panitia akan melakukan pertolongan pertama atas resiko kesehatan tang timbul selama kegiatan berlangsung"
                   name="liabilityWaiver"
                   type="checkbox"
                   value={formData.liabilityWaiver}
@@ -415,5 +401,7 @@ export default function FunRunRegistration() {
         </Card>
       </div>
     </section>
+    <Footer />
+    </>
   );
 }

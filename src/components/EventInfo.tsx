@@ -104,6 +104,33 @@ export default function EventInfo() {
           </div>
         </div>
       </div>
+      <div className="container flex justify-center relative z-10 px-2 mx-auto max-w-6xl mt-10">
+        <div className="flex flex-col md:flex-row gap-8">
+            {/* Baris 1 Kolom 1 */}
+              <Image
+                src="/images/card-24-25.png"
+                alt="24-25 Event"
+                width={500}
+                height={750}
+                className="w-auto h-full object-contain"
+                quality={100}
+                priority
+              />
+
+          {/* Kolom 3 */}
+          <div className="space-y-2">
+            {/* Baris 1 Kolom 3 */}
+              <Image
+                src="/images/card-26.png"
+                alt="26 Event"
+                width={500}
+                height={750}
+                className="w-auto h-full object-contain"
+                quality={100}
+              />
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

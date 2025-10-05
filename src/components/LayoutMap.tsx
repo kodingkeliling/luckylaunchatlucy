@@ -23,7 +23,7 @@ interface SpotInfo {
 
 export const spots: SpotInfo[] = [
   // PARKING AREA - berdasarkan gambar
-  { id: 'spot-1', number: 1, x: 30, y: 62, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
+  { id: 'spot-1', number: 1, x: 30, y: 62, size: '2x2m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   
   // TRUNK AREA & SEATING AREA
@@ -219,7 +219,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                   if (size === '3x3m') return 'bg-red-600 hover:bg-red-700'; // BOOTH 3X3 - Merah
                   if (size === '2x2m') return 'bg-blue-900 hover:bg-blue-800'; // BOOTH 2X2 - Biru gelap
                   if (size === '1x1m') return 'bg-primary hover:bg-lime-600'; // BOOTH 1X1 - Hijau lime
-                  if (size === 'Trunk-Package') return 'bg-purple-600 hover:bg-purple-700'; // TRUNK PACKAGE - Ungu
+                  if (size === 'Trunk-Package') return 'bg-black hover:bg-black/80'; // TRUNK PACKAGE - Ungu
                   return 'bg-gray-500 hover:bg-gray-500/80'; // Default
                 };
 
@@ -238,7 +238,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                     type="button"
                     className={`absolute w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-110 shadow-lg border-2 ${
                       selectedSpot?.id === spot.id
-                        ? 'border-white ring-2 ring-primary ring-offset-2 scale-125' // Selected state
+                        ? 'border-white ring-2 ring-secondary ring-offset-2 scale-125' // Selected state
                         : 'border-transparent'
                     } ${
                       isCompletelyBooked
@@ -364,7 +364,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
               <span>BOOTH 1X1</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
+              <div className="w-4 h-4 bg-black rounded-full"></div>
               <span>TRUNK PACKAGE</span>
             </div>
             <div className="flex items-center gap-2">

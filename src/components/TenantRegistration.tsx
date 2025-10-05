@@ -13,6 +13,8 @@ import {
   packageInclusions
 } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
+import Footer from '@/components/Footer';
+import { ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { FormField } from '@/components/ui/form-field';
@@ -356,6 +358,7 @@ export default function TenantRegistration() {
 
   if (submitSuccess) {
     return (
+      <>
       <section className="min-h-screen bg-[#f5f5f5] relative overflow-hidden">
         {/* Grid Texture Background */}
         <div className="absolute inset-0" style={{
@@ -400,10 +403,13 @@ export default function TenantRegistration() {
           </Card>
         </div>
       </section>
+      <Footer />
+      </>
     );
   }
 
   return (
+      <>
       <section className="min-h-screen relative bg-[#f5f5f5]">
         {/* Grid Texture Background */}
         <div className="absolute inset-0" style={{
@@ -416,16 +422,25 @@ export default function TenantRegistration() {
       
         {/* Form Section */}
         <div className="md:container px-1 mx-auto md:px-4 py-16 pb-32 lg:pb-16 z-10 flex flex-col lg:flex-row gap-4">
+            <div className="absolute left-4 top-4 md:static md:self-start md:mb-4">
+              <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Kembali
+              </Button>
+            </div>
             {/* Main Form */}
             <div className="flex-1">
               <Card className="max-w-7xl shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
                 <CardContent>
             {/* Header */}
             <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                REGISTRASI TENAN
-              </h1>
-              <p className="text-muted-foreground">Lucky Launch at Lucy</p>
+              <div className="w-[280px]">
+                <img
+                  src="/images/card-popup.png"
+                  alt="Pop Up & Trunk"
+                  className="w-full h-auto"
+                />
+              </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
@@ -900,5 +915,7 @@ export default function TenantRegistration() {
         </div>
         </div>
       </section>
+      <Footer />
+      </>
   );
 }
