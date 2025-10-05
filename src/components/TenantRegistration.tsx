@@ -428,7 +428,7 @@ export default function TenantRegistration() {
                 <CardContent>
             {/* Header */}
             <div className="text-center mb-8">
-            <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2 mb-2">
+            <Button variant="destructive" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2 mb-2">
                 <ArrowLeft className="w-4 h-4" />
                 Kembali
               </Button>
@@ -445,8 +445,8 @@ export default function TenantRegistration() {
               {/* Bagian 1: DATA KLIEN */}
               <div>
                 <div className="flex items-center mb-6">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
-                    <span className="text-primary-foreground font-bold text-sm">1</span>
+                  <div className="w-8 h-8 bg-destructive text-white rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white font-bold text-sm">1</span>
                   </div>
                   <h3 className="text-xl font-semibold">DATA KLIEN</h3>
                 </div>
@@ -489,7 +489,7 @@ export default function TenantRegistration() {
               {/* Bagian 2: DETAIL POP UP MARKET */}
               <div>
                 <div className="flex items-center mb-6">
-                  <div className="w-8 h-8 bg-destructive rounded-full flex items-center justify-center mr-3">
+                  <div className="w-8 h-8 bg-destructive text-white rounded-full flex items-center justify-center mr-3">
                     <span className="text-white font-bold text-sm">2</span>
                   </div>
                   <h3 className="text-xl font-semibold">DETAIL POP UP MARKET</h3>
@@ -660,7 +660,7 @@ export default function TenantRegistration() {
               {/* Payment Information and Proof */}
               <div>
                 <div className="flex items-center mb-6">
-                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                  <div className="w-8 h-8 bg-destructive text-white rounded-full flex items-center justify-center mr-3">
                     <span className="text-white font-bold text-sm">3</span>
                   </div>
                   <h3 className="text-xl font-semibold">INFORMASI PEMBAYARAN</h3>

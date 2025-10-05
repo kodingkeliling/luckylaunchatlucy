@@ -28,8 +28,8 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#d5df40",
-          foreground: "#2c4059",
+          DEFAULT: "#323250",
+          foreground: "#ffffff",
         },
         secondary: {
           DEFAULT: "#2c4059",
@@ -56,7 +56,7 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
         // Custom colors for your project
-        'custom-primary': '#d5df40',
+        'custom-primary': '#323250',
         'custom-secondary': '#2c4059',
         'custom-accent': '#be2625',
         'custom-light': '#e5e5e5',

@@ -83,7 +83,7 @@ export default function FunRunRegistration() {
       <section id="fun-run-registration" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="mb-6 relative z-10">
-            <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2">
+            <Button variant="destructive" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" />
               Kembali
             </Button>
@@ -150,7 +150,7 @@ export default function FunRunRegistration() {
         <Card className="max-w-4xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm rounded-xl">
           <CardContent>
             {/* Header inside form */}
-            <Button variant="secondary" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2 mb-2">
+            <Button variant="destructive" size="sm" type="button" onClick={() => window.history.back()} className="flex items-center gap-2 mb-2">
             <ArrowLeft className="w-4 h-4" />
             Kembali
           </Button>
@@ -215,8 +215,8 @@ export default function FunRunRegistration() {
             {/* Data Diri */}
             <div className="mb-8">
               <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
-                  <span className="text-primary-foreground font-bold text-sm">1</span>
+                <div className="w-8 h-8 bg-destructive rounded-full flex items-center justify-center mr-3">
+                  <span className="text-white font-bold text-sm">1</span>
                 </div>
                 <h3 className="text-xl font-semibold">DATA DIRI</h3>
               </div>

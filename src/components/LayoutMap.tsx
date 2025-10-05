@@ -27,13 +27,13 @@ export const spots: SpotInfo[] = [
   { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   
   // TRUNK AREA & SEATING AREA
-  { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
   
   // HALLWAY & TOILET AREA
   { id: 'spot-3', number: 3, x: 59.2, y: 62.8, size: '3x3m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Hallway', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Seating Area', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
   
   // EXTRA BAR AREA (atas)
   { id: 'spot-8', number: 8, x: 58, y: 43.5, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
@@ -42,15 +42,16 @@ export const spots: SpotInfo[] = [
   { id: 'spot-11', number: 11, x: 67.9, y: 42.4, size: '3x3m', area: 'Extra Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   
   // BAR AREA
-  { id: 'spot-12', number: 12, x: 70.4, y: 52, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
-  { id: 'spot-13', number: 13, x: 79.8, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
+  { id: 'spot-12', number: 12, x: 70.4, y: 52, size: '1x1m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
+  { id: 'spot-13', number: 13, x: 79.8, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   { id: 'spot-14', number: 14, x: 82.6, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
   { id: 'spot-15', number: 15, x: 85.4, y: 47.6, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
-  { id: 'spot-16', number: 16, x: 90.8, y: 52.9, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 250000, twoDay: 200000, oneDay: 150000 } },
+  // OUTDOOR (2 slot → diganti 1 slot 3x3m, 1 slot 2x2m sesuai permintaan)
+  { id: 'spot-16', number: 16, x: 90.8, y: 52.9, size: '3x3m', area: 'Outdoor', available: true, price: { threeDay: 450000, twoDay: 350000, oneDay: 300000 } },
   
   // AREA BELAKANG (bawah)
   { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
-  { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Area Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
+  { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '2x2m', area: 'Outdoor', available: true, price: { threeDay: 375000, twoDay: 325000, oneDay: 275000 } },
 
   { id: 'spot-19', number: 19, x: 7.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
   { id: 'spot-20', number: 20, x: 13.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
@@ -218,7 +219,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                 const getBoothColor = (size: string) => {
                   if (size === '3x3m') return 'bg-red-600 hover:bg-red-700'; // BOOTH 3X3 - Merah
                   if (size === '2x2m') return 'bg-blue-900 hover:bg-blue-800'; // BOOTH 2X2 - Biru gelap
-                  if (size === '1x1m') return 'bg-primary hover:bg-lime-600'; // BOOTH 1X1 - Hijau lime
+                  if (size === '1x1m') return 'bg-[#FFECA1] !text-black hover:bg-[#FFECA1]/60'; // BOOTH 1X1 - Hijau lime
                   if (size === 'Trunk-Package') return 'bg-black hover:bg-black/80'; // TRUNK PACKAGE - Ungu
                   return 'bg-gray-500 hover:bg-gray-500/80'; // Default
                 };
@@ -360,7 +361,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
               <span>BOOTH 2X2</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-primary rounded-full"></div>
+              <div className="w-4 h-4 bg-[#FFECA1] rounded-full"></div>
               <span>BOOTH 1X1</span>
             </div>
             <div className="flex items-center gap-2">
