@@ -79,8 +79,8 @@ export const eventData: EventData = {
   eventLocation: "Lucy Curated Compound",
   eventDescription: "Lucky Launch merupakan aktiviti event kolaborasi yang menggabungkan aktivitas olahraga, hiburan, serta dukungan terhadap brand lokal. Acara ini dirancang dengan tujuan untuk menggerakan perekonomian lokal dan mempromosikan gaya hidup sehat melalui lari 777 Ltd.",
   organizer: "Triple Seven Ltd.",
-  contactPhone: "0851 5778 9981",
-  contactEmail: "777admin@gmail.com",
+  contactPhone: "0821 2729 9181",
+  contactEmail: "777liability@gmail.com",
   eventSchedule: [
     {
       time: "05:00",

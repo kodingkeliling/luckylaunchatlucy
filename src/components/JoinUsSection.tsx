@@ -27,7 +27,7 @@ const JoinUsSection: React.FC = () => {
       <div className="container relative z-10 text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">LET'S JOIN US!</h2>
         <p className="text-lg md:text-2xl opacity-95 leading-tight mb-10">
-          LAKUKAN PENDAFTARAN POP UP, TRUNK & FUNRUN<br />DIBAWAH INI
+          LAKUKAN PENDAFTARAN POP UP, TRUNK & FUNRUN DIBAWAH INI:
         </p>
 
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10">
