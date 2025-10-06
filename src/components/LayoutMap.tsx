@@ -30,7 +30,7 @@ export const spots: SpotInfo[] = [
   { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
   
   // HALLWAY & TOILET AREA
-  { id: 'spot-3', number: 3, x: 59.2, y: 62.8, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 250000 } },
+  { id: 'spot-3', number: 3, x: 59.2, y: 62.8, size: '3x3m', area: 'Bar', available: true, price: { threeDay: 400000, twoDay: 325000, oneDay: 225000 } },
   { id: 'spot-5', number: 5, x: 58.2, y: 50.4, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
   { id: 'spot-6', number: 6, x: 60.4, y: 50.4, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
   { id: 'spot-7', number: 7, x: 62.6, y: 50.4, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
