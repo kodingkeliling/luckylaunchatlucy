@@ -16,6 +16,9 @@ export default function EventInfo() {
         />
       </div>
 
+      {/* Asap hitam di atas */}
+      <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black to-transparent z-0" />
+      
       {/* Asap hitam di bawah */}
       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-black z-0" />
 
@@ -32,7 +35,7 @@ export default function EventInfo() {
           {/* Right: Date */}
           <div className="text-right">
             <p className="text-xl md:text-2xl font-bold text-white font-raleway">
-              OCTOBER 24-26, 2025
+              OCTOBER <span className="font-ttchocolates">24-26, 2025</span>
             </p>
           </div>
         </header>

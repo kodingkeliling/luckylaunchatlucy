@@ -18,6 +18,12 @@ const JoinUsSection: React.FC = () => {
         />
       </div>
 
+      {/* Asap hitam di atas */}
+      <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black to-transparent z-0" />
+      
+      {/* Asap hitam di bawah */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-black z-0" />
+
       <div className="container relative z-10 text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">LET'S JOIN US!</h2>
         <p className="text-lg md:text-2xl opacity-95 leading-tight mb-10">

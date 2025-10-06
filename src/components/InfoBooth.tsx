@@ -17,6 +17,12 @@ const InfoBooth: React.FC = () => {
         />
       </div>
       
+      {/* Asap hitam di atas */}
+      <div className="absolute top-0 left-0 right-0 h-60 bg-gradient-to-b from-black to-transparent z-0" />
+      
+      {/* Asap hitam di bawah */}
+      <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-b from-transparent to-black z-0" />
+
       <div className="container relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
