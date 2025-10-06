@@ -111,11 +111,6 @@ export default function FunRunRegistration() {
                     className="object-contain"
                   />
                 </div>
-                <p className="text-lg text-muted-foreground">
-                  Unduh kartu ini dan posting di instagram mu! dan mention 
-                  <span className="font-bold text-primary"> @777.ltd</span> dan 
-                  <span className="font-bold text-primary"> @lucycuratedcompound.bdg</span>
-                </p>
               </div>
               
               <Button 
