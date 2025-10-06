@@ -12,11 +12,21 @@ export default function Home() {
   return (
     <main>
       <Header />
-      <EventInfo />
-      <LocationMap />
-      <EventSchedule />
-      <InfoBooth />
-      <JoinUsSection />
+      <section id="event-info">
+        <EventInfo />
+      </section>
+      <section id="location-map">
+        <LocationMap />
+      </section>
+      <section id="event-schedule">
+        <EventSchedule />
+      </section>
+      <section id="info-booth">
+        <InfoBooth />
+      </section>
+      <section id="join-us">
+        <JoinUsSection />
+      </section>
       <Footer />
     </main>
   );

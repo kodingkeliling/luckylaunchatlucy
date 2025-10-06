@@ -32,11 +32,22 @@ export default function FloatingNav() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isScrolled]);
 
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 80, // Adjust for fixed header
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const navItems = [
-    { name: 'About', href: '#about' },
-    { name: 'Place', href: '#place' },
-    { name: 'Events', href: '#events' },
-    { name: 'Layout', href: '#layout' },
+    { name: 'About', id: 'event-info' },
+    { name: 'Place', id: 'location-map' },
+    { name: 'Events', id: 'event-schedule' },
+    { name: 'Layout', id: 'info-booth' },
+    { name: 'JOIN!', id: 'join-us' }
   ];
 
   if (!isScrolled) return null;
@@ -50,20 +61,18 @@ export default function FloatingNav() {
       <div className={`backdrop-blur-sm bg-black/60 rounded-full px-6 py-2 shadow-lg ${raleway.className}`}>
         <div className="flex items-center gap-6">
           {navItems.map((item) => (
-            <a 
-              key={item.name} 
-              href={item.href}
-              className="text-white hover:text-gray-200 text-sm md:text-base font-medium transition-colors"
+            <button
+              key={item.name}
+              onClick={() => scrollToSection(item.id)}
+              className={`${
+                item.name === 'JOIN!' 
+                  ? 'ml-4 bg-[#BE2625] hover:bg-[#a81f1e] text-white px-4 py-1.5 rounded-full font-semibold'
+                  : 'text-white hover:text-gray-200 font-medium'
+              } text-sm md:text-base transition-colors`}
             >
               {item.name}
-            </a>
+            </button>
           ))}
-          <a 
-            href="#join" 
-            className="ml-4 bg-[#BE2625] hover:bg-[#a81f1e] text-white px-4 py-1.5 rounded-full text-sm md:text-base font-semibold transition-colors"
-          >
-            JOIN!
-          </a>
         </div>
       </div>
     </nav>
