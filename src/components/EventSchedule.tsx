@@ -52,7 +52,7 @@ export default function EventSchedule() {
         {/* Header */}
         <div className="text-start mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white font-raleway mb-4">
-            RANGKAIAN ACARA
+            RANGKAIAN ACARA 26 OKTOBER
           </h2>
           <div className="w-24 h-1 bg-white mr-auto rounded-full"></div>
         </div>
