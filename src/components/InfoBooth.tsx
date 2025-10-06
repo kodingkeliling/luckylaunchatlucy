@@ -26,7 +26,7 @@ const InfoBooth: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">LLL LAYOUT TRUNK & POP UP</h2>
-          <div className="w-32 h-1 bg-yellow-400 mx-auto"></div>
+          <div className="w-32 h-1 bg-[#BE2625] mx-auto"></div>
         </div>
         
         {/* Layout Image on Top */}

@@ -24,17 +24,17 @@ export default function EventInfo() {
 
       <div className="container relative z-10 px-4 mx-auto">
         {/* New Header Section */}
-        <header className="flex flex-col md:flex-row items-center justify-between mb-4 py-8">
+        <header className="flex flex-row items-center justify-between mb-4 py-4 md:py-8">
           {/* Left: Event Title */}
-          <div className="text-left mb-6 md:mb-0">
-            <h2 className="text-3xl md:text-4xl font-bold text-white font-raleway">
+          <div className="flex-1">
+            <h2 className="text-xl md:text-4xl font-bold text-white font-raleway">
               LUCKY LAUNCH AT LUCY
             </h2>
           </div>
           
           {/* Right: Date */}
-          <div className="text-right">
-            <p className="text-xl md:text-2xl font-bold text-white font-raleway">
+          <div className="flex-1 text-right">
+            <p className="text-sm md:text-2xl font-bold text-white font-raleway whitespace-nowrap">
               OCTOBER <span className="font-ttchocolates">24-26, 2025</span>
             </p>
           </div>
