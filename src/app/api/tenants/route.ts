@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
       'productDetail',
       'selectedSpot',
       'selectedDates',
-      'duration',
       'totalPayment'
     ];
 
@@ -30,6 +29,16 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+    }
+
+    // Trunk package requires duration. Non-trunk does not.
+    const trunkSpotIds = ['spot-19', 'spot-20', 'spot-21', 'spot-22', 'spot-23'];
+    const isTrunkSpot = typeof formData.selectedSpot === 'string' && trunkSpotIds.some(id => formData.selectedSpot.includes(id));
+    if (isTrunkSpot && !formData.duration) {
+      return NextResponse.json(
+        { message: 'Field duration is required for Trunk Package' },
+        { status: 400 }
+      );
     }
 
     // Prepare data for Google Sheets

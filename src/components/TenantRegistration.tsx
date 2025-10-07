@@ -40,7 +40,7 @@ export default function TenantRegistration() {
   const [uploadedPaymentUrl, setUploadedPaymentUrl] = useState<string | null>(null);
   const [paymentPreviewUrl, setPaymentPreviewUrl] = useState<string | null>(null);
   const [isUploadingPayment, setIsUploadingPayment] = useState(false);
-  const { isDurationBookedForSpot, isLoading: isLoadingBookings, refresh: refreshBookings } = useBookingData();
+  const { bookings, isDurationBookedForSpot, isLoading: isLoadingBookings, refresh: refreshBookings } = useBookingData();
 
   // Cleanup blob URL when component unmounts (like wisuda)
   useEffect(() => {
@@ -185,13 +185,13 @@ export default function TenantRegistration() {
   };
 
   const calculateAdditionalCosts = () => {
-    const chairCost = (formData.chairCount || 0) * 10000;
-    const tableCost = (formData.tableCount || 0) * 25000;
+    const chairCost = (formData.chairCount || 0) * 25000;
+    const tableCost = (formData.tableCount || 0) * 50000;
     return chairCost + tableCost;
   };
 
   const calculateTotalPayment = () => {
-    if (!formData.selectedSpot || !formData.duration) return 0;
+    if (!formData.selectedSpot) return 0;
     
     const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
     if (!selectedSpot) return 0;
@@ -200,6 +200,7 @@ export default function TenantRegistration() {
     
     // Handle TrunkPackage pricing
     if (selectedSpot.size === 'Trunk-Package') {
+      if (!formData.duration) return 0;
       switch (formData.duration) {
         case 'twoDay':
           basePrice = selectedSpot.price.twoDay;
@@ -209,17 +210,16 @@ export default function TenantRegistration() {
           break;
       }
     } else {
-      // Handle regular PopupMarketPage pricing
-      switch (formData.duration) {
-        case 'threeDayFull':
-          basePrice = selectedSpot.price.threeDay;
-          break;
-        case 'threeDayPartial':
-          basePrice = selectedSpot.price.twoDay;
-          break;
-        case 'oneDay':
-          basePrice = selectedSpot.price.oneDay;
-          break;
+      // Non-Trunk: derive basePrice from selectedDates length
+      const datesCount = formData.selectedDates?.length || 0;
+      if (datesCount >= 3) {
+        basePrice = selectedSpot.price.threeDay;
+      } else if (datesCount === 2) {
+        basePrice = selectedSpot.price.twoDay;
+      } else if (datesCount === 1) {
+        basePrice = selectedSpot.price.oneDay;
+      } else {
+        return 0;
       }
     }
 
@@ -299,10 +299,18 @@ export default function TenantRegistration() {
     if (!formData.selectedSpot) {
       newErrors.selectedSpot = 'Posisi Tenan harus dipilih';
     }
-    if (!formData.duration || formData.duration === 'disabled') {
-      newErrors.duration = 'Durasi harus dipilih';
-    } else if (formData.selectedSpot && isDurationBookedForSpot(formData.selectedSpot, formData.duration)) {
-      newErrors.duration = 'Durasi yang dipilih sudah dibooking, silakan pilih durasi lain';
+    // Durasi wajib hanya untuk Trunk-Package; tanggal tidak wajib untuk Trunk
+    if (formData.selectedSpot) {
+      const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
+      if (selectedSpot?.size === 'Trunk-Package') {
+        if (!formData.duration || formData.duration === 'disabled') {
+          newErrors.duration = 'Durasi harus dipilih';
+        } else if (isDurationBookedForSpot(formData.selectedSpot, formData.duration)) {
+          newErrors.duration = 'Durasi yang dipilih sudah dibooking, silakan pilih durasi lain';
+        }
+      } else {
+        // Non-Trunk: durasi tidak wajib, tanggal juga tidak wajib (boleh kosong)
+      }
     }
     // if (!formData.paymentProofUrl.trim()) {
     //   newErrors.paymentProof = 'Bukti pembayaran harus diupload';
@@ -346,9 +354,21 @@ export default function TenantRegistration() {
         return ['24 Oktober', '25 Oktober', '26 Oktober'];
       };
 
+      const resolvedDates = getCorrectDates();
+      const spotForDuration = spots.find(spot => spot.id === formData.selectedSpot);
+      let resolvedDuration = formData.duration;
+      if (spotForDuration && spotForDuration.size !== 'Trunk-Package') {
+        const count = resolvedDates.length;
+        if (count >= 3) resolvedDuration = 'threeDay';
+        else if (count === 2) resolvedDuration = 'twoDay';
+        else if (count === 1) resolvedDuration = 'oneDay';
+        else resolvedDuration = '';
+      }
+
       const formDataWithDefaults = {
         ...formData,
-        selectedDates: getCorrectDates(),
+        selectedDates: resolvedDates,
+        duration: resolvedDuration,
         totalPayment
       };
 
@@ -572,46 +592,104 @@ export default function TenantRegistration() {
 
                 {/* Date selection is handled automatically based on duration selection */}
 
-                {/* Durasi */}
-                <div className="mb-6">
-                  <FormField
-                    label="Durasi"
-                    name="duration"
-                    type="select"
-                    value={formData.duration}
-                    onChange={(value) => handleFieldChange('duration', value)}
-                    placeholder="Pilih Durasi"
-                    required
-                    error={errors.duration}
-                    selectOptions={getDurationOptions()}
-                    disabled={!formData.selectedSpot}
-                  />
-                  {isLoadingBookings && formData.selectedSpot && (
-                    <p className="text-sm text-blue-600 mt-2">
-                      🔄 Memuat data booking... Durasi yang sudah dibooking akan otomatis tersembunyi
-                    </p>
-                  )}
-                  {!isLoadingBookings && formData.selectedSpot && formData.duration && isDurationBookedForSpot(formData.selectedSpot, formData.duration) && (
-                    <p className="text-sm text-orange-600 mt-2">
-                      ⚠️ Durasi yang dipilih sudah dibooking, silakan pilih durasi lain
-                    </p>
-                  )}
-                  {!isLoadingBookings && !formData.selectedSpot && (
-                    <p className="text-sm text-red-500 mt-2">
-                      Silakan pilih posisi tenan terlebih dahulu untuk memilih durasi
-                    </p>
-                  )}
-                  {!isLoadingBookings && formData.selectedSpot && getDurationOptions().length === 0 && (
-                    <p className="text-sm text-orange-600 mt-2">
-                      Semua durasi untuk spot ini sudah dibooking
-                    </p>
-                  )}
-                  {!isLoadingBookings && formData.selectedSpot && getDurationOptions().length > 0 && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Durasi yang sudah dibooking tidak akan muncul dalam pilihan
-                    </p>
-                  )}
-                </div>
+                {/* Durasi - hanya tampil jika Trunk-Package */}
+                {formData.selectedSpot && (() => {
+                  const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
+                  if (!selectedSpot || selectedSpot.size !== 'Trunk-Package') return null;
+                  return (
+                    <div className="mb-6">
+                      <FormField
+                        label="Durasi"
+                        name="duration"
+                        type="select"
+                        value={formData.duration}
+                        onChange={(value) => handleFieldChange('duration', value)}
+                        placeholder="Pilih Durasi"
+                        required
+                        error={errors.duration}
+                        selectOptions={getDurationOptions()}
+                        disabled={!formData.selectedSpot}
+                      />
+                      {isLoadingBookings && formData.selectedSpot && (
+                        <p className="text-sm text-blue-600 mt-2">
+                          🔄 Memuat data booking... Durasi yang sudah dibooking akan otomatis tersembunyi
+                        </p>
+                      )}
+                      {!isLoadingBookings && formData.selectedSpot && formData.duration && isDurationBookedForSpot(formData.selectedSpot, formData.duration) && (
+                        <p className="text-sm text-orange-600 mt-2">
+                          ⚠️ Durasi yang dipilih sudah dibooking, silakan pilih durasi lain
+                        </p>
+                      )}
+                      {!isLoadingBookings && !formData.selectedSpot && (
+                        <p className="text-sm text-red-500 mt-2">
+                          Silakan pilih posisi tenan terlebih dahulu untuk memilih durasi
+                        </p>
+                      )}
+                      {!isLoadingBookings && formData.selectedSpot && getDurationOptions().length === 0 && (
+                        <p className="text-sm text-orange-600 mt-2">
+                          Semua durasi untuk spot ini sudah dibooking
+                        </p>
+                      )}
+                      {!isLoadingBookings && formData.selectedSpot && getDurationOptions().length > 0 && (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Durasi yang sudah dibooking tidak akan muncul dalam pilihan
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {/* Tanggal (checkbox untuk non-Trunk) */}
+                {formData.selectedSpot && (() => {
+                  const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
+                  if (!selectedSpot) return null;
+                  if (selectedSpot.size === 'Trunk-Package') return null;
+                  // Kumpulkan tanggal yang sudah dibooking untuk spot ini
+                  const bookedDateSet = new Set<string>();
+                  (bookings || []).forEach((b: any) => {
+                    if (b['Booked'] === true && b['Posisi Tenan'] === formData.selectedSpot && typeof b['Tanggal'] === 'string') {
+                      b['Tanggal'].split(', ').forEach((d: string) => bookedDateSet.add(d));
+                    }
+                  });
+                  // Filter opsi tanggal yang belum dibooking
+                  const availableDateOptions = dateOptions.filter(opt => !bookedDateSet.has(opt.value));
+                  return (
+                    <div className="mb-6">
+                      <Label htmlFor="selectedDates">Pilih Tanggal (boleh lebih dari satu)</Label>
+                      <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {availableDateOptions.map((opt) => {
+                          const checked = formData.selectedDates.includes(opt.value);
+                          return (
+                            <label key={opt.value} className="flex items-center gap-2 p-2 rounded border cursor-pointer bg-white">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4"
+                                checked={checked}
+                                onChange={(e) => {
+                                  const isChecked = e.target.checked;
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    selectedDates: isChecked
+                                      ? Array.from(new Set([...(prev.selectedDates || []), opt.value]))
+                                      : (prev.selectedDates || []).filter(v => v !== opt.value)
+                                  }));
+                                  // Clear any related error
+                                  if (errors['selectedDates']) {
+                                    setErrors(prev => ({ ...prev, selectedDates: '' }));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm">{opt.label}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                      {availableDateOptions.length === 0 && (
+                        <p className="text-sm text-orange-600 mt-2">Semua tanggal untuk spot ini sudah dibooking.</p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Tambahan Kebutuhan */}
                 <div className="mb-6">
@@ -777,7 +855,7 @@ export default function TenantRegistration() {
                     <CardTitle className="text-lg">Ringkasan Pesanan</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {formData.selectedSpot && formData.duration ? (
+                    {formData.selectedSpot && (formData.duration || formData.selectedDates.length > 0) ? (
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-semibold text-sm text-muted-foreground">Spot Terpilih</h4>
@@ -787,7 +865,19 @@ export default function TenantRegistration() {
                         
                         <div>
                           <h4 className="font-semibold text-sm text-muted-foreground">Durasi</h4>
-                          <p className="font-medium">{getDurationLabel()}</p>
+                              <p className="font-medium">{
+                                (() => {
+                                  const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
+                                  if (selectedSpot?.size === 'Trunk-Package') {
+                                    return getDurationLabel();
+                                  }
+                                  const count = formData.selectedDates.length;
+                                  if (count >= 3) return '3 Hari';
+                                  if (count === 2) return '2 Hari';
+                                  if (count === 1) return '1 Hari';
+                                  return '';
+                                })()
+                              }</p>
                         </div>
                         
                         <div>
@@ -870,7 +960,7 @@ export default function TenantRegistration() {
           
           {isMobileSummaryExpanded && (
             <div className="px-4 pb-4 border-t bg-gray-50">
-              {formData.selectedSpot && formData.duration ? (
+              {formData.selectedSpot && (formData.duration || formData.selectedDates.length > 0) ? (
                 <div className="space-y-3 pt-4">
                   <div>
                     <h4 className="font-semibold text-sm text-muted-foreground">Spot Terpilih</h4>
@@ -880,7 +970,19 @@ export default function TenantRegistration() {
                   
                   <div>
                     <h4 className="font-semibold text-sm text-muted-foreground">Durasi</h4>
-                    <p className="font-medium">{getDurationLabel()}</p>
+                    <p className="font-medium">{
+                      (() => {
+                        const selectedSpot = spots.find(spot => spot.id === formData.selectedSpot);
+                        if (selectedSpot?.size === 'Trunk-Package') {
+                          return getDurationLabel();
+                        }
+                        const count = formData.selectedDates.length;
+                        if (count >= 3) return '3 Hari';
+                        if (count === 2) return '2 Hari';
+                        if (count === 1) return '1 Hari';
+                        return '';
+                      })()
+                    }</p>
                   </div>
                   
                   <div>

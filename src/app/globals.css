@@ -115,7 +115,7 @@ h1, h2, h3, h4, h5, h6 {
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 65 100% 60%;
+    --ring: 240 23% 25%;
     --radius: 0.5rem;
   }
 
@@ -138,7 +138,7 @@ h1, h2, h3, h4, h5, h6 {
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 65 100% 60%;
+    --ring: 240 23% 25%;
   }
 }
 
