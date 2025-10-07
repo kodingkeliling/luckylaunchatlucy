@@ -624,7 +624,7 @@ export default function TenantRegistration() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
-                      label="Kursi (Rp 10.000/unit)"
+                      label="Kursi (Rp 25.000/unit)"
                       name="chairCount"
                       type="number"
                       value={formData.chairCount || 0}
@@ -637,7 +637,7 @@ export default function TenantRegistration() {
                     />
                     
                     <FormField
-                      label="Meja (Rp 25.000/unit)"
+                      label="Meja (Rp 50.000/unit)"
                       name="tableCount"
                       type="number"
                       value={formData.tableCount || 0}
@@ -656,19 +656,19 @@ export default function TenantRegistration() {
                       <div className="space-y-1 text-sm">
                         {formData.chairCount > 0 && (
                           <div className="flex justify-between">
-                            <span>Kursi ({formData.chairCount} x Rp 10.000)</span>
-                            <span>Rp {(formData.chairCount * 10000).toLocaleString()}</span>
+                            <span>Kursi ({formData.chairCount} x Rp 25.000)</span>
+                            <span>Rp {(formData.chairCount * 25000).toLocaleString()}</span>
                           </div>
                         )}
                         {formData.tableCount > 0 && (
                           <div className="flex justify-between">
-                            <span>Meja ({formData.tableCount} x Rp 25.000)</span>
-                            <span>Rp {(formData.tableCount * 25000).toLocaleString()}</span>
+                            <span>Meja ({formData.tableCount} x Rp 50.000)</span>
+                            <span>Rp {(formData.tableCount * 50000).toLocaleString()}</span>
                           </div>
                         )}
                         <div className="flex justify-between font-medium pt-2 border-t border-border mt-2">
                           <span>Total Biaya Tambahan</span>
-                          <span>Rp {((formData.chairCount * 10000) + (formData.tableCount * 25000)).toLocaleString()}</span>
+                          <span>Rp {((formData.chairCount * 25000) + (formData.tableCount * 50000)).toLocaleString()}</span>
                         </div>
                       </div>
                     </div>

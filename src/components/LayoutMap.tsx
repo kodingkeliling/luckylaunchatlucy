@@ -225,7 +225,11 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                 };
 
                 const isCompletelyBooked = isSpotCompletelyBooked(spot.id);
-                const isAvailable = spot.available && !isCompletelyBooked;
+                const isTrunkPackage = spot.size === 'Trunk-Package';
+                const hasAnyBooking = getBookedDurationsForSpot(spot.id).length > 0;
+                // For Trunk Package: disable if ANY duration is booked
+                const isDisabledByBooking = isTrunkPackage ? hasAnyBooking : isCompletelyBooked;
+                const isAvailable = spot.available && !isDisabledByBooking;
 
                 return (
                   <button
@@ -242,7 +246,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                         ? 'border-white ring-2 ring-secondary ring-offset-2 scale-125' // Selected state
                         : 'border-transparent'
                     } ${
-                      isCompletelyBooked
+                      isDisabledByBooking
                         ? 'bg-gray-400 cursor-not-allowed' // Completely Booked - Orange
                         : isAvailable 
                           ? getBoothColor(spot.size)
@@ -254,7 +258,15 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                       transform: 'translate(-50%, -50%)'
                     }}
                     disabled={!isAvailable}
-                    title={isCompletelyBooked ? 'Completely Booked' : !spot.available ? 'Not Available' : `Spot ${spot.number}`}
+                    title={
+                      !spot.available
+                        ? 'Not Available'
+                        : isTrunkPackage && hasAnyBooking
+                          ? 'Sold Out (Trunk - any duration booked)'
+                          : isCompletelyBooked
+                            ? 'Completely Booked'
+                            : `Spot ${spot.number}`
+                    }
                   >
                     {spot.number}
                   </button>
