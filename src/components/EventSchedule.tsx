@@ -5,6 +5,12 @@ export default function EventSchedule() {
   const scheduleItems = [
     {
       time: "05:00",
+      title: "Registration",
+      description: "Setiap talent atau perwakilan komunitas, registrasi terlebih dahulu kepada panitia",
+      icon: <MapPin className="h-6 w-6 text-white" />
+    },
+    {
+      time: "06:00",
       title: "Fun Run",
       description: "Start dan finish di lokasi Pop Up Market. Setelah lari, peserta mendapatkan fasilitas tempat istirahat, sajian buah, dan minuman untuk pemulihan energi.",
       icon: <MapPin className="h-6 w-6 text-white" />
