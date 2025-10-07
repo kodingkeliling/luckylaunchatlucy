@@ -386,13 +386,13 @@ export const packageTypeOptions = [
 
 export const durationOptions = {
   PopupMarketPage:[
-  { value: "threeDayFull", label: "3 Hari (24,25,26 Oktober)" },
-  { value: "threeDayPartial", label: "2 Hari (25,26 Oktober)" },
-  { value: "oneDay", label: "1 Hari (26 Oktober)" }
+  { value: "threeDayFull", label: "3 Hari (24,25,26 Oktober)", date: ["24 Oktober", "25 Oktober", "26 Oktober"] },
+  { value: "threeDayPartial", label: "2 Hari (25,26 Oktober)", date: ["25 Oktober", "26 Oktober"] },
+  { value: "oneDay", label: "1 Hari (26 Oktober)", date: ["26 Oktober"] }
 ],
 TrunkPackage: [
-  { value: "twoDay", label: "2 Hari (24, 26 Oktober)" },
-  { value: "oneDay", label: "1 Hari (26 Oktober)" }
+  { value: "twoDay", label: "2 Hari (24, 26 Oktober)", date: ["24 Oktober", "26 Oktober"] },
+  { value: "oneDay", label: "1 Hari (26 Oktober)", date: ["26 Oktober"] }
 ]
 };
 

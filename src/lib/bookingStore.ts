@@ -85,3 +85,4 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
     return allPossibleDates.every(date => bookedDates.includes(date));
   }
 }));
+

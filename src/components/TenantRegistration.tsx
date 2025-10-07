@@ -91,6 +91,26 @@ export default function TenantRegistration() {
             duration: ''
           }));
         }
+        // Clear selectedDates when spot changes
+        newData.selectedDates = [];
+      }
+      
+      // Set selectedDates based on duration selection
+      if (name === 'duration') {
+        const selectedSpot = spots.find(spot => spot.id === prev.selectedSpot);
+        if (selectedSpot) {
+          let availableOptions = [];
+          if (selectedSpot.size === 'Trunk-Package') {
+            availableOptions = durationOptions.TrunkPackage;
+          } else {
+            availableOptions = durationOptions.PopupMarketPage;
+          }
+          
+          const selectedDuration = availableOptions.find(opt => opt.value === value);
+          if (selectedDuration && selectedDuration.date) {
+            newData.selectedDates = selectedDuration.date;
+          }
+        }
       }
       
       return newData;
