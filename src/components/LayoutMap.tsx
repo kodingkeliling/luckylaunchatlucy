@@ -23,8 +23,8 @@ interface SpotInfo {
 
 export const spots: SpotInfo[] = [
   // PARKING AREA - berdasarkan gambar
-  { id: 'spot-1', number: 1, x: 30, y: 62, size: '2x2m', area: 'Parking Area', available: true, price: { threeDay: 375000, twoDay: 325000, oneDay: 275000 } },
-  { id: 'spot-2', number: 2, x: 30, y: 57, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 450000, twoDay: 350000, oneDay: 300000 } },
+  { id: 'spot-1', number: 1, x: 30, y: 57, size: '2x2m', area: 'Parking Area', available: true, price: { threeDay: 375000, twoDay: 325000, oneDay: 275000 } },
+  { id: 'spot-2', number: 2, x: 29.2, y: 42, size: '3x3m', area: 'Parking Area', available: true, price: { threeDay: 450000, twoDay: 350000, oneDay: 300000 } },
   
   // TRUNK AREA & SEATING AREA
   { id: 'spot-4', number: 4, x: 60.5, y: 58.5, size: '2x2m', area: 'Bar', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 175000 } },
@@ -53,11 +53,11 @@ export const spots: SpotInfo[] = [
   { id: 'spot-17', number: 17, x: 79.4, y: 62.7, size: '3x3m', area: 'Extra Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
   { id: 'spot-18', number: 18, x: 83.4, y: 62.7, size: '3x3m', area: 'Extra Belakang', available: true, price: { threeDay: 300000, twoDay: 250000, oneDay: 200000 } },
 
-  { id: 'spot-19', number: 19, x: 7.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
-  { id: 'spot-20', number: 20, x: 13.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
-  { id: 'spot-21', number: 21, x: 19.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
-  { id: 'spot-22', number: 22, x: 13, y: 58, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
-  { id: 'spot-23', number: 23, x: 18.4, y: 57.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-19', number: 19, x: 11.2, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-20', number: 20, x: 17.4, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-21', number: 21, x: 23.2, y: 46.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-22', number: 22, x: 13.2, y: 58, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
+  { id: 'spot-23', number: 23, x: 18.7, y: 57.7, size: 'Trunk-Package', area: 'Trunk Area', available: true, price: { threeDay: 0, twoDay: 500000, oneDay: 350000 } },
 ];
 
 interface LayoutMapProps {
@@ -74,7 +74,7 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [containerHeight, setContainerHeight] = useState(600);
   const mapRef = useRef<HTMLDivElement>(null);
-  const { isSpotCompletelyBooked, getBookedDurationsForSpot, isLoading: isLoadingBookings } = useBookingData();
+  const { isSpotCompletelyBooked, getBookedDurationsForSpot, getBookedLabelsForSpot, isLoading: isLoadingBookings } = useBookingData();
 
   // Sync selectedSpot with props
   useEffect(() => {
@@ -327,32 +327,14 @@ export default function LayoutMap({ selectedSpot: selectedSpotId, onSpotSelect }
                   <div className="md:col-span-2">
                     <span className="font-medium">Durasi yang Sudah Dibooking:</span>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      {getBookedDurationsForSpot(selectedSpot.id).map((duration, index) => {
-                        // Convert duration value to readable label
-                        const getDurationLabel = (durationValue: string) => {
-                          switch (durationValue) {
-                            case 'threeDayFull':
-                              return '3 Hari (24,25,26 Oktober)';
-                            case 'threeDayPartial':
-                              return '2 Hari (25,26 Oktober)';
-                            case 'twoDay':
-                              return '2 Hari (24,26 Oktober)';
-                            case 'oneDay':
-                              return '1 Hari (26 Oktober)';
-                            default:
-                              return durationValue;
-                          }
-                        };
-                        
-                        return (
-                          <span 
-                            key={index}
-                            className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full font-medium"
-                          >
-                            {getDurationLabel(duration)}
-                          </span>
-                        );
-                      })}
+                      {getBookedLabelsForSpot(selectedSpot.id).map((label, index) => (
+                        <span 
+                          key={index}
+                          className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full font-medium"
+                        >
+                          {label}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 )}

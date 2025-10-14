@@ -25,6 +25,7 @@ interface BookingStore {
   // Helper functions
   isDurationBookedForSpot: (spotId: string, duration: string) => boolean;
   getBookedDurationsForSpot: (spotId: string) => string[];
+  getBookedLabelsForSpot: (spotId: string) => string[];
   isSpotCompletelyBooked: (spotId: string) => boolean;
 }
 
@@ -65,6 +66,26 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
         booking['Booked'] === true
       )
       .map(booking => booking['Durasi']);
+  },
+  
+  // Helper to get human-readable booked labels based on the actual booked dates
+  getBookedLabelsForSpot: (spotId: string) => {
+    const { bookings } = get();
+    return bookings
+      .filter(booking => 
+        booking['Posisi Tenan'] === spotId && 
+        booking['Booked'] === true
+      )
+      .map(booking => {
+        const tanggalRaw = booking['Tanggal'] || '';
+        const dates = tanggalRaw
+          .split(',')
+          .map((s: string) => s.trim())
+          .filter(Boolean);
+        const dayCount = dates.length > 0 ? dates.length : 1;
+        const datesText = dates.join(', ');
+        return `${dayCount} Hari (${datesText})`;
+      });
   },
   
   // Helper function to check if a spot is completely booked

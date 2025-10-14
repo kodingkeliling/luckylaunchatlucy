@@ -22,6 +22,7 @@ export function useBookingData() {
     updateLastUpdated,
     isDurationBookedForSpot,
     getBookedDurationsForSpot,
+    getBookedLabelsForSpot,
     isSpotCompletelyBooked
   } = useBookingStore();
   
@@ -80,6 +81,7 @@ export function useBookingData() {
     refresh,
     isDurationBookedForSpot,
     getBookedDurationsForSpot,
+    getBookedLabelsForSpot,
     isSpotCompletelyBooked
   };
 }
